@@ -54,7 +54,6 @@ class LeafHasher:
         self._prime = 2_147_483_647
 
     def transform(self, leaf_matrix: np.ndarray) -> np.ndarray:
-        # leaf_matrix: (N, n_trees) int leaf ids
         leaf_matrix = np.asarray(leaf_matrix, dtype=np.int64)
         n_trees = leaf_matrix.shape[1]
         ids = (np.arange(n_trees, dtype=np.int64)[None, :] * 10_000_000 + leaf_matrix)
@@ -93,15 +92,10 @@ class DeepComponent(nn.Module):
         layers.append(nn.Linear(prev, 3))  # 3 classes
         self.mlp = nn.Sequential(*layers)
 
-        # 简单残差投影（当 in_dim == first hidden 维度时可直接残差）
         self._in_dim = in_dim
         self._out_dim = prev
 
     def forward(self, x_num: torch.Tensor, leaf_ids: torch.Tensor) -> torch.Tensor:
-        """
-        x_num: (B, n_features)
-        leaf_ids: (B, n_trees_hashed)  long
-        """
         B, T = leaf_ids.shape
         flat = leaf_ids.reshape(-1)
         offsets = torch.arange(0, B * T, T, dtype=torch.long, device=leaf_ids.device)
@@ -171,6 +165,7 @@ class DeepGBMCOClassifier:
         self.checkpoint_dir = Path(checkpoint_dir) if checkpoint_dir is not None else Path("./checkpoints")
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
+        # Default xgb params (will be mapped to xgb.train params)
         self.xgb_params = xgb_params or dict(
             n_estimators=800,
             max_depth=10,
@@ -188,7 +183,7 @@ class DeepGBMCOClassifier:
         )
 
         self.scaler = None
-        self.xgb_model = None
+        self.xgb_model = None  # will hold xgboost.Booster
         self.deep_model = None
         self.leaf_hasher = LeafHasher(num_buckets=self.num_buckets)
         self.results = {}
@@ -202,6 +197,32 @@ class DeepGBMCOClassifier:
 
     def _discretize_naive(self, s: pd.Series) -> pd.Series:
         return pd.cut(s, bins=[-np.inf, 1.5, 2.5, np.inf], labels=["low", "mid", "high"])
+
+    def _prepare_xgb_params_for_train(self):
+        # Convert sklearn wrapper style params to xgb.train params
+        params = {}
+        # objective and num_class for multiclass
+        params["objective"] = "multi:softprob"
+        params["num_class"] = 3
+        # map common keys
+        params["max_depth"] = int(self.xgb_params.get("max_depth", 6))
+        params["eta"] = float(self.xgb_params.get("learning_rate", 0.05))
+        params["subsample"] = float(self.xgb_params.get("subsample", 1.0))
+        params["colsample_bytree"] = float(self.xgb_params.get("colsample_bytree", 1.0))
+        params["min_child_weight"] = float(self.xgb_params.get("min_child_weight", 1.0))
+        params["gamma"] = float(self.xgb_params.get("gamma", 0.0))
+        params["lambda"] = float(self.xgb_params.get("reg_lambda", 1.0))
+        params["alpha"] = float(self.xgb_params.get("reg_alpha", 0.0))
+        # tree method - choose gpu_hist when CUDA available
+        if torch.cuda.is_available():
+            params["tree_method"] = "gpu_hist"
+        else:
+            params["tree_method"] = self.xgb_params.get("tree_method", "hist")
+        # eval metric
+        params["eval_metric"] = self.xgb_params.get("eval_metric", "mlogloss")
+        # nthread / verbosity
+        params["verbosity"] = 1
+        return params
 
     def load_data(self, data_path: str | Path):
         """
@@ -250,47 +271,65 @@ class DeepGBMCOClassifier:
         sw_train = pd.Series(y_train_enc).map(class_weights).values
         sw_valid = pd.Series(y_valid_enc).map(class_weights).values
 
-        print("[6/7] Training XGBoost base learner (stronger config)...")
+        # ---------------- XGBoost training using xgb.train ----------------
+        print("[6/7] Training XGBoost base learner (xgb.train with DMatrix)...")
         print(f"      XGB params: n_estimators={self.xgb_params.get('n_estimators')}, depth={self.xgb_params.get('max_depth')}, lr={self.xgb_params.get('learning_rate')}")
         t_xgb = time.time()
-        self.xgb_model = xgb.XGBClassifier(**self.xgb_params)
-        # 使用 early stopping（验证集上）
-        self.xgb_model.fit(
-            X_train_np,
-            y_train_enc,
-            eval_set=[(X_valid_np, y_valid_enc)],
-            sample_weight=sw_train,
-            sample_weight_eval_set=[sw_valid],
-            early_stopping_rounds=50,
-            verbose=True
+
+        dtrain = xgb.DMatrix(X_train_np, label=y_train_enc, weight=sw_train)
+        dvalid = xgb.DMatrix(X_valid_np, label=y_valid_enc, weight=sw_valid)
+
+        train_params = self._prepare_xgb_params_for_train()
+        num_boost_round = int(self.xgb_params.get("n_estimators", 800))
+        early_stopping_rounds = 50
+
+        evals = [(dtrain, "train"), (dvalid, "valid")]
+
+        # train with early stopping via xgb.train
+        bst = xgb.train(
+            params=train_params,
+            dtrain=dtrain,
+            num_boost_round=num_boost_round,
+            evals=evals,
+            early_stopping_rounds=early_stopping_rounds,
+            verbose_eval=True,
         )
+        self.xgb_model = bst  # store Booster
         xgb_time = time.time() - t_xgb
-        best_iter = getattr(self.xgb_model, 'best_iteration', None)
+
+        best_iter = getattr(bst, "best_iteration", None)
         if best_iter is None:
             print(f"      ✓ XGBoost trained in {xgb_time:.2f}s (early stopping: N/A)")
         else:
             print(f"      ✓ XGBoost trained in {xgb_time:.2f}s (best iteration: {best_iter})")
 
+        # ---------------- Extract leaf indices and hashing ----------------
         print("[7/7] Extracting leaf indices and hashing...")
         t_leaf = time.time()
         try:
-            leaves_train = self.xgb_model.apply(X_train_np)
-            leaves_valid = self.xgb_model.apply(X_valid_np)
-            leaves_test = self.xgb_model.apply(X_test_np)
-        except Exception:
-            dtrain = xgb.DMatrix(X_train_np)
-            dvalid = xgb.DMatrix(X_valid_np)
+            leaves_train = bst.predict(dtrain, pred_leaf=True)
+            leaves_valid = bst.predict(dvalid, pred_leaf=True)
             dtest = xgb.DMatrix(X_test_np)
-            booster = self.xgb_model.get_booster()
-            leaves_train = booster.predict(dtrain, pred_leaf=True)
-            leaves_valid = booster.predict(dvalid, pred_leaf=True)
-            leaves_test = booster.predict(dtest, pred_leaf=True)
+            leaves_test = bst.predict(dtest, pred_leaf=True)
+        except Exception:
+            # fallback: try using sklearn wrapper apply (unlikely here)
+            try:
+                sk_wrapper = xgb.XGBClassifier(**self.xgb_params)
+                sk_wrapper.fit(X_train_np, y_train_enc)
+                leaves_train = sk_wrapper.apply(X_train_np)
+                leaves_valid = sk_wrapper.apply(X_valid_np)
+                leaves_test = sk_wrapper.apply(X_test_np)
+                # override stored model with wrapper for prediction compatibility
+                self.xgb_model = sk_wrapper
+            except Exception as e:
+                raise RuntimeError("Failed to extract leaf indices from XGBoost model.") from e
 
-        hashed_train = self.leaf_hasher.transform(leaves_train)
-        hashed_valid = self.leaf_hasher.transform(leaves_valid)
-        hashed_test = self.leaf_hasher.transform(leaves_test)
+        hashed_train = self.leaf_hasher.transform(np.asarray(leaves_train))
+        hashed_valid = self.leaf_hasher.transform(np.asarray(leaves_valid))
+        hashed_test = self.leaf_hasher.transform(np.asarray(leaves_test))
         print(f"      ✓ Leaves extracted & hashed in {time.time() - t_leaf:.2f}s")
 
+        # assign
         self.train_X = X_train_np
         self.valid_X = X_valid_np
         self.test_X = X_test_np
@@ -463,6 +502,22 @@ class DeepGBMCOClassifier:
         return self
 
     # ---------------- evaluation / inference ----------------
+    def _xgb_predict_proba(self, X_np: np.ndarray):
+        """
+        Return XGBoost predicted probabilities for input numpy array.
+        Works for Booster (xgb.train result) or sklearn wrapper.
+        """
+        try:
+            if isinstance(self.xgb_model, xgb.core.Booster):
+                dmat = xgb.DMatrix(X_np)
+                proba = self.xgb_model.predict(dmat)
+                return proba
+            else:
+                # sklearn wrapper
+                return self.xgb_model.predict_proba(X_np)
+        except Exception:
+            return None
+
     @torch.no_grad()
     def _eval_split(self, X_np: np.ndarray, leaf_np: np.ndarray, y_np: np.ndarray):
         self.deep_model.eval()
@@ -480,11 +535,8 @@ class DeepGBMCOClassifier:
         prob_all = np.concatenate(prob_list, axis=0)
         pred_all = np.concatenate(pred_list, axis=0)
 
-        # XGBoost 概率（用于融合）
-        try:
-            xgb_proba = self.xgb_model.predict_proba(X_np)
-        except Exception:
-            xgb_proba = None
+        # XGBoost probabilities（用于融合）
+        xgb_proba = self._xgb_predict_proba(X_np)
 
         acc = accuracy_score(y_np, pred_all)
         f1_macro = f1_score(y_np, pred_all, average="macro")
@@ -550,7 +602,6 @@ class DeepGBMCOClassifier:
         report("test", self.results["test"], self.test_y, self.naive_test)
         return self
 
-    # ---------------- plotting ----------------
     def plot_confusion_matrices(self, save_path=None):
         fig, axes = plt.subplots(1, 3, figsize=(21, 6))
         names = ["train", "valid", "test"]
@@ -578,11 +629,19 @@ class DeepGBMCOClassifier:
             print(f"\nConfusion matrices saved to: {save_path}")
         plt.show()
 
-    # ---------------- save ----------------
     def save_model(self, output_dir: str | Path):
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        joblib.dump(self.xgb_model, output_dir / f"deepgbm_xgb_h{self.horizon}.joblib")
+        # Save xgboost booster to native model file
+        try:
+            if isinstance(self.xgb_model, xgb.core.Booster):
+                self.xgb_model.save_model(str(output_dir / f"deepgbm_xgb_h{self.horizon}.model"))
+            else:
+                joblib.dump(self.xgb_model, output_dir / f"deepgbm_xgb_h{self.horizon}.joblib")
+        except Exception:
+            # fallback to joblib
+            joblib.dump(self.xgb_model, output_dir / f"deepgbm_xgb_h{self.horizon}.joblib")
+
         torch.save({
             "state_dict": self.deep_model.state_dict(),
             "params": {
@@ -653,7 +712,7 @@ def main():
             emb_dim=512,
             hidden=(1024, 512, 256),
             dropout=0.25,
-            batch_size=256,
+            batch_size=8,  # For CPU low-memory run, keep small; on GPU increase
             lr=cfg['lr'],
             weight_decay=1e-3,
             max_epochs=cfg['max_epochs'],

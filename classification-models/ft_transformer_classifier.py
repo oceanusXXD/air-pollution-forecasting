@@ -56,7 +56,6 @@ class FocalLoss(nn.Module):
         self.reduction = reduction
 
     def forward(self, inputs: torch.Tensor, targets: torch.Tensor):
-        # inputs: logits (B,C)
         ce = F.cross_entropy(inputs, targets, reduction="none", weight=self.alpha)
         p_t = torch.exp(-ce)
         loss = ((1 - p_t) ** self.gamma) * ce
@@ -95,7 +94,6 @@ class WarmupCosineScheduler:
         if epoch < self.warmup_epochs and self.warmup_epochs > 0:
             lr = self.base_lr * float(epoch + 1) / float(self.warmup_epochs)
         else:
-            # cosine decay from base_lr to min_lr over remaining epochs
             t = (epoch - self.warmup_epochs) / max(1, (self.total_epochs - self.warmup_epochs))
             lr = self.min_lr + 0.5 * (self.base_lr - self.min_lr) * (1 + math.cos(math.pi * min(1.0, t)))
         for pg in self.optimizer.param_groups:
@@ -127,8 +125,6 @@ class FeatureTokenizer(nn.Module):
         nn.init.zeros_(self.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (B, F)
-        # 返回 (B, F, D)
         return x.unsqueeze(-1) * self.weight + self.bias
 
 class FTTransformer(nn.Module):
@@ -174,7 +170,6 @@ class FTTransformer(nn.Module):
                 nn.init.zeros_(m.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (B, F)
         tokens = self.tokenizer(x)  # (B, F, D)
         B = tokens.shape[0]
         cls = self.cls_token.expand(B, -1, -1)  # (B,1,D)
@@ -227,6 +222,7 @@ class FTTransformerCOClassifier:
         self.focal_gamma = float(focal_gamma)
         self.label_smoothing = label_smoothing
         self.seed = int(seed)
+        # 设备选择（优先 CUDA）
         self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
         self.num_workers = int(num_workers)
         self.checkpoint_dir = Path(checkpoint_dir) if checkpoint_dir is not None else Path("./checkpoints")
@@ -281,12 +277,29 @@ class FTTransformerCOClassifier:
         self.valid_ds = TabularDataset(X_valid_np, y_valid_enc)
         self.test_ds = TabularDataset(X_test_np, y_test_enc)
 
+        # DataLoader 配置：如果没有 GPU 则禁用 pin_memory 且强制 num_workers=0
+        if self.device.type == "cuda":
+            # 在 GPU 上允许多进程 data loading，但不要超过系统CPU数-1
+            max_workers = max(0, (os.cpu_count() or 1) - 1)
+            workers = min(self.num_workers, max_workers) if self.num_workers > 0 else max_workers
+            pin_memory = True
+            # 启用 cudnn benchmark 以加速
+            torch.backends.cudnn.benchmark = True
+        else:
+            workers = 0
+            pin_memory = False
+            # 在 CPU 环境下，限制 PyTorch 线程数以降低内存 / 竞争
+            try:
+                torch.set_num_threads(1)
+            except Exception:
+                pass
+
         self.train_loader = DataLoader(self.train_ds, batch_size=self.batch_size, shuffle=True,
-                                       num_workers=self.num_workers, pin_memory=True)
+                                       num_workers=workers, pin_memory=pin_memory)
         self.valid_loader = DataLoader(self.valid_ds, batch_size=self.batch_size, shuffle=False,
-                                       num_workers=self.num_workers, pin_memory=True)
+                                       num_workers=workers, pin_memory=pin_memory)
         self.test_loader = DataLoader(self.test_ds, batch_size=self.batch_size, shuffle=False,
-                                      num_workers=self.num_workers, pin_memory=True)
+                                      num_workers=workers, pin_memory=pin_memory)
 
         naive_col = f"naive_yhat_t+{self.horizon}"
         if naive_col in train.columns:
@@ -299,6 +312,10 @@ class FTTransformerCOClassifier:
             self.naive_test = None
 
         print(f"✓ Data loaded: Train={X_train_np.shape}, Valid={X_valid_np.shape}, Test={X_test_np.shape} | Time: {time.time() - t0:.2f}s")
+        print(f"Device: {self.device} | num_workers={workers} | pin_memory={pin_memory}")
+        if self.device.type != "cuda":
+            print("提示: 未检测到 GPU（CUDA）。建议将 batch_size 调小（例如 4 或 8），num_workers=0。")
+
         print("\nClass distribution (train):")
         cls_dist = pd.Series(y_train_enc).value_counts(normalize=True).sort_index()
         for cls, prop in cls_dist.items():
@@ -356,8 +373,8 @@ class FTTransformerCOClassifier:
             if tqdm is not None:
                 inner = tqdm(self.train_loader, desc=f"Epoch {epoch}/{self.max_epochs}", leave=False, unit="batch")
             for step, (xb, yb) in enumerate(inner):
-                xb = xb.to(self.device, non_blocking=True)
-                yb = yb.to(self.device, non_blocking=True)
+                xb = xb.to(self.device, non_blocking=(self.device.type == "cuda"))
+                yb = yb.to(self.device, non_blocking=(self.device.type == "cuda"))
 
                 use_mix = (self.mixup_alpha > 0 and np.random.rand() < self.mixup_prob)
                 if use_mix:
@@ -414,7 +431,6 @@ class FTTransformerCOClassifier:
                 best_f1 = val_f1
                 best_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                 patience_left = self.patience
-                # save checkpoint
                 ckpt = {"state_dict": best_state, "epoch": epoch, "val_f1": float(best_f1)}
                 try:
                     torch.save(ckpt, self.checkpoint_dir / f"ftt_best_h{self.horizon}.pt")
@@ -442,7 +458,7 @@ class FTTransformerCOClassifier:
         all_y = []
         for batch in loader:
             xb, yb = batch
-            xb = xb.to(self.device, non_blocking=True)
+            xb = xb.to(self.device, non_blocking=(self.device.type == "cuda"))
             logits = self.model(xb)
             all_logits.append(logits.cpu())
             all_y.append(yb)
@@ -591,15 +607,15 @@ def main():
 
         clf = FTTransformerCOClassifier(
             horizon=h,
-            d_model=512,
+            d_model=512,             # 512 够用
             nhead=8,
-            num_layers=6,
-            dim_feedforward=2048,
-            dropout=0.1,
-            batch_size=128,             # 若显存不足，请减小
-            accumulation_steps=4,       # Effective batch size = 2048
-            lr=5e-4,
-            weight_decay=5e-3,
+            num_layers=6,            # 6 层 Transformer
+            dim_feedforward=2048,    # Feedforward 大小
+            dropout=0.15,            # 稍大一点，防过拟合
+            batch_size=2,            # 显存受限
+            accumulation_steps=16,   # effective batch = 2*16 = 32
+            lr=3e-4,                 # 稍低一点，训练稳定
+            weight_decay=1e-3,       # 轻微正则
             max_epochs=120,
             warmup_epochs=8,
             patience=20,
@@ -608,10 +624,11 @@ def main():
             focal_gamma=2.0,
             label_smoothing=None,
             seed=42,
-            device=None,                # 自动选择 cuda
-            num_workers=6,
+            device=None,             # 自动选择 GPU
+            num_workers=0,
             checkpoint_dir=OUTPUT_DIR / "checkpoints",
         )
+
 
         clf.load_data(DATA_PATH)
         clf.train()
