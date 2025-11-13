@@ -1,50 +1,51 @@
 {
   "horizon": 12,
   "model": "XGBoost",
-  "timestamp": "2025-11-13T17:28:49.453720",
+  "timestamp": "2025-11-13T08:55:49.475397",
+  "training_time_seconds": 38.368242502212524,
   "parameters": {
-    "n_estimators": 600,
-    "max_depth": 8,
-    "learning_rate": 0.05,
-    "subsample": 0.8,
-    "colsample_bytree": 0.8,
-    "min_child_weight": 2.0,
-    "gamma": 0.0,
-    "reg_lambda": 1.0,
-    "reg_alpha": 0.0,
-    "early_stopping_rounds": 50,
+    "n_estimators": 1000,
+    "max_depth": 5,
+    "learning_rate": 0.02,
+    "subsample": 0.6,
+    "colsample_bytree": 0.6,
+    "min_child_weight": 5.0,
+    "gamma": 0.2,
+    "reg_lambda": 3.0,
+    "reg_alpha": 1.0,
+    "early_stopping_rounds": 120,
     "random_state": 42,
-    "best_iteration": 47
+    "best_iteration": 73
   },
   "results": {
     "train": {
-      "accuracy": 0.966724286949006,
-      "f1_macro": 0.9654534818253476,
-      "f1_weighted": 0.9668524264087798,
+      "accuracy": 0.7918467300489772,
+      "f1_macro": 0.7855890792133172,
+      "f1_weighted": 0.7927283395845895,
       "per_class_f1": {
-        "low": 0.975317875841436,
-        "mid": 0.9499618999237999,
-        "high": 0.9710806697108066
+        "low": 0.836804240817872,
+        "mid": 0.7074898785425101,
+        "high": 0.8124731182795699
       }
     },
     "valid": {
-      "accuracy": 0.44047619047619047,
-      "f1_macro": 0.45066165344803116,
-      "f1_weighted": 0.43947506312057394,
+      "accuracy": 0.375,
+      "f1_macro": 0.399583198258695,
+      "f1_weighted": 0.34167570839756267,
       "per_class_f1": {
-        "low": 0.4411764705882353,
-        "mid": 0.4195804195804196,
-        "high": 0.49122807017543857
+        "low": 0.2923076923076923,
+        "mid": 0.3973509933774834,
+        "high": 0.509090909090909
       }
     },
     "test": {
-      "accuracy": 0.6064400715563506,
-      "f1_macro": 0.562422314227539,
-      "f1_weighted": 0.5985409991982673,
+      "accuracy": 0.6028622540250447,
+      "f1_macro": 0.5636059470480269,
+      "f1_weighted": 0.5991402881341278,
       "per_class_f1": {
-        "low": 0.7175572519083969,
-        "mid": 0.34949267192784667,
-        "high": 0.6202170188463735
+        "low": 0.7175170962651236,
+        "mid": 0.3625,
+        "high": 0.6108007448789572
       }
     }
   }

@@ -160,37 +160,16 @@ class XGBoostCOClassifier:
         sample_weight_train = self.y_train_encoded.map(class_weights).values
         sample_weight_valid = self.y_valid_encoded.map(class_weights).values
 
-        # Optional tqdm progress for boosting rounds via callback
-        callbacks = []
-        if tqdm is not None:
-            class TQDMCallback(xgb.callback.TrainingCallback):
-                def __init__(self, total, desc):
-                    self.total = total
-                    self.desc = desc
-                    self.pbar = None
-                def before_training(self, model):
-                    self.pbar = tqdm(total=self.total, desc=self.desc)
-                    return model
-                def after_iteration(self, model, epoch, evals_log):
-                    if self.pbar is not None:
-                        self.pbar.update(1)
-                    return False
-                def after_training(self, model):
-                    if self.pbar is not None:
-                        self.pbar.close()
-                    return model
-            callbacks.append(TQDMCallback(self.n_estimators, desc=f"XGB h+{self.horizon}"))
-
         start_time = time.time()
         # Train with early stopping and sample weights
+        # Note: callbacks parameter removed for XGBoost 2.x compatibility
         self.model.fit(
             self.X_train,
             self.y_train_encoded,
             eval_set=[(self.X_valid, self.y_valid_encoded)],
             sample_weight=sample_weight_train,
             sample_weight_eval_set=[sample_weight_valid],
-            verbose=False,
-            callbacks=callbacks
+            verbose=True  # Enable verbose to see training progress
         )
         self.training_time_seconds = float(time.time() - start_time)
         
@@ -426,30 +405,76 @@ class XGBoostCOClassifier:
 def main():
     """Main execution function"""
     # Configuration
-    DATA_PATH = Path("../data_artifacts/splits")
-    OUTPUT_DIR = Path("../classification-analysis/xgboost")
+    DATA_PATH = Path("/app/data_artifacts/splits")
+    OUTPUT_DIR = Path("/app/classification-analysis/xgboost")
     
     # Train models for all horizons
     horizons = [1, 6, 12, 24]
+    
+    # Horizon-specific hyperparameters (stronger regularization for longer horizons)
+    horizon_configs = {
+        1: {  # Short-term: more aggressive learning
+            'n_estimators': 600,
+            'max_depth': 8,
+            'learning_rate': 0.05,
+            'subsample': 0.8,
+            'colsample_bytree': 0.8,
+            'min_child_weight': 2.0,
+            'gamma': 0.0,
+            'reg_lambda': 1.0,
+            'reg_alpha': 0.0,
+            'early_stopping_rounds': 50
+        },
+        6: {  # Medium-term: moderate regularization
+            'n_estimators': 800,
+            'max_depth': 6,
+            'learning_rate': 0.03,
+            'subsample': 0.7,
+            'colsample_bytree': 0.7,
+            'min_child_weight': 3.0,
+            'gamma': 0.1,
+            'reg_lambda': 2.0,
+            'reg_alpha': 0.5,
+            'early_stopping_rounds': 100  # 增加早停轮数（原60）
+        },
+        12: {  # Long-term: strong regularization
+            'n_estimators': 1000,
+            'max_depth': 5,
+            'learning_rate': 0.02,
+            'subsample': 0.6,
+            'colsample_bytree': 0.6,
+            'min_child_weight': 5.0,
+            'gamma': 0.2,
+            'reg_lambda': 3.0,
+            'reg_alpha': 1.0,
+            'early_stopping_rounds': 120  # 增加早停轮数（原80）
+        },
+        24: {  # Very long-term: strongest regularization
+            'n_estimators': 1200,  # 增加树数量（原1000）
+            'max_depth': 4,
+            'learning_rate': 0.015,  # 降低学习率（原0.02）- 更细致的学习
+            'subsample': 0.6,
+            'colsample_bytree': 0.6,
+            'min_child_weight': 5.0,
+            'gamma': 0.3,
+            'reg_lambda': 4.0,
+            'reg_alpha': 1.5,
+            'early_stopping_rounds': 150  # 增加早停轮数（原80）
+        }
+    }
     
     for horizon in horizons:
         print(f"\n{'#'*70}")
         print(f"# HORIZON: {horizon} HOUR(S)")
         print(f"{'#'*70}")
         
+        # Get horizon-specific configuration
+        config = horizon_configs[horizon]
+        
         # Initialize and train model
         clf = XGBoostCOClassifier(
             horizon=horizon,
-            n_estimators=600,
-            max_depth=8,
-            learning_rate=0.05,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            min_child_weight=2.0,
-            gamma=0.0,
-            reg_lambda=1.0,
-            reg_alpha=0.0,
-            early_stopping_rounds=50,
+            **config,
             random_state=42
         )
         

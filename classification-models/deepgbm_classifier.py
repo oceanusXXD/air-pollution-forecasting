@@ -1,30 +1,36 @@
 """
-DeepGBM-like Classifier for CO Pollution Level Prediction
-Predicts CO concentration levels (low, mid, high) at different time horizons.
+DeepGBM-like Classifier for CO Pollution Level Prediction (效果优先版本)
 
-This implementation approximates DeepGBM by combining:
-- A GBDT component (XGBoost) to model complex interactions and produce leaf indices;
-- A Deep component (PyTorch MLP) that embeds hashed (tree,leaf) ids and fuses with scaled raw features.
-
-Dependencies: xgboost, torch, numpy, pandas, scikit-learn, matplotlib, seaborn
+依赖:
+    - xgboost
+    - torch
+    - numpy
+    - pandas
+    - scikit-learn
+    - matplotlib
+    - seaborn
+    - joblib
+    - pyarrow (for parquet)
 """
 
 from pathlib import Path
 from datetime import datetime
 import json
 import time
+import os
 import numpy as np
 import pandas as pd
 import xgboost as xgb
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
+from torch.cuda.amp import autocast, GradScaler
 
 try:
     from tqdm import tqdm
 except Exception:
     tqdm = None
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
     accuracy_score,
@@ -37,86 +43,149 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
 
-
+# ----------------------------- Helpers -----------------------------
 class LeafHasher:
-    def __init__(self, num_buckets: int = 200000):
-        self.num_buckets = num_buckets
+    """
+    将 (n_samples, n_trees) 的 leaf id 矩阵映射到 [0, num_buckets)
+    使用固定模大素数以保证稳定性
+    """
+    def __init__(self, num_buckets: int = 300000):
+        self.num_buckets = int(num_buckets)
+        self._prime = 2_147_483_647
 
     def transform(self, leaf_matrix: np.ndarray) -> np.ndarray:
         # leaf_matrix: (N, n_trees) int leaf ids
+        leaf_matrix = np.asarray(leaf_matrix, dtype=np.int64)
         n_trees = leaf_matrix.shape[1]
-        ids = (np.arange(n_trees, dtype=np.int64)[None, :] * 10_000_000 + leaf_matrix.astype(np.int64))
-        # Python's hash can vary; use a fixed hashing by modulo a large prime
-        hashed = (ids % (2_147_483_647)) % self.num_buckets
+        ids = (np.arange(n_trees, dtype=np.int64)[None, :] * 10_000_000 + leaf_matrix)
+        hashed = (ids % self._prime) % self.num_buckets
         return hashed.astype(np.int64)
 
 
+# ----------------------------- Deep component -----------------------------
 class DeepComponent(nn.Module):
-    def __init__(self, n_features: int, num_buckets: int = 200000, emb_dim: int = 128, hidden: tuple[int, ...] = (256, 128), dropout: float = 0.2):
+    """
+    EmbeddingBag + 深层 MLP (LayerNorm + Dropout)
+    """
+    def __init__(
+        self,
+        n_features: int,
+        num_buckets: int = 300000,
+        emb_dim: int = 512,
+        hidden: tuple[int, ...] = (1024, 512, 256),
+        dropout: float = 0.25,
+    ):
         super().__init__()
-        self.embedding = nn.Embedding(num_buckets, emb_dim)
+        self.num_buckets = int(num_buckets)
+        self.emb_dim = int(emb_dim)
+        self.embedding = nn.EmbeddingBag(self.num_buckets, self.emb_dim, mode="sum", sparse=False)
         self.dropout = nn.Dropout(dropout)
-        layers: list[nn.Module] = []
-        in_dim = n_features + emb_dim
+
+        in_dim = n_features + self.emb_dim
+        layers = []
+        prev = in_dim
         for h in hidden:
-            layers += [nn.Linear(in_dim, h), nn.ReLU(), nn.Dropout(dropout)]
-            in_dim = h
-        layers += [nn.Linear(in_dim, 3)]
+            layers.append(nn.Linear(prev, h))
+            layers.append(nn.ReLU(inplace=True))
+            layers.append(nn.LayerNorm(h))
+            layers.append(nn.Dropout(dropout))
+            prev = h
+        layers.append(nn.Linear(prev, 3))  # 3 classes
         self.mlp = nn.Sequential(*layers)
 
+        # 简单残差投影（当 in_dim == first hidden 维度时可直接残差）
+        self._in_dim = in_dim
+        self._out_dim = prev
+
     def forward(self, x_num: torch.Tensor, leaf_ids: torch.Tensor) -> torch.Tensor:
-        # x_num: (B,F), leaf_ids: (B,T)
-        emb = self.embedding(leaf_ids)  # (B,T,E)
-        emb = emb.sum(dim=1)  # pooled embedding (B,E)
+        """
+        x_num: (B, n_features)
+        leaf_ids: (B, n_trees_hashed)  long
+        """
+        B, T = leaf_ids.shape
+        flat = leaf_ids.reshape(-1)
+        offsets = torch.arange(0, B * T, T, dtype=torch.long, device=leaf_ids.device)
+        emb = self.embedding(flat, offsets)  # (B, emb_dim)
         feat = torch.cat([x_num, emb], dim=1)
         logits = self.mlp(feat)
         return logits
 
 
+# ----------------------------- Dataset -----------------------------
+class _DeepDS(Dataset):
+    def __init__(self, X: np.ndarray, leaf: np.ndarray, y: np.ndarray):
+        self.X = np.asarray(X, dtype=np.float32)
+        self.leaf = np.asarray(leaf, dtype=np.int64)
+        self.y = np.asarray(y, dtype=np.int64)
+
+    def __len__(self):
+        return self.X.shape[0]
+
+    def __getitem__(self, idx):
+        return (
+            torch.from_numpy(self.X[idx]).float(),
+            torch.from_numpy(self.leaf[idx]).long(),
+            torch.tensor(self.y[idx], dtype=torch.long),
+        )
+
+
+# ----------------------------- Main Model -----------------------------
 class DeepGBMCOClassifier:
     def __init__(
         self,
         horizon: int = 24,
         xgb_params: dict | None = None,
-        num_buckets: int = 200000,
-        emb_dim: int = 96,  # 减小嵌入维度 (原 128) - CPU 友好
-        hidden: tuple[int, ...] = (192, 96),  # 减小隐藏层 (原 256,128) - 更快训练
-        dropout: float = 0.25,  # 增加 dropout (原 0.2) - 防止小 batch 过拟合
-        batch_size: int = 32,  # CPU 推荐 batch size (原 512)
-        lr: float = 5e-4,  # 降低学习率 (原 1e-3) - 适应小 batch
-        weight_decay: float = 1e-3,  # 增加正则化 (原 1e-4) - 防止过拟合
-        max_epochs: int = 50,  # 增加 epochs (原 40) - 补偿小 batch 的慢收敛
-        patience: int = 10,  # 增加 patience (原 8) - 给更多时间收敛
+        num_buckets: int = 500_000,
+        emb_dim: int = 512,
+        hidden: tuple[int, ...] = (1024, 512, 256),
+        dropout: float = 0.25,
+        batch_size: int = 256,
+        lr: float = 2e-4,
+        weight_decay: float = 1e-3,
+        max_epochs: int = 120,
+        patience: int = 16,
+        min_delta: float = 0.001,
+        es_warmup_epochs: int = 5,
+        gradient_accumulation_steps: int = 1,
+        xgb_weight: float = 0.35,
         seed: int = 42,
         device: str | None = None,
+        checkpoint_dir: str | Path | None = None,
     ):
-        self.horizon = horizon
+        self.horizon = int(horizon)
+        self.num_buckets = int(num_buckets)
+        self.emb_dim = int(emb_dim)
+        self.hidden = tuple(hidden)
+        self.dropout = float(dropout)
+        self.batch_size = int(batch_size)
+        self.lr = float(lr)
+        self.weight_decay = float(weight_decay)
+        self.max_epochs = int(max_epochs)
+        self.patience = int(patience)
+        self.min_delta = float(min_delta)
+        self.es_warmup_epochs = int(es_warmup_epochs)
+        self.gradient_accumulation_steps = int(gradient_accumulation_steps)
+        self.xgb_weight = float(xgb_weight)
+        self.seed = int(seed)
+        self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+        self.checkpoint_dir = Path(checkpoint_dir) if checkpoint_dir is not None else Path("./checkpoints")
+        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+
         self.xgb_params = xgb_params or dict(
-            n_estimators=400,  # 减少树数量 (原 600) - CPU 训练更快
-            max_depth=6,  # 减小深度 (原 8) - 防止过拟合且更快
-            learning_rate=0.05,
+            n_estimators=800,
+            max_depth=10,
+            learning_rate=0.03,
             subsample=0.8,
             colsample_bytree=0.8,
-            min_child_weight=3.0,  # 增加 (原 2.0) - 更保守,防止过拟合
-            gamma=0.1,  # 增加 (原 0.0) - 更多正则化
-            reg_lambda=1.5,  # 增加 (原 1.0) - 更多 L2 正则化
-            reg_alpha=0.1,  # 增加 (原 0.0) - 添加 L1 正则化
+            min_child_weight=3.0,
+            gamma=0.1,
+            reg_lambda=2.0,
+            reg_alpha=0.2,
             tree_method="hist",
             eval_metric="mlogloss",
             n_jobs=-1,
-            random_state=42,
+            random_state=self.seed,
         )
-        self.num_buckets = num_buckets
-        self.emb_dim = emb_dim
-        self.hidden = hidden
-        self.dropout = dropout
-        self.batch_size = batch_size
-        self.lr = lr
-        self.weight_decay = weight_decay
-        self.max_epochs = max_epochs
-        self.patience = patience
-        self.seed = seed
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
         self.scaler = None
         self.xgb_model = None
@@ -128,17 +197,21 @@ class DeepGBMCOClassifier:
         self.label_mapping = {"low": 0, "mid": 1, "high": 2}
         self.rev_mapping = {v: k for k, v in self.label_mapping.items()}
 
-        torch.manual_seed(self.seed)
         np.random.seed(self.seed)
+        torch.manual_seed(self.seed)
 
     def _discretize_naive(self, s: pd.Series) -> pd.Series:
         return pd.cut(s, bins=[-np.inf, 1.5, 2.5, np.inf], labels=["low", "mid", "high"])
 
     def load_data(self, data_path: str | Path):
+        """
+        读取 data_path/h{horizon}/(train|valid|test).parquet
+        并对特征做 StandardScaler
+        """
         base_path = Path(data_path) / f"h{self.horizon}"
         print(f"\n{'='*60}\nLoading data for horizon h+{self.horizon}\n{'='*60}")
-        
         t_start = time.time()
+
         print("[1/7] Reading parquet files...")
         train = pd.read_parquet(base_path / "train.parquet")
         valid = pd.read_parquet(base_path / "valid.parquet")
@@ -149,11 +222,11 @@ class DeepGBMCOClassifier:
         drop_cols = [f"y_t+{self.horizon}", f"naive_yhat_t+{self.horizon}", target_col]
 
         print("[2/7] Preparing features and targets...")
-        X_train = train.drop(columns=drop_cols)
+        X_train = train.drop(columns=drop_cols, errors="ignore")
         y_train = train[target_col]
-        X_valid = valid.drop(columns=drop_cols)
+        X_valid = valid.drop(columns=drop_cols, errors="ignore")
         y_valid = valid[target_col]
-        X_test = test.drop(columns=drop_cols)
+        X_test = test.drop(columns=drop_cols, errors="ignore")
         y_test = test[target_col]
         self.feature_names = X_train.columns.tolist()
         print(f"      ✓ Features: {len(self.feature_names)}")
@@ -167,65 +240,51 @@ class DeepGBMCOClassifier:
         print(f"      ✓ Scaled in {time.time() - t_scale:.2f}s")
 
         print("[4/7] Encoding labels...")
-        y_train_enc = y_train.map(self.label_mapping).values
-        y_valid_enc = y_valid.map(self.label_mapping).values
-        y_test_enc = y_test.map(self.label_mapping).values
+        y_train_enc = y_train.map(self.label_mapping).astype("int64").to_numpy()
+        y_valid_enc = y_valid.map(self.label_mapping).astype("int64").to_numpy()
+        y_test_enc = y_test.map(self.label_mapping).astype("int64").to_numpy()
 
-        # class weights for imbalance -> sample weights for XGB
         print("[5/7] Computing class weights for imbalance handling...")
         cls_counts = pd.Series(y_train_enc).value_counts().sort_index()
         class_weights = (cls_counts.sum() / (len(cls_counts) * cls_counts)).to_dict()
         sw_train = pd.Series(y_train_enc).map(class_weights).values
         sw_valid = pd.Series(y_valid_enc).map(class_weights).values
 
-        # Train XGBoost base learner
-        print("[6/7] Training XGBoost base learner...")
-        print(f"      XGB params: n_est={self.xgb_params.get('n_estimators', 600)}, "
-              f"depth={self.xgb_params.get('max_depth', 8)}, lr={self.xgb_params.get('learning_rate', 0.05)}")
+        print("[6/7] Training XGBoost base learner (stronger config)...")
+        print(f"      XGB params: n_estimators={self.xgb_params.get('n_estimators')}, depth={self.xgb_params.get('max_depth')}, lr={self.xgb_params.get('learning_rate')}")
         t_xgb = time.time()
         self.xgb_model = xgb.XGBClassifier(**self.xgb_params)
-        
-        # Create callback for progress display
-        class XGBProgressCallback(xgb.callback.TrainingCallback):
-            def __init__(self, n_estimators):
-                self.n_estimators = n_estimators
-                self.pbar = None
-                
-            def before_training(self, model):
-                if tqdm is not None:
-                    self.pbar = tqdm(total=self.n_estimators, desc="      XGBoost Training", unit="tree")
-                return model
-                
-            def after_iteration(self, model, epoch, evals_log):
-                if self.pbar is not None:
-                    self.pbar.update(1)
-                return False
-                
-            def after_training(self, model):
-                if self.pbar is not None:
-                    self.pbar.close()
-                return model
-        
-        callbacks = [XGBProgressCallback(self.xgb_params.get('n_estimators', 600))]
-        
+        # 使用 early stopping（验证集上）
         self.xgb_model.fit(
             X_train_np,
             y_train_enc,
             eval_set=[(X_valid_np, y_valid_enc)],
             sample_weight=sw_train,
             sample_weight_eval_set=[sw_valid],
-            verbose=False,
-            callbacks=callbacks,
+            early_stopping_rounds=50,
+            verbose=True
         )
         xgb_time = time.time() - t_xgb
-        print(f"      ✓ XGBoost trained in {xgb_time:.2f}s (best iteration: {self.xgb_model.best_iteration})")
+        best_iter = getattr(self.xgb_model, 'best_iteration', None)
+        if best_iter is None:
+            print(f"      ✓ XGBoost trained in {xgb_time:.2f}s (early stopping: N/A)")
+        else:
+            print(f"      ✓ XGBoost trained in {xgb_time:.2f}s (best iteration: {best_iter})")
 
-        # Leaf indices for all splits
         print("[7/7] Extracting leaf indices and hashing...")
         t_leaf = time.time()
-        leaves_train = self.xgb_model.predict(X_train_np, pred_leaf=True)
-        leaves_valid = self.xgb_model.predict(X_valid_np, pred_leaf=True)
-        leaves_test = self.xgb_model.predict(X_test_np, pred_leaf=True)
+        try:
+            leaves_train = self.xgb_model.apply(X_train_np)
+            leaves_valid = self.xgb_model.apply(X_valid_np)
+            leaves_test = self.xgb_model.apply(X_test_np)
+        except Exception:
+            dtrain = xgb.DMatrix(X_train_np)
+            dvalid = xgb.DMatrix(X_valid_np)
+            dtest = xgb.DMatrix(X_test_np)
+            booster = self.xgb_model.get_booster()
+            leaves_train = booster.predict(dtrain, pred_leaf=True)
+            leaves_valid = booster.predict(dvalid, pred_leaf=True)
+            leaves_test = booster.predict(dtest, pred_leaf=True)
 
         hashed_train = self.leaf_hasher.transform(leaves_train)
         hashed_valid = self.leaf_hasher.transform(leaves_valid)
@@ -242,17 +301,15 @@ class DeepGBMCOClassifier:
         self.valid_leaf = hashed_valid
         self.test_leaf = hashed_test
 
-        # naive baseline
         naive_col = f"naive_yhat_t+{self.horizon}"
         if naive_col in train.columns and naive_col in valid.columns and naive_col in test.columns:
             self.naive_train = self._discretize_naive(train[naive_col])
             self.naive_valid = self._discretize_naive(valid[naive_col])
             self.naive_test = self._discretize_naive(test[naive_col])
         else:
-            print("      [WARN] naive_yhat column not found; falling back to shifted labels as naive baseline.")
-            self.naive_train = y_train.shift(self.horizon).bfill()
-            self.naive_valid = y_valid.shift(self.horizon).bfill()
-            self.naive_test = y_test.shift(self.horizon).bfill()
+            self.naive_train = None
+            self.naive_valid = None
+            self.naive_test = None
 
         print(f"\n✓ Data loaded: Train={self.train_X.shape}, Valid={self.valid_X.shape}, Test={self.test_X.shape}")
         print(f"  Total time: {time.time() - t_start:.2f}s")
@@ -260,8 +317,9 @@ class DeepGBMCOClassifier:
         print(pd.Series(self.train_y).value_counts(normalize=True).sort_index())
         return self
 
+    # ---------------- build deep ----------------
     def _build_deep(self):
-        print("\n[Building Deep component (MLP with leaf embeddings)...]")
+        print("\n[Building Deep component (large embedding + deep MLP)...]")
         t_build = time.time()
         self.deep_model = DeepComponent(
             n_features=self.train_X.shape[1],
@@ -276,12 +334,12 @@ class DeepGBMCOClassifier:
         print(f"  Total parameters: {total_params:,} | Trainable: {trainable_params:,}")
         print(f"  Device: {self.device}")
 
+    # ---------------- train deep ----------------
     def train(self):
         print(f"\n{'='*60}\nTraining DeepGBM Deep Component (h+{self.horizon})\n{'='*60}")
         self._build_deep()
 
         # class weights for CE
-        print("\nPreparing Deep training...")
         cls_counts = pd.Series(self.train_y).value_counts().sort_index()
         weights = cls_counts.sum() / (len(cls_counts) * cls_counts)
         class_weights = torch.tensor(weights.values, dtype=torch.float32, device=self.device)
@@ -289,85 +347,122 @@ class DeepGBMCOClassifier:
 
         train_ds = _DeepDS(self.train_X, self.train_leaf, self.train_y)
         valid_ds = _DeepDS(self.valid_X, self.valid_leaf, self.valid_y)
-        self.train_loader = DataLoader(train_ds, batch_size=self.batch_size, shuffle=True, num_workers=0)
-        self.valid_loader = DataLoader(valid_ds, batch_size=self.batch_size, shuffle=False, num_workers=0)
+        self.train_loader = DataLoader(train_ds, batch_size=self.batch_size, shuffle=True, num_workers=4, pin_memory=True)
+        self.valid_loader = DataLoader(valid_ds, batch_size=self.batch_size, shuffle=False, num_workers=4, pin_memory=True)
 
         print(f"  Batch size: {self.batch_size}, LR: {self.lr}, Weight decay: {self.weight_decay}")
         optimizer = torch.optim.AdamW(self.deep_model.parameters(), lr=self.lr, weight_decay=self.weight_decay)
         criterion = nn.CrossEntropyLoss(weight=class_weights)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode="max",
+            factor=0.5,
+            patience=4,
+            threshold=self.min_delta,
+            min_lr=1e-6,
+        )
 
+        scaler = GradScaler() if self.device.type == "cuda" else None
         best_f1 = -np.inf
         best_state = None
         patience_left = self.patience
 
         start_time = time.time()
-        print(f"\nStarting Deep training (max {self.max_epochs} epochs, patience={self.patience})...")
+        print(f"\nStarting Deep training (max {self.max_epochs} epochs, patience={self.patience}, warmup={self.es_warmup_epochs})...")
         epoch_iter = range(1, self.max_epochs + 1)
         if tqdm is not None:
             epoch_iter = tqdm(epoch_iter, desc=f"DeepGBM h+{self.horizon} Training", total=self.max_epochs, unit="epoch")
 
+        accumulation = max(1, self.gradient_accumulation_steps)
         for epoch in epoch_iter:
             epoch_start = time.time()
             self.deep_model.train()
             loss_sum = 0.0
             n_sum = 0
+            optimizer.zero_grad()
             inner = self.train_loader
             if tqdm is not None:
                 inner = tqdm(self.train_loader, desc=f"Epoch {epoch}/{self.max_epochs}", leave=False, unit="batch")
-            for xb, lb, yb in inner:
-                xb = xb.to(self.device)
-                lb = lb.to(self.device)
-                yb = yb.to(self.device)
-                optimizer.zero_grad(set_to_none=True)
-                logits = self.deep_model(xb, lb)
-                loss = criterion(logits, yb)
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.deep_model.parameters(), 1.0)
-                optimizer.step()
-                loss_sum += loss.item() * xb.size(0)
+            for step, (xb, lb, yb) in enumerate(inner):
+                xb = xb.to(self.device, non_blocking=True)
+                lb = lb.to(self.device, non_blocking=True)
+                yb = yb.to(self.device, non_blocking=True)
+
+                if scaler is not None:
+                    with autocast():
+                        logits = self.deep_model(xb, lb)
+                        loss = criterion(logits, yb) / accumulation
+                    scaler.scale(loss).backward()
+                else:
+                    logits = self.deep_model(xb, lb)
+                    loss = criterion(logits, yb) / accumulation
+                    loss.backward()
+
+                loss_sum += float(loss.item()) * xb.size(0) * accumulation
                 n_sum += xb.size(0)
 
+                if (step + 1) % accumulation == 0:
+                    if scaler is not None:
+                        scaler.unscale_(optimizer)
+                        torch.nn.utils.clip_grad_norm_(self.deep_model.parameters(), 1.0)
+                        scaler.step(optimizer)
+                        scaler.update()
+                    else:
+                        torch.nn.utils.clip_grad_norm_(self.deep_model.parameters(), 1.0)
+                        optimizer.step()
+                    optimizer.zero_grad()
+
+            # Validate
             val_metrics = self._eval_split(self.valid_X, self.valid_leaf, self.valid_y)
+            scheduler.step(val_metrics["f1_macro"])
             epoch_time = time.time() - epoch_start
-            
-            msg = (f"Epoch {epoch:02d}/{self.max_epochs} | loss={loss_sum/max(n_sum,1):.4f} | "
+
+            msg = (f"Epoch {epoch:02d}/{self.max_epochs} | loss={loss_sum/max(1, n_sum):.6f} | "
                   f"val_acc={val_metrics['accuracy']:.4f} | val_f1={val_metrics['f1_macro']:.4f} | {epoch_time:.1f}s")
-            
             if tqdm is not None and hasattr(epoch_iter, 'write'):
                 epoch_iter.write(msg)
             else:
                 print(msg)
 
-            if val_metrics["f1_macro"] > best_f1:
+            current_lr = optimizer.param_groups[0]['lr']
+            if tqdm is not None and hasattr(epoch_iter, 'write'):
+                epoch_iter.write(f"  Current LR: {current_lr:.6f}")
+            else:
+                print(f"  Current LR: {current_lr:.6f}")
+
+            # Warmup handling
+            if epoch <= self.es_warmup_epochs:
+                if val_metrics["f1_macro"] > best_f1:
+                    best_f1 = val_metrics["f1_macro"]
+                    best_state = {k: v.cpu().clone() for k, v in self.deep_model.state_dict().items()}
+                    print(f"  ✓ Warmup improve: best F1 -> {best_f1:.4f}")
+                continue
+
+            if val_metrics["f1_macro"] > best_f1 + self.min_delta:
                 best_f1 = val_metrics["f1_macro"]
                 best_state = {k: v.cpu().clone() for k, v in self.deep_model.state_dict().items()}
                 patience_left = self.patience
-                improvement_msg = f"  ✓ New best F1: {best_f1:.4f}"
-                if tqdm is not None and hasattr(epoch_iter, 'write'):
-                    epoch_iter.write(improvement_msg)
-                else:
-                    print(improvement_msg)
+                print(f"  ✓ New best F1: {best_f1:.4f} (patience reset)")
+                # save checkpoint
+                ckpt = {"state_dict": best_state, "epoch": epoch, "val_f1": float(best_f1)}
+                try:
+                    torch.save(ckpt, self.checkpoint_dir / f"deep_best_h{self.horizon}.pt")
+                except Exception:
+                    pass
             else:
                 patience_left -= 1
+                print(f"  No significant improvement (Δ<{self.min_delta:.4f}), patience {patience_left}/{self.patience}")
                 if patience_left <= 0:
-                    early_stop_msg = f"\n⚠ Early stopping at epoch {epoch} (no improvement for {self.patience} epochs)"
-                    if tqdm is not None and hasattr(epoch_iter, 'write'):
-                        epoch_iter.write(early_stop_msg)
-                    else:
-                        print(early_stop_msg)
+                    print(f"\n⚠ Early stopping at epoch {epoch} (no improvement >= {self.min_delta} for {self.patience} epochs)")
                     break
 
         if best_state is not None:
             self.deep_model.load_state_dict(best_state)
-        
         self.training_time_seconds = float(time.time() - start_time)
-        final_msg = f"\n✓ Deep training completed in {self.training_time_seconds:.2f}s ({self.training_time_seconds/60:.2f} min) | Best val F1: {best_f1:.4f}"
-        if tqdm is not None and hasattr(epoch_iter, 'write'):
-            epoch_iter.write(final_msg)
-        else:
-            print(final_msg)
+        print(f"\n✓ Deep training completed in {self.training_time_seconds:.2f}s ({self.training_time_seconds/60:.2f} min) | Best val F1: {best_f1:.4f}")
         return self
 
+    # ---------------- evaluation / inference ----------------
     @torch.no_grad()
     def _eval_split(self, X_np: np.ndarray, leaf_np: np.ndarray, y_np: np.ndarray):
         self.deep_model.eval()
@@ -385,10 +480,16 @@ class DeepGBMCOClassifier:
         prob_all = np.concatenate(prob_list, axis=0)
         pred_all = np.concatenate(pred_list, axis=0)
 
+        # XGBoost 概率（用于融合）
+        try:
+            xgb_proba = self.xgb_model.predict_proba(X_np)
+        except Exception:
+            xgb_proba = None
+
         acc = accuracy_score(y_np, pred_all)
         f1_macro = f1_score(y_np, pred_all, average="macro")
         f1_weighted = f1_score(y_np, pred_all, average="weighted")
-        precision, recall, f1_per, support = precision_recall_fscore_support(y_np, pred_all, average=None, labels=[0, 1, 2])
+        precision, recall, f1_per, support = precision_recall_fscore_support(y_np, pred_all, average=None, labels=[0,1,2])
         return {
             "accuracy": acc,
             "f1_macro": f1_macro,
@@ -399,6 +500,7 @@ class DeepGBMCOClassifier:
             "support": support,
             "pred": pred_all,
             "prob": prob_all,
+            "xgb_proba": xgb_proba,
         }
 
     def evaluate_all(self):
@@ -412,25 +514,34 @@ class DeepGBMCOClassifier:
         def decode(arr):
             return pd.Series(arr).map(self.rev_mapping)
 
-        def report(name: str, res, y_true_enc: np.ndarray, naive_series: pd.Series):
+        def fuse_probs(deep_prob, xgb_prob, weight_xgb=self.xgb_weight):
+            if xgb_prob is None:
+                return deep_prob
+            w = float(weight_xgb)
+            return (1 - w) * deep_prob + w * xgb_prob
+
+        def report(name: str, res, y_true_enc: np.ndarray, naive_series):
+            # 尝试融合
+            fused_pred = res["pred"]
+            if res.get("xgb_proba") is not None:
+                fused_prob = fuse_probs(res["prob"], res["xgb_proba"], weight_xgb=self.xgb_weight)
+                fused_pred = fused_prob.argmax(axis=1)
+
             y_true = decode(y_true_enc)
-            y_pred = decode(res["pred"])
-            print(f"\n{name.capitalize()} Results:\n" + "─" * 60)
-            print(f"Accuracy:         {res['accuracy']:.4f}")
-            print(f"F1-Score (Macro): {res['f1_macro']:.4f}")
-            print(f"F1-Score (Wtd):   {res['f1_weighted']:.4f}")
+            y_pred = decode(fused_pred)
+            print(f"\n{name.capitalize()} Results (融合 XGB weight={self.xgb_weight}):\n" + "─" * 60)
+            acc = accuracy_score(y_true, y_pred)
+            f1m = f1_score(y_true, y_pred, average="macro")
+            f1w = f1_score(y_true, y_pred, average="weighted")
+            print(f"Accuracy:         {acc:.4f}")
+            print(f"F1-Score (Macro): {f1m:.4f}")
+            print(f"F1-Score (Wtd):   {f1w:.4f}")
             if naive_series is not None:
                 naive_acc = accuracy_score(y_true, naive_series)
                 naive_f1 = f1_score(y_true, naive_series, average="macro")
                 print("\nNaive Baseline:")
-                print(f"  Accuracy:  {naive_acc:.4f} (Δ: {res['accuracy'] - naive_acc:+.4f})")
-                print(f"  F1-Macro:  {naive_f1:.4f} (Δ: {res['f1_macro'] - naive_f1:+.4f})")
-            print("\nPer-Class Metrics:")
-            for i, label in enumerate(["low", "mid", "high"]):
-                print(
-                    f"  {label:>4}: P={res['precision'][i]:.3f}, R={res['recall'][i]:.3f}, "
-                    f"F1={res['f1_per_class'][i]:.3f}, Support={int(res['support'][i])}"
-                )
+                print(f"  Accuracy:  {naive_acc:.4f} (Δ: {acc - naive_acc:+.4f})")
+                print(f"  F1-Macro:  {naive_f1:.4f} (Δ: {f1m - naive_f1:+.4f})")
             print("\nDetailed Classification Report:")
             print(classification_report(y_true, y_pred, digits=4))
 
@@ -439,8 +550,9 @@ class DeepGBMCOClassifier:
         report("test", self.results["test"], self.test_y, self.naive_test)
         return self
 
+    # ---------------- plotting ----------------
     def plot_confusion_matrices(self, save_path=None):
-        fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+        fig, axes = plt.subplots(1, 3, figsize=(21, 6))
         names = ["train", "valid", "test"]
         y_trues = [self.train_y, self.valid_y, self.test_y]
         for idx, name in enumerate(names):
@@ -459,26 +571,28 @@ class DeepGBMCOClassifier:
             )
             axes[idx].set_ylabel("True Label")
             axes[idx].set_xlabel("Predicted Label")
-        plt.suptitle(f"DeepGBM - Confusion Matrices (h+{self.horizon})", fontsize=14, fontweight="bold")
+        plt.suptitle(f"DeepGBM - Confusion Matrices (h+{self.horizon})", fontsize=16, fontweight="bold")
         plt.tight_layout()
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches="tight")
             print(f"\nConfusion matrices saved to: {save_path}")
         plt.show()
 
+    # ---------------- save ----------------
     def save_model(self, output_dir: str | Path):
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        # Save xgb
         joblib.dump(self.xgb_model, output_dir / f"deepgbm_xgb_h{self.horizon}.joblib")
-        # Save deep model
-        torch.save({"state_dict": self.deep_model.state_dict(), "params": {
-            "n_features": len(self.feature_names),
-            "num_buckets": self.num_buckets,
-            "emb_dim": self.emb_dim,
-            "hidden": self.hidden,
-            "dropout": self.dropout,
-        }}, output_dir / f"deepgbm_deep_h{self.horizon}.pt")
+        torch.save({
+            "state_dict": self.deep_model.state_dict(),
+            "params": {
+                "n_features": len(self.feature_names),
+                "num_buckets": self.num_buckets,
+                "emb_dim": self.emb_dim,
+                "hidden": self.hidden,
+                "dropout": self.dropout,
+            }
+        }, output_dir / f"deepgbm_deep_h{self.horizon}.pt")
         joblib.dump(self.scaler, output_dir / f"deepgbm_scaler_h{self.horizon}.joblib")
 
         results_summary = {
@@ -503,10 +617,9 @@ class DeepGBMCOClassifier:
                     "accuracy": float(res["accuracy"]),
                     "f1_macro": float(res["f1_macro"]),
                     "f1_weighted": float(res["f1_weighted"]),
-                    "per_class_f1": {lab: float(f1) for lab, f1 in zip(["low", "mid", "high"], res["f1_per_class"])},
-                }
-                for ds, res in self.results.items()
-            },
+                    "per_class_f1": {lab: float(f1) for lab, f1 in zip(["low", "mid", "high"], res["f1_per_class"])}
+                } for ds, res in self.results.items()
+            }
         }
         with open(output_dir / f"deepgbm_results_h{self.horizon}.json", "w") as f:
             json.dump(results_summary, f, indent=2)
@@ -514,44 +627,47 @@ class DeepGBMCOClassifier:
         return self
 
 
-class _DeepDS(Dataset):
-    def __init__(self, X: np.ndarray, leaf: np.ndarray, y: np.ndarray):
-        self.X = torch.from_numpy(X).float()
-        self.leaf = torch.from_numpy(leaf).long()
-        self.y = torch.from_numpy(y).long()
-
-    def __len__(self):
-        return self.X.shape[0]
-
-    def __getitem__(self, idx):
-        return self.X[idx], self.leaf[idx], self.y[idx]
-
-
+# ----------------------------- main -----------------------------
 def main():
-    DATA_PATH = Path("../data_artifacts/splits")
-    OUTPUT_DIR = Path("../classification-analysis/deepgbm")
+    DATA_PATH = Path("/app/data_artifacts/splits")  # 修改为你的数据路径
+    OUTPUT_DIR = Path("/app/classification-analysis/deepgbm")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     horizons = [1, 6, 12, 24]
 
     for h in horizons:
-        print("\n" + "#" * 70)
+        print("\n" + "#" * 80)
         print(f"# HORIZON: {h} HOUR(S)")
-        print("#" * 70)
+        print("#" * 80)
+
+        # 针对不同 horizon 的微调（可按需修改）
+        if h == 1:
+            cfg = dict(lr=1e-3, patience=16, min_delta=0.001, es_warmup_epochs=3, max_epochs=80)
+        elif h == 6:
+            cfg = dict(lr=5e-4, patience=18, min_delta=0.0015, es_warmup_epochs=4, max_epochs=100)
+        else:  # h == 12 or 24
+            cfg = dict(lr=3e-4, patience=20, min_delta=0.002, es_warmup_epochs=5, max_epochs=120)
 
         clf = DeepGBMCOClassifier(
             horizon=h,
-            # xgb params already set to a strong baseline; can be tuned further
-            num_buckets=200000,
-            emb_dim=128,
-            hidden=(256, 128),
-            dropout=0.2,
-            batch_size=16,
-            lr=1e-3,
-            weight_decay=1e-4,
-            max_epochs=40,
-            patience=8,
+            num_buckets=500_000,
+            emb_dim=512,
+            hidden=(1024, 512, 256),
+            dropout=0.25,
+            batch_size=256,
+            lr=cfg['lr'],
+            weight_decay=1e-3,
+            max_epochs=cfg['max_epochs'],
+            patience=cfg['patience'],
+            min_delta=cfg['min_delta'],
+            es_warmup_epochs=cfg['es_warmup_epochs'],
+            gradient_accumulation_steps=1,
+            xgb_weight=0.35,
             seed=42,
+            device=None,  # 自动选择 CUDA（若可用）
+            checkpoint_dir=OUTPUT_DIR / "checkpoints",
         )
 
+        # 加载数据并训练
         clf.load_data(DATA_PATH)
         clf.train()
         clf.evaluate_all()
@@ -561,9 +677,9 @@ def main():
         clf.plot_confusion_matrices(save_path=out_dir / f"confusion_matrices_h{h}.png")
         clf.save_model(out_dir)
 
-        print("\n" + "=" * 70)
+        print("\n" + "=" * 80)
         print(f"Completed horizon h+{h}")
-        print("=" * 70 + "\n")
+        print("=" * 80 + "\n")
 
 
 if __name__ == "__main__":

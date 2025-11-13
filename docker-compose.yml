@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Air Pollution Forecasting Classification Models
   air-pollution-classifier:
@@ -8,23 +6,23 @@ services:
       dockerfile: Dockerfile
     container_name: air-pollution-classifier
     
-    # Resource limits (adjust based on your system)
+    # Resource limits (adjusted for 2 CPU server)
     deploy:
       resources:
         limits:
-          cpus: '4.0'      # Use up to 4 CPU cores
-          memory: 8G       # 8GB memory limit
+          cpus: '1.8'      # Use up to 1.8 CPU cores (留 0.2 给系统)
+          memory: 4G       # 4GB memory limit
         reservations:
-          cpus: '2.0'      # Reserve at least 2 cores
-          memory: 4G       # Reserve at least 4GB
+          cpus: '1.0'      # Reserve at least 1 core
+          memory: 2G       # Reserve at least 2GB
     
     # Environment variables
     environment:
       - PYTHONUNBUFFERED=1
-      - OMP_NUM_THREADS=4           # OpenMP threads for numpy/sklearn
-      - MKL_NUM_THREADS=4           # Intel MKL threads
-      - NUMEXPR_NUM_THREADS=4       # NumExpr threads
-      - OPENBLAS_NUM_THREADS=4      # OpenBLAS threads
+      - OMP_NUM_THREADS=2           # OpenMP threads for numpy/sklearn
+      - MKL_NUM_THREADS=2           # Intel MKL threads
+      - NUMEXPR_NUM_THREADS=2       # NumExpr threads
+      - OPENBLAS_NUM_THREADS=2      # OpenBLAS threads
     
     # Volume mounts
     volumes:
@@ -36,9 +34,6 @@ services:
       
       # Mount models directory (for code changes without rebuild)
       - ./classification-models:/app/classification-models:ro
-      
-      # Optional: Mount notebooks if needed
-      # - ./notebooks:/app/notebooks:rw
     
     # Keep container running for interactive use
     stdin_open: true
@@ -48,34 +43,4 @@ services:
     network_mode: bridge
     
     # Restart policy
-    restart: unless-stopped
-
-  # Optional: Jupyter Notebook service for interactive development
-  jupyter:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: air-pollution-jupyter
-    
-    command: >
-      jupyter notebook
-      --ip=0.0.0.0
-      --port=8888
-      --no-browser
-      --allow-root
-      --NotebookApp.token=''
-      --NotebookApp.password=''
-    
-    ports:
-      - "8888:8888"
-    
-    volumes:
-      - ./data_artifacts:/app/data_artifacts:ro
-      - ./classification-analysis:/app/classification-analysis:rw
-      - ./classification-models:/app/classification-models:rw
-      - .:/app:rw
-    
-    environment:
-      - PYTHONUNBUFFERED=1
-    
     restart: unless-stopped
