@@ -232,6 +232,7 @@ class FTTransformerCOClassifier:
         self.model = None
         self.results = {}
         self.feature_names = None
+        self.history = None
         self.label_mapping = {"low": 0, "mid": 1, "high": 2}
         self.rev_mapping = {v: k for k, v in self.label_mapping.items()}
 
@@ -279,16 +280,13 @@ class FTTransformerCOClassifier:
 
         # DataLoader 配置：如果没有 GPU 则禁用 pin_memory 且强制 num_workers=0
         if self.device.type == "cuda":
-            # 在 GPU 上允许多进程 data loading，但不要超过系统CPU数-1
             max_workers = max(0, (os.cpu_count() or 1) - 1)
             workers = min(self.num_workers, max_workers) if self.num_workers > 0 else max_workers
             pin_memory = True
-            # 启用 cudnn benchmark 以加速
             torch.backends.cudnn.benchmark = True
         else:
             workers = 0
             pin_memory = False
-            # 在 CPU 环境下，限制 PyTorch 线程数以降低内存 / 竞争
             try:
                 torch.set_num_threads(1)
             except Exception:
@@ -510,20 +508,26 @@ class FTTransformerCOClassifier:
         return self
 
     def plot_results(self, save_path=None):
+        # 仍保留原有的综合图（loss / val_f1 / lr + 混淆矩阵）
+        if getattr(self, "history", None) is None:
+            print("[WARN] no history to plot in plot_results.")
         fig = plt.figure(figsize=(20, 10))
         gs = fig.add_gridspec(2, 4)
 
         ax_loss = fig.add_subplot(gs[0, 0])
-        ax_loss.plot(self.history['train_loss'], label='train loss')
+        if self.history is not None:
+            ax_loss.plot(self.history['train_loss'], label='train loss')
         ax_loss.set_title('Train Loss')
         ax_loss.set_xlabel('epoch')
 
         ax_f1 = fig.add_subplot(gs[0, 1])
-        ax_f1.plot(self.history['val_f1'], label='val f1', color='orange')
+        if self.history is not None:
+            ax_f1.plot(self.history['val_f1'], label='val f1', color='orange')
         ax_f1.set_title('Val F1')
 
         ax_lr = fig.add_subplot(gs[0, 2])
-        ax_lr.plot(self.history['lr'])
+        if self.history is not None:
+            ax_lr.plot(self.history['lr'])
         ax_lr.set_title('LR schedule')
         ax_lr.set_yscale('log')
 
@@ -544,6 +548,39 @@ class FTTransformerCOClassifier:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             print(f"Saved results to {save_path}")
+        plt.show()
+
+    def plot_training_history(self, save_path=None):
+        """单独绘制并保存训练曲线：train loss / val f1 / lr"""
+        if getattr(self, "history", None) is None:
+            print("[WARN] No training history available to plot.")
+            return
+        hist = self.history
+        epochs = list(range(1, len(hist['train_loss']) + 1))
+
+        fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+        axes[0].plot(epochs, hist['train_loss'], marker='o')
+        axes[0].set_title('Train Loss')
+        axes[0].set_xlabel('Epoch')
+        axes[0].grid(alpha=0.3)
+
+        axes[1].plot(epochs, hist['val_f1'], marker='o')
+        axes[1].set_title('Validation F1 (macro)')
+        axes[1].set_xlabel('Epoch')
+        axes[1].grid(alpha=0.3)
+
+        axes[2].plot(epochs, hist['lr'], marker='o')
+        axes[2].set_title('Learning Rate')
+        axes[2].set_xlabel('Epoch')
+        axes[2].set_yscale('log')
+        axes[2].grid(alpha=0.3)
+
+        plt.suptitle(f"FT-Transformer Training History (h+{self.horizon})", fontsize=14)
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"Training history saved to {save_path}")
         plt.show()
 
     def save_model(self, output_dir: str | Path):
@@ -587,6 +624,10 @@ class FTTransformerCOClassifier:
                 } for ds, res in self.results.items()
             }
         }
+        # 如果有 history，也写入 summary
+        if getattr(self, "history", None) is not None:
+            summary["history"] = self.history
+
         with open(output_dir / f"ftt_effect_results_h{self.horizon}.json", "w") as f:
             json.dump(summary, f, indent=2)
         print(f"Model & results saved to: {output_dir}")
@@ -636,7 +677,11 @@ def main():
 
         out_dir = OUTPUT_DIR / f"h{h}"
         out_dir.mkdir(parents=True, exist_ok=True)
+        # 保存综合结果图（包含混淆矩阵等）
         clf.plot_results(save_path=out_dir / f"results_h{h}.png")
+        # **单独保存训练曲线**
+        clf.plot_training_history(save_path=out_dir / f"training_history_h{h}.png")
+        # 保存模型与历史记录
         clf.save_model(out_dir)
 
         print("\n" + "=" * 80)

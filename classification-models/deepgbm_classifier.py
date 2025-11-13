@@ -188,6 +188,7 @@ class DeepGBMCOClassifier:
         self.leaf_hasher = LeafHasher(num_buckets=self.num_buckets)
         self.results = {}
         self.feature_names = None
+        self.history = None  # will hold training history dict
 
         self.label_mapping = {"low": 0, "mid": 1, "high": 2}
         self.rev_mapping = {v: k for k, v in self.label_mapping.items()}
@@ -406,6 +407,9 @@ class DeepGBMCOClassifier:
         best_state = None
         patience_left = self.patience
 
+        # history 收集
+        history = {'train_loss': [], 'val_f1': [], 'lr': []}
+
         start_time = time.time()
         print(f"\nStarting Deep training (max {self.max_epochs} epochs, patience={self.patience}, warmup={self.es_warmup_epochs})...")
         epoch_iter = range(1, self.max_epochs + 1)
@@ -456,14 +460,21 @@ class DeepGBMCOClassifier:
             scheduler.step(val_metrics["f1_macro"])
             epoch_time = time.time() - epoch_start
 
-            msg = (f"Epoch {epoch:02d}/{self.max_epochs} | loss={loss_sum/max(1, n_sum):.6f} | "
+            avg_loss = (loss_sum / max(1, n_sum))
+            current_lr = optimizer.param_groups[0]['lr']
+
+            # 更新 history
+            history['train_loss'].append(float(avg_loss))
+            history['val_f1'].append(float(val_metrics['f1_macro']))
+            history['lr'].append(float(current_lr))
+
+            msg = (f"Epoch {epoch:02d}/{self.max_epochs} | loss={avg_loss:.6f} | "
                   f"val_acc={val_metrics['accuracy']:.4f} | val_f1={val_metrics['f1_macro']:.4f} | {epoch_time:.1f}s")
             if tqdm is not None and hasattr(epoch_iter, 'write'):
                 epoch_iter.write(msg)
             else:
                 print(msg)
 
-            current_lr = optimizer.param_groups[0]['lr']
             if tqdm is not None and hasattr(epoch_iter, 'write'):
                 epoch_iter.write(f"  Current LR: {current_lr:.6f}")
             else:
@@ -498,6 +509,7 @@ class DeepGBMCOClassifier:
         if best_state is not None:
             self.deep_model.load_state_dict(best_state)
         self.training_time_seconds = float(time.time() - start_time)
+        self.history = history  # 保存历史
         print(f"\n✓ Deep training completed in {self.training_time_seconds:.2f}s ({self.training_time_seconds/60:.2f} min) | Best val F1: {best_f1:.4f}")
         return self
 
@@ -629,6 +641,42 @@ class DeepGBMCOClassifier:
             print(f"\nConfusion matrices saved to: {save_path}")
         plt.show()
 
+    def plot_training_history(self, save_path=None):
+        """绘制训练曲线（train loss / val F1 / lr）并保存"""
+        if self.history is None:
+            print("[WARN] No training history to plot.")
+            return
+        hist = self.history
+        epochs = list(range(1, len(hist['train_loss']) + 1))
+
+        fig = plt.figure(figsize=(14, 5))
+        ax1 = fig.add_subplot(1, 3, 1)
+        ax1.plot(epochs, hist['train_loss'], marker='o')
+        ax1.set_title('Train Loss')
+        ax1.set_xlabel('Epoch')
+        ax1.grid(alpha=0.3)
+
+        ax2 = fig.add_subplot(1, 3, 2)
+        ax2.plot(epochs, hist['val_f1'], marker='o', color='orange')
+        ax2.set_title('Validation F1 (macro)')
+        ax2.set_xlabel('Epoch')
+        ax2.grid(alpha=0.3)
+
+        ax3 = fig.add_subplot(1, 3, 3)
+        ax3.plot(epochs, hist['lr'], marker='o', color='green')
+        ax3.set_title('Learning Rate')
+        ax3.set_xlabel('Epoch')
+        ax3.set_yscale('log')
+        ax3.grid(alpha=0.3)
+
+        plt.suptitle(f"DeepGBM Training History (h+{self.horizon})", fontsize=14, fontweight='bold')
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"\nTraining history saved to: {save_path}")
+        plt.show()
+
     def save_model(self, output_dir: str | Path):
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -650,7 +698,8 @@ class DeepGBMCOClassifier:
                 "emb_dim": self.emb_dim,
                 "hidden": self.hidden,
                 "dropout": self.dropout,
-            }
+            },
+            "history": self.history,
         }, output_dir / f"deepgbm_deep_h{self.horizon}.pt")
         joblib.dump(self.scaler, output_dir / f"deepgbm_scaler_h{self.horizon}.joblib")
 
@@ -680,6 +729,10 @@ class DeepGBMCOClassifier:
                 } for ds, res in self.results.items()
             }
         }
+        # 如果存在 history，一并写入 summary
+        if self.history is not None:
+            results_summary['history'] = self.history
+
         with open(output_dir / f"deepgbm_results_h{self.horizon}.json", "w") as f:
             json.dump(results_summary, f, indent=2)
         print(f"Models & results saved to: {output_dir}")
@@ -733,7 +786,11 @@ def main():
 
         out_dir = OUTPUT_DIR / f"h{h}"
         out_dir.mkdir(parents=True, exist_ok=True)
+        # 保存混淆矩阵
         clf.plot_confusion_matrices(save_path=out_dir / f"confusion_matrices_h{h}.png")
+        # 保存训练曲线（和 baseline 一样）
+        clf.plot_training_history(save_path=out_dir / f"training_history_h{h}.png")
+        # 保存模型与结果（history 已包含于保存文件）
         clf.save_model(out_dir)
 
         print("\n" + "=" * 80)
