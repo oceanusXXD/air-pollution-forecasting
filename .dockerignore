@@ -1,0 +1,61 @@
+# Docker 镜像构建排除文件
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+.gitignore
+
+# Project specific
+classification-analysis/
+*.pkl
+*.pt
+*.pth
+*.ckpt
+
+# Logs
+*.log
+
+# Large data files (already mounted as volume)
+*.csv
+*.parquet
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Test files
+test_*.py
+*_test.py
+
+# Temporary files
+*.tmp
+*.bak
+.cache/
