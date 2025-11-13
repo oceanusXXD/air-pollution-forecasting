@@ -1,0 +1,51 @@
+{
+  "horizon": 6,
+  "model": "XGBoost",
+  "timestamp": "2025-11-13T17:27:47.464466",
+  "parameters": {
+    "n_estimators": 600,
+    "max_depth": 8,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 2.0,
+    "gamma": 0.0,
+    "reg_lambda": 1.0,
+    "reg_alpha": 0.0,
+    "early_stopping_rounds": 50,
+    "random_state": 42,
+    "best_iteration": 158
+  },
+  "results": {
+    "train": {
+      "accuracy": 0.9988475943532124,
+      "f1_macro": 0.9988068371080004,
+      "f1_weighted": 0.9988478534605002,
+      "per_class_f1": {
+        "low": 0.9987082487543827,
+        "mid": 0.9979296066252588,
+        "high": 0.9997826559443599
+      }
+    },
+    "valid": {
+      "accuracy": 0.6071428571428571,
+      "f1_macro": 0.5964520676691729,
+      "f1_weighted": 0.6232748444772646,
+      "per_class_f1": {
+        "low": 0.6710526315789473,
+        "mid": 0.546875,
+        "high": 0.5714285714285714
+      }
+    },
+    "test": {
+      "accuracy": 0.6199821587867975,
+      "f1_macro": 0.5686796791871864,
+      "f1_weighted": 0.6123080732844325,
+      "per_class_f1": {
+        "low": 0.7528029898558463,
+        "mid": 0.3029661016949153,
+        "high": 0.6502699460107978
+      }
+    }
+  }
+}

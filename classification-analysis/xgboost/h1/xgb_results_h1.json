@@ -1,0 +1,51 @@
+{
+  "horizon": 1,
+  "model": "XGBoost",
+  "timestamp": "2025-11-13T17:26:03.164945",
+  "parameters": {
+    "n_estimators": 600,
+    "max_depth": 8,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 2.0,
+    "gamma": 0.0,
+    "reg_lambda": 1.0,
+    "reg_alpha": 0.0,
+    "early_stopping_rounds": 50,
+    "random_state": 42,
+    "best_iteration": 102
+  },
+  "results": {
+    "train": {
+      "accuracy": 0.9959665802362432,
+      "f1_macro": 0.9958127502650407,
+      "f1_weighted": 0.9959732660995052,
+      "per_class_f1": {
+        "low": 0.9963045084996305,
+        "mid": 0.9933161953727506,
+        "high": 0.9978175469227412
+      }
+    },
+    "valid": {
+      "accuracy": 0.8809523809523809,
+      "f1_macro": 0.8656611734471876,
+      "f1_weighted": 0.8826192641702465,
+      "per_class_f1": {
+        "low": 0.9214659685863874,
+        "mid": 0.8118811881188119,
+        "high": 0.8636363636363636
+      }
+    },
+    "test": {
+      "accuracy": 0.7979528259902091,
+      "f1_macro": 0.7781709396036165,
+      "f1_weighted": 0.8018683938539308,
+      "per_class_f1": {
+        "low": 0.8811050814010853,
+        "mid": 0.6436974789915967,
+        "high": 0.8097102584181676
+      }
+    }
+  }
+}
