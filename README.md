@@ -160,16 +160,4 @@ data_artifacts/splits/
 
 ## 📝 License
 
-This project is part of academic research. Please cite appropriately if used.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please ensure:
-- Code follows existing style
-- Models are documented
-- Tests pass locally
-- Docker builds successfully
-
-## 📧 Contact
-
-For questions or issues, please open a GitHub issue or contact the maintainer.
+Only for unsw 9417 team project use
