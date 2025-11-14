@@ -56,7 +56,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -64,7 +63,7 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
-
+*.joblib
 # Scrapy stuff:
 .scrapy
 
@@ -207,4 +206,8 @@ marimo/_lsp/
 __marimo__/
 
 data_artifacts/
-classification-analysis/
+*.pt
+*.model
+*.pth
+*.ckpt
+*.joblib

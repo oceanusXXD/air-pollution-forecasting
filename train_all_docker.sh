@@ -43,17 +43,17 @@ echo "✅ XGBoost training completed"
 # ---------------------------
 # Step 2: FT-Transformer
 # ---------------------------
-echo ""
-echo "[3/4] Training FT-Transformer classifier..."
-docker compose run --rm air-pollution-classifier \
-    python classification-models/ft_transformer_classifier.py > classification-analysis/ft_transformer_training.log 2>&1
-
-if [ $? -ne 0 ]; then
-    echo "❌ FT-Transformer training failed! Check classification-analysis/ft_transformer_training.log"
-    exit 1
-else
-    echo "✅ FT-Transformer training completed"
-fi
+#echo ""
+#echo "[3/4] Training FT-Transformer classifier..."
+#docker compose run --rm air-pollution-classifier \
+#    python classification-models/ft_transformer_classifier.py > classification-analysis/ft_transformer_training.log 2>&1
+#
+#if [ $? -ne 0 ]; then
+#    echo "❌ FT-Transformer training failed! Check classification-analysis/ft_transformer_training.log"
+#    exit 1
+#else
+#    echo "✅ FT-Transformer training completed"
+#fi
 
 # ---------------------------
 # Step 3: DeepGBM

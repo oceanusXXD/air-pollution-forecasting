@@ -1,0 +1,1850 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+################################################################################
+# HORIZON: 1 HOUR(S)
+################################################################################
+
+============================================================
+Loading data for horizon h+1
+============================================================
+Features: 823
+
+[Train XGBoost]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:37:51] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+[0]	train-mlogloss:1.06745	valid-mlogloss:1.07058
+[1]	train-mlogloss:1.03773	valid-mlogloss:1.04742
+[2]	train-mlogloss:1.00858	valid-mlogloss:1.01886
+[3]	train-mlogloss:0.98099	valid-mlogloss:0.99490
+[4]	train-mlogloss:0.95542	valid-mlogloss:0.97359
+[5]	train-mlogloss:0.93032	valid-mlogloss:0.95347
+[6]	train-mlogloss:0.90597	valid-mlogloss:0.93360
+[7]	train-mlogloss:0.88226	valid-mlogloss:0.91408
+[8]	train-mlogloss:0.85994	valid-mlogloss:0.89917
+[9]	train-mlogloss:0.83891	valid-mlogloss:0.87848
+[10]	train-mlogloss:0.81831	valid-mlogloss:0.86342
+[11]	train-mlogloss:0.79817	valid-mlogloss:0.84589
+[12]	train-mlogloss:0.77888	valid-mlogloss:0.83081
+[13]	train-mlogloss:0.75999	valid-mlogloss:0.81493
+[14]	train-mlogloss:0.74204	valid-mlogloss:0.79951
+[15]	train-mlogloss:0.72495	valid-mlogloss:0.78477
+[16]	train-mlogloss:0.70803	valid-mlogloss:0.77017
+[17]	train-mlogloss:0.69186	valid-mlogloss:0.75915
+[18]	train-mlogloss:0.67652	valid-mlogloss:0.74477
+[19]	train-mlogloss:0.66123	valid-mlogloss:0.73146
+[20]	train-mlogloss:0.64692	valid-mlogloss:0.71879
+[21]	train-mlogloss:0.63276	valid-mlogloss:0.70721
+[22]	train-mlogloss:0.61886	valid-mlogloss:0.69613
+[23]	train-mlogloss:0.60511	valid-mlogloss:0.68641
+[24]	train-mlogloss:0.59202	valid-mlogloss:0.67652
+[25]	train-mlogloss:0.57958	valid-mlogloss:0.66337
+[26]	train-mlogloss:0.56750	valid-mlogloss:0.65563
+[27]	train-mlogloss:0.55572	valid-mlogloss:0.64750
+[28]	train-mlogloss:0.54465	valid-mlogloss:0.63999
+[29]	train-mlogloss:0.53389	valid-mlogloss:0.63155
+[30]	train-mlogloss:0.52308	valid-mlogloss:0.62326
+[31]	train-mlogloss:0.51223	valid-mlogloss:0.61479
+[32]	train-mlogloss:0.50204	valid-mlogloss:0.60595
+[33]	train-mlogloss:0.49236	valid-mlogloss:0.59769
+[34]	train-mlogloss:0.48262	valid-mlogloss:0.58830
+[35]	train-mlogloss:0.47319	valid-mlogloss:0.58130
+[36]	train-mlogloss:0.46392	valid-mlogloss:0.57388
+[37]	train-mlogloss:0.45504	valid-mlogloss:0.56779
+[38]	train-mlogloss:0.44652	valid-mlogloss:0.56043
+[39]	train-mlogloss:0.43832	valid-mlogloss:0.55476
+[40]	train-mlogloss:0.43042	valid-mlogloss:0.54803
+[41]	train-mlogloss:0.42254	valid-mlogloss:0.54200
+[42]	train-mlogloss:0.41500	valid-mlogloss:0.53497
+[43]	train-mlogloss:0.40743	valid-mlogloss:0.53194
+[44]	train-mlogloss:0.39994	valid-mlogloss:0.52914
+[45]	train-mlogloss:0.39292	valid-mlogloss:0.52406
+[46]	train-mlogloss:0.38589	valid-mlogloss:0.51887
+[47]	train-mlogloss:0.37924	valid-mlogloss:0.51363
+[48]	train-mlogloss:0.37282	valid-mlogloss:0.51093
+[49]	train-mlogloss:0.36639	valid-mlogloss:0.50512
+[50]	train-mlogloss:0.36002	valid-mlogloss:0.50040
+[51]	train-mlogloss:0.35397	valid-mlogloss:0.49421
+[52]	train-mlogloss:0.34801	valid-mlogloss:0.48998
+[53]	train-mlogloss:0.34213	valid-mlogloss:0.48578
+[54]	train-mlogloss:0.33655	valid-mlogloss:0.48269
+[55]	train-mlogloss:0.33122	valid-mlogloss:0.47836
+[56]	train-mlogloss:0.32594	valid-mlogloss:0.47604
+[57]	train-mlogloss:0.32062	valid-mlogloss:0.47175
+[58]	train-mlogloss:0.31547	valid-mlogloss:0.46922
+[59]	train-mlogloss:0.31044	valid-mlogloss:0.46677
+[60]	train-mlogloss:0.30553	valid-mlogloss:0.46123
+[61]	train-mlogloss:0.30072	valid-mlogloss:0.45717
+[62]	train-mlogloss:0.29591	valid-mlogloss:0.45460
+[63]	train-mlogloss:0.29128	valid-mlogloss:0.45170
+[64]	train-mlogloss:0.28681	valid-mlogloss:0.44944
+[65]	train-mlogloss:0.28238	valid-mlogloss:0.44599
+[66]	train-mlogloss:0.27809	valid-mlogloss:0.44322
+[67]	train-mlogloss:0.27397	valid-mlogloss:0.44162
+[68]	train-mlogloss:0.26981	valid-mlogloss:0.43945
+[69]	train-mlogloss:0.26574	valid-mlogloss:0.43716
+[70]	train-mlogloss:0.26181	valid-mlogloss:0.43400
+[71]	train-mlogloss:0.25814	valid-mlogloss:0.43154
+[72]	train-mlogloss:0.25434	valid-mlogloss:0.42985
+[73]	train-mlogloss:0.25074	valid-mlogloss:0.42864
+[74]	train-mlogloss:0.24708	valid-mlogloss:0.42639
+[75]	train-mlogloss:0.24364	valid-mlogloss:0.42466
+[76]	train-mlogloss:0.24016	valid-mlogloss:0.42265
+[77]	train-mlogloss:0.23692	valid-mlogloss:0.42019
+[78]	train-mlogloss:0.23368	valid-mlogloss:0.41837
+[79]	train-mlogloss:0.23064	valid-mlogloss:0.41692
+[80]	train-mlogloss:0.22749	valid-mlogloss:0.41413
+[81]	train-mlogloss:0.22460	valid-mlogloss:0.41183
+[82]	train-mlogloss:0.22174	valid-mlogloss:0.40941
+[83]	train-mlogloss:0.21877	valid-mlogloss:0.40724
+[84]	train-mlogloss:0.21574	valid-mlogloss:0.40566
+[85]	train-mlogloss:0.21296	valid-mlogloss:0.40491
+[86]	train-mlogloss:0.21013	valid-mlogloss:0.40366
+[87]	train-mlogloss:0.20762	valid-mlogloss:0.40259
+[88]	train-mlogloss:0.20495	valid-mlogloss:0.40081
+[89]	train-mlogloss:0.20248	valid-mlogloss:0.39981
+[90]	train-mlogloss:0.20011	valid-mlogloss:0.39873
+[91]	train-mlogloss:0.19759	valid-mlogloss:0.39872
+[92]	train-mlogloss:0.19514	valid-mlogloss:0.39712
+[93]	train-mlogloss:0.19278	valid-mlogloss:0.39459
+[94]	train-mlogloss:0.19058	valid-mlogloss:0.39397
+[95]	train-mlogloss:0.18820	valid-mlogloss:0.39182
+[96]	train-mlogloss:0.18595	valid-mlogloss:0.39009
+[97]	train-mlogloss:0.18380	valid-mlogloss:0.39041
+[98]	train-mlogloss:0.18148	valid-mlogloss:0.38913
+[99]	train-mlogloss:0.17949	valid-mlogloss:0.38808
+[100]	train-mlogloss:0.17755	valid-mlogloss:0.38731
+[101]	train-mlogloss:0.17551	valid-mlogloss:0.38583
+[102]	train-mlogloss:0.17365	valid-mlogloss:0.38462
+[103]	train-mlogloss:0.17167	valid-mlogloss:0.38349
+[104]	train-mlogloss:0.16997	valid-mlogloss:0.38318
+[105]	train-mlogloss:0.16814	valid-mlogloss:0.38048
+[106]	train-mlogloss:0.16612	valid-mlogloss:0.37879
+[107]	train-mlogloss:0.16426	valid-mlogloss:0.37638
+[108]	train-mlogloss:0.16238	valid-mlogloss:0.37554
+[109]	train-mlogloss:0.16070	valid-mlogloss:0.37439
+[110]	train-mlogloss:0.15892	valid-mlogloss:0.37354
+[111]	train-mlogloss:0.15736	valid-mlogloss:0.37263
+[112]	train-mlogloss:0.15580	valid-mlogloss:0.37258
+[113]	train-mlogloss:0.15413	valid-mlogloss:0.37049
+[114]	train-mlogloss:0.15247	valid-mlogloss:0.36983
+[115]	train-mlogloss:0.15083	valid-mlogloss:0.36903
+[116]	train-mlogloss:0.14939	valid-mlogloss:0.36827
+[117]	train-mlogloss:0.14770	valid-mlogloss:0.36851
+[118]	train-mlogloss:0.14635	valid-mlogloss:0.36783
+[119]	train-mlogloss:0.14488	valid-mlogloss:0.36776
+[120]	train-mlogloss:0.14348	valid-mlogloss:0.36652
+[121]	train-mlogloss:0.14214	valid-mlogloss:0.36541
+[122]	train-mlogloss:0.14069	valid-mlogloss:0.36482
+[123]	train-mlogloss:0.13932	valid-mlogloss:0.36463
+[124]	train-mlogloss:0.13811	valid-mlogloss:0.36385
+[125]	train-mlogloss:0.13686	valid-mlogloss:0.36322
+[126]	train-mlogloss:0.13550	valid-mlogloss:0.36326
+[127]	train-mlogloss:0.13434	valid-mlogloss:0.36374
+[128]	train-mlogloss:0.13311	valid-mlogloss:0.36301
+[129]	train-mlogloss:0.13183	valid-mlogloss:0.36235
+[130]	train-mlogloss:0.13060	valid-mlogloss:0.36167
+[131]	train-mlogloss:0.12923	valid-mlogloss:0.36108
+[132]	train-mlogloss:0.12809	valid-mlogloss:0.36075
+[133]	train-mlogloss:0.12688	valid-mlogloss:0.35987
+[134]	train-mlogloss:0.12577	valid-mlogloss:0.35885
+[135]	train-mlogloss:0.12455	valid-mlogloss:0.35846
+[136]	train-mlogloss:0.12353	valid-mlogloss:0.35734
+[137]	train-mlogloss:0.12240	valid-mlogloss:0.35682
+[138]	train-mlogloss:0.12127	valid-mlogloss:0.35586
+[139]	train-mlogloss:0.12022	valid-mlogloss:0.35515
+[140]	train-mlogloss:0.11927	valid-mlogloss:0.35447
+[141]	train-mlogloss:0.11816	valid-mlogloss:0.35339
+[142]	train-mlogloss:0.11705	valid-mlogloss:0.35354
+[143]	train-mlogloss:0.11598	valid-mlogloss:0.35285
+[144]	train-mlogloss:0.11499	valid-mlogloss:0.35228
+[145]	train-mlogloss:0.11400	valid-mlogloss:0.35228
+[146]	train-mlogloss:0.11310	valid-mlogloss:0.35139
+[147]	train-mlogloss:0.11209	valid-mlogloss:0.35109
+[148]	train-mlogloss:0.11109	valid-mlogloss:0.35021
+[149]	train-mlogloss:0.11018	valid-mlogloss:0.35049
+[150]	train-mlogloss:0.10926	valid-mlogloss:0.35004
+[151]	train-mlogloss:0.10837	valid-mlogloss:0.35025
+[152]	train-mlogloss:0.10747	valid-mlogloss:0.35024
+[153]	train-mlogloss:0.10655	valid-mlogloss:0.34984
+[154]	train-mlogloss:0.10566	valid-mlogloss:0.34994
+[155]	train-mlogloss:0.10475	valid-mlogloss:0.34997
+[156]	train-mlogloss:0.10392	valid-mlogloss:0.34950
+[157]	train-mlogloss:0.10312	valid-mlogloss:0.34947
+[158]	train-mlogloss:0.10241	valid-mlogloss:0.34885
+[159]	train-mlogloss:0.10159	valid-mlogloss:0.34889
+[160]	train-mlogloss:0.10072	valid-mlogloss:0.34852
+[161]	train-mlogloss:0.09991	valid-mlogloss:0.34817
+[162]	train-mlogloss:0.09917	valid-mlogloss:0.34822
+[163]	train-mlogloss:0.09855	valid-mlogloss:0.34835
+[164]	train-mlogloss:0.09777	valid-mlogloss:0.34766
+[165]	train-mlogloss:0.09697	valid-mlogloss:0.34778
+[166]	train-mlogloss:0.09622	valid-mlogloss:0.34790
+[167]	train-mlogloss:0.09538	valid-mlogloss:0.34781
+[168]	train-mlogloss:0.09454	valid-mlogloss:0.34730
+[169]	train-mlogloss:0.09374	valid-mlogloss:0.34710
+[170]	train-mlogloss:0.09293	valid-mlogloss:0.34702
+[171]	train-mlogloss:0.09228	valid-mlogloss:0.34716
+[172]	train-mlogloss:0.09150	valid-mlogloss:0.34752
+[173]	train-mlogloss:0.09081	valid-mlogloss:0.34731
+[174]	train-mlogloss:0.09009	valid-mlogloss:0.34671
+[175]	train-mlogloss:0.08938	valid-mlogloss:0.34662
+[176]	train-mlogloss:0.08866	valid-mlogloss:0.34652
+[177]	train-mlogloss:0.08802	valid-mlogloss:0.34603
+[178]	train-mlogloss:0.08732	valid-mlogloss:0.34650
+[179]	train-mlogloss:0.08664	valid-mlogloss:0.34633
+[180]	train-mlogloss:0.08606	valid-mlogloss:0.34590
+[181]	train-mlogloss:0.08539	valid-mlogloss:0.34581
+[182]	train-mlogloss:0.08480	valid-mlogloss:0.34504
+[183]	train-mlogloss:0.08423	valid-mlogloss:0.34505
+[184]	train-mlogloss:0.08358	valid-mlogloss:0.34505
+[185]	train-mlogloss:0.08293	valid-mlogloss:0.34443
+[186]	train-mlogloss:0.08239	valid-mlogloss:0.34436
+[187]	train-mlogloss:0.08189	valid-mlogloss:0.34398
+[188]	train-mlogloss:0.08131	valid-mlogloss:0.34365
+[189]	train-mlogloss:0.08075	valid-mlogloss:0.34366
+[190]	train-mlogloss:0.08014	valid-mlogloss:0.34347
+[191]	train-mlogloss:0.07956	valid-mlogloss:0.34372
+[192]	train-mlogloss:0.07900	valid-mlogloss:0.34380
+[193]	train-mlogloss:0.07842	valid-mlogloss:0.34368
+[194]	train-mlogloss:0.07783	valid-mlogloss:0.34383
+[195]	train-mlogloss:0.07735	valid-mlogloss:0.34398
+[196]	train-mlogloss:0.07677	valid-mlogloss:0.34344
+[197]	train-mlogloss:0.07621	valid-mlogloss:0.34400
+[198]	train-mlogloss:0.07572	valid-mlogloss:0.34458
+[199]	train-mlogloss:0.07521	valid-mlogloss:0.34372
+[200]	train-mlogloss:0.07471	valid-mlogloss:0.34367
+[201]	train-mlogloss:0.07417	valid-mlogloss:0.34407
+[202]	train-mlogloss:0.07366	valid-mlogloss:0.34371
+[203]	train-mlogloss:0.07322	valid-mlogloss:0.34376
+[204]	train-mlogloss:0.07282	valid-mlogloss:0.34348
+[205]	train-mlogloss:0.07230	valid-mlogloss:0.34251
+[206]	train-mlogloss:0.07179	valid-mlogloss:0.34291
+[207]	train-mlogloss:0.07127	valid-mlogloss:0.34295
+[208]	train-mlogloss:0.07078	valid-mlogloss:0.34320
+[209]	train-mlogloss:0.07029	valid-mlogloss:0.34351
+[210]	train-mlogloss:0.06986	valid-mlogloss:0.34306
+[211]	train-mlogloss:0.06943	valid-mlogloss:0.34288
+[212]	train-mlogloss:0.06897	valid-mlogloss:0.34237
+[213]	train-mlogloss:0.06850	valid-mlogloss:0.34256
+[214]	train-mlogloss:0.06802	valid-mlogloss:0.34300
+[215]	train-mlogloss:0.06763	valid-mlogloss:0.34333
+[216]	train-mlogloss:0.06722	valid-mlogloss:0.34306
+[217]	train-mlogloss:0.06676	valid-mlogloss:0.34288
+[218]	train-mlogloss:0.06639	valid-mlogloss:0.34317
+[219]	train-mlogloss:0.06595	valid-mlogloss:0.34319
+[220]	train-mlogloss:0.06551	valid-mlogloss:0.34311
+[221]	train-mlogloss:0.06510	valid-mlogloss:0.34285
+[222]	train-mlogloss:0.06474	valid-mlogloss:0.34313
+[223]	train-mlogloss:0.06431	valid-mlogloss:0.34333
+[224]	train-mlogloss:0.06392	valid-mlogloss:0.34332
+[225]	train-mlogloss:0.06350	valid-mlogloss:0.34346
+[226]	train-mlogloss:0.06308	valid-mlogloss:0.34314
+[227]	train-mlogloss:0.06272	valid-mlogloss:0.34295
+[228]	train-mlogloss:0.06233	valid-mlogloss:0.34306
+[229]	train-mlogloss:0.06195	valid-mlogloss:0.34321
+[230]	train-mlogloss:0.06158	valid-mlogloss:0.34365
+[231]	train-mlogloss:0.06120	valid-mlogloss:0.34325
+[232]	train-mlogloss:0.06082	valid-mlogloss:0.34277
+[233]	train-mlogloss:0.06045	valid-mlogloss:0.34304
+[234]	train-mlogloss:0.06014	valid-mlogloss:0.34262
+[235]	train-mlogloss:0.05977	valid-mlogloss:0.34244
+[236]	train-mlogloss:0.05938	valid-mlogloss:0.34259
+[237]	train-mlogloss:0.05901	valid-mlogloss:0.34238
+[238]	train-mlogloss:0.05866	valid-mlogloss:0.34221
+[239]	train-mlogloss:0.05829	valid-mlogloss:0.34235
+[240]	train-mlogloss:0.05795	valid-mlogloss:0.34230
+[241]	train-mlogloss:0.05762	valid-mlogloss:0.34229
+[242]	train-mlogloss:0.05729	valid-mlogloss:0.34208
+[243]	train-mlogloss:0.05696	valid-mlogloss:0.34145
+[244]	train-mlogloss:0.05661	valid-mlogloss:0.34193
+[245]	train-mlogloss:0.05627	valid-mlogloss:0.34204
+[246]	train-mlogloss:0.05595	valid-mlogloss:0.34218
+[247]	train-mlogloss:0.05561	valid-mlogloss:0.34242
+[248]	train-mlogloss:0.05529	valid-mlogloss:0.34271
+[249]	train-mlogloss:0.05499	valid-mlogloss:0.34326
+[250]	train-mlogloss:0.05471	valid-mlogloss:0.34296
+[251]	train-mlogloss:0.05437	valid-mlogloss:0.34300
+[252]	train-mlogloss:0.05406	valid-mlogloss:0.34273
+[253]	train-mlogloss:0.05377	valid-mlogloss:0.34308
+[254]	train-mlogloss:0.05347	valid-mlogloss:0.34309
+[255]	train-mlogloss:0.05318	valid-mlogloss:0.34304
+[256]	train-mlogloss:0.05289	valid-mlogloss:0.34331
+[257]	train-mlogloss:0.05261	valid-mlogloss:0.34316
+[258]	train-mlogloss:0.05232	valid-mlogloss:0.34272
+[259]	train-mlogloss:0.05204	valid-mlogloss:0.34244
+[260]	train-mlogloss:0.05174	valid-mlogloss:0.34233
+[261]	train-mlogloss:0.05150	valid-mlogloss:0.34239
+[262]	train-mlogloss:0.05122	valid-mlogloss:0.34195
+[263]	train-mlogloss:0.05097	valid-mlogloss:0.34217
+[264]	train-mlogloss:0.05071	valid-mlogloss:0.34235
+[265]	train-mlogloss:0.05043	valid-mlogloss:0.34270
+[266]	train-mlogloss:0.05018	valid-mlogloss:0.34231
+[267]	train-mlogloss:0.04990	valid-mlogloss:0.34246
+[268]	train-mlogloss:0.04963	valid-mlogloss:0.34278
+[269]	train-mlogloss:0.04935	valid-mlogloss:0.34263
+[270]	train-mlogloss:0.04910	valid-mlogloss:0.34264
+[271]	train-mlogloss:0.04884	valid-mlogloss:0.34247
+[272]	train-mlogloss:0.04857	valid-mlogloss:0.34263
+[273]	train-mlogloss:0.04832	valid-mlogloss:0.34287
+[274]	train-mlogloss:0.04808	valid-mlogloss:0.34291
+[275]	train-mlogloss:0.04785	valid-mlogloss:0.34255
+[276]	train-mlogloss:0.04759	valid-mlogloss:0.34272
+[277]	train-mlogloss:0.04735	valid-mlogloss:0.34262
+[278]	train-mlogloss:0.04712	valid-mlogloss:0.34275
+[279]	train-mlogloss:0.04688	valid-mlogloss:0.34284
+[280]	train-mlogloss:0.04666	valid-mlogloss:0.34290
+[281]	train-mlogloss:0.04643	valid-mlogloss:0.34285
+[282]	train-mlogloss:0.04621	valid-mlogloss:0.34277
+[283]	train-mlogloss:0.04598	valid-mlogloss:0.34281
+[284]	train-mlogloss:0.04574	valid-mlogloss:0.34254
+[285]	train-mlogloss:0.04551	valid-mlogloss:0.34283
+[286]	train-mlogloss:0.04530	valid-mlogloss:0.34326
+[287]	train-mlogloss:0.04506	valid-mlogloss:0.34323
+[288]	train-mlogloss:0.04483	valid-mlogloss:0.34310
+[289]	train-mlogloss:0.04465	valid-mlogloss:0.34258
+[290]	train-mlogloss:0.04443	valid-mlogloss:0.34264
+[291]	train-mlogloss:0.04424	valid-mlogloss:0.34279
+[292]	train-mlogloss:0.04404	valid-mlogloss:0.34279
+[Extract leaf indices & hash]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:38:00] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+
+✓ Data loaded. Train=(6942, 823), Valid=(168, 823), Test=(2247, 823)
+Class distribution (train):
+0    0.390954
+1    0.278306
+2    0.330740
+Name: proportion, dtype: float64
+
+============================================================
+Train DeepGBM Deep Component (h+1)
+============================================================
+
+[Building Deep component...]
+Deep params: 3,318,403 | Device: cuda
+Class weights: {'low': 0.8526160648489315, 'mid': 1.1977225672877847, 'high': 1.0078397212543555}
+Epoch   1/80 | Loss 0.6835 | Val F1 0.6689 | LR 5.00e-04 | 0.7s ✓ warmup improve
+Epoch   2/80 | Loss 0.4980 | Val F1 0.7163 | LR 5.00e-04 | 0.4s ✓ warmup improve
+Epoch   3/80 | Loss 0.4368 | Val F1 0.7318 | LR 5.00e-04 | 0.4s ✓ warmup improve
+Epoch   4/80 | Loss 0.3901 | Val F1 0.7844 | LR 5.00e-04 | 0.4s ✓ warmup improve
+Epoch   5/80 | Loss 0.3580 | Val F1 0.8072 | LR 5.00e-04 | 0.4s ✓ NEW BEST
+Epoch   6/80 | Loss 0.3277 | Val F1 0.7373 | LR 5.00e-04 | 0.4s (patience 19/20)
+Epoch   7/80 | Loss 0.3107 | Val F1 0.8027 | LR 5.00e-04 | 0.4s (patience 18/20)
+Epoch   8/80 | Loss 0.2918 | Val F1 0.7865 | LR 5.00e-04 | 0.4s (patience 17/20)
+Epoch   9/80 | Loss 0.2645 | Val F1 0.7967 | LR 5.00e-04 | 0.4s (patience 16/20)
+Epoch  10/80 | Loss 0.2472 | Val F1 0.8145 | LR 5.00e-04 | 0.4s ✓ NEW BEST
+Epoch  11/80 | Loss 0.2263 | Val F1 0.8145 | LR 5.00e-04 | 0.4s (patience 20/20)
+Epoch  12/80 | Loss 0.2093 | Val F1 0.8145 | LR 5.00e-04 | 0.4s (patience 20/20)
+Epoch  13/80 | Loss 0.1896 | Val F1 0.8145 | LR 5.00e-04 | 0.3s (patience 20/20)
+Epoch  14/80 | Loss 0.1819 | Val F1 0.8145 | LR 5.00e-04 | 0.3s (patience 20/20)
+Epoch  15/80 | Loss 0.1750 | Val F1 0.7982 | LR 5.00e-04 | 0.3s (patience 19/20)
+Epoch  16/80 | Loss 0.1524 | Val F1 0.7982 | LR 5.00e-04 | 0.3s (patience 19/20)
+Epoch  17/80 | Loss 0.1370 | Val F1 0.7982 | LR 5.00e-04 | 0.4s (patience 19/20)
+Epoch  18/80 | Loss 0.1280 | Val F1 0.7982 | LR 5.00e-04 | 0.4s (patience 19/20)
+Epoch  19/80 | Loss 0.1272 | Val F1 0.7982 | LR 5.00e-04 | 0.3s (patience 19/20)
+Epoch  20/80 | Loss 0.1120 | Val F1 0.7914 | LR 5.00e-04 | 0.4s (patience 18/20)
+Epoch  21/80 | Loss 0.1028 | Val F1 0.7914 | LR 5.00e-04 | 0.4s (patience 18/20)
+Epoch  22/80 | Loss 0.0954 | Val F1 0.7914 | LR 5.00e-04 | 0.3s (patience 18/20)
+Epoch  23/80 | Loss 0.0853 | Val F1 0.7914 | LR 5.00e-04 | 0.3s (patience 18/20)
+Epoch  24/80 | Loss 0.0873 | Val F1 0.7914 | LR 5.00e-04 | 0.4s (patience 18/20)
+Epoch  25/80 | Loss 0.0760 | Val F1 0.8103 | LR 5.00e-04 | 0.4s (patience 17/20)
+Epoch  26/80 | Loss 0.0688 | Val F1 0.8103 | LR 5.00e-04 | 0.4s (patience 17/20)
+Epoch  27/80 | Loss 0.0614 | Val F1 0.8103 | LR 5.00e-04 | 0.4s (patience 17/20)
+Epoch  28/80 | Loss 0.0612 | Val F1 0.8103 | LR 5.00e-04 | 0.4s (patience 17/20)
+Epoch  29/80 | Loss 0.0579 | Val F1 0.8103 | LR 5.00e-04 | 0.4s (patience 17/20)
+Epoch  30/80 | Loss 0.0510 | Val F1 0.8057 | LR 5.00e-04 | 0.4s (patience 16/20)
+Epoch  31/80 | Loss 0.0500 | Val F1 0.8057 | LR 5.00e-04 | 0.4s (patience 16/20)
+Epoch  32/80 | Loss 0.0412 | Val F1 0.8057 | LR 5.00e-04 | 0.4s (patience 16/20)
+Epoch  33/80 | Loss 0.0476 | Val F1 0.8057 | LR 5.00e-04 | 0.4s (patience 16/20)
+Epoch  34/80 | Loss 0.0470 | Val F1 0.8057 | LR 5.00e-04 | 0.4s (patience 16/20)
+Epoch  35/80 | Loss 0.0436 | Val F1 0.7875 | LR 2.50e-04 | 0.4s (patience 15/20)
+Epoch  36/80 | Loss 0.0334 | Val F1 0.7875 | LR 2.50e-04 | 0.4s (patience 15/20)
+Epoch  37/80 | Loss 0.0264 | Val F1 0.7875 | LR 2.50e-04 | 0.4s (patience 15/20)
+Epoch  38/80 | Loss 0.0261 | Val F1 0.7875 | LR 2.50e-04 | 0.4s (patience 15/20)
+Epoch  39/80 | Loss 0.0253 | Val F1 0.7875 | LR 2.50e-04 | 0.4s (patience 15/20)
+Epoch  40/80 | Loss 0.0226 | Val F1 0.7986 | LR 2.50e-04 | 0.4s (patience 14/20)
+Epoch  41/80 | Loss 0.0274 | Val F1 0.7986 | LR 2.50e-04 | 0.4s (patience 14/20)
+Epoch  42/80 | Loss 0.0218 | Val F1 0.7986 | LR 2.50e-04 | 0.4s (patience 14/20)
+Epoch  43/80 | Loss 0.0193 | Val F1 0.7986 | LR 2.50e-04 | 0.4s (patience 14/20)
+Epoch  44/80 | Loss 0.0162 | Val F1 0.7986 | LR 2.50e-04 | 0.4s (patience 14/20)
+Epoch  45/80 | Loss 0.0215 | Val F1 0.7824 | LR 2.50e-04 | 0.4s (patience 13/20)
+Epoch  46/80 | Loss 0.0177 | Val F1 0.7824 | LR 2.50e-04 | 0.4s (patience 13/20)
+Epoch  47/80 | Loss 0.0173 | Val F1 0.7824 | LR 2.50e-04 | 0.4s (patience 13/20)
+Epoch  48/80 | Loss 0.0187 | Val F1 0.7824 | LR 2.50e-04 | 0.4s (patience 13/20)
+Epoch  49/80 | Loss 0.0171 | Val F1 0.7824 | LR 2.50e-04 | 0.4s (patience 13/20)
+Epoch  50/80 | Loss 0.0133 | Val F1 0.8026 | LR 2.50e-04 | 0.4s (patience 12/20)
+Epoch  51/80 | Loss 0.0182 | Val F1 0.8026 | LR 2.50e-04 | 0.4s (patience 12/20)
+Epoch  52/80 | Loss 0.0116 | Val F1 0.8026 | LR 2.50e-04 | 0.4s (patience 12/20)
+Epoch  53/80 | Loss 0.0146 | Val F1 0.8026 | LR 2.50e-04 | 0.5s (patience 12/20)
+Epoch  54/80 | Loss 0.0126 | Val F1 0.8026 | LR 2.50e-04 | 0.4s (patience 12/20)
+Epoch  55/80 | Loss 0.0141 | Val F1 0.7966 | LR 2.50e-04 | 0.4s (patience 11/20)
+Epoch  56/80 | Loss 0.0118 | Val F1 0.7966 | LR 2.50e-04 | 0.4s (patience 11/20)
+Epoch  57/80 | Loss 0.0103 | Val F1 0.7966 | LR 2.50e-04 | 0.4s (patience 11/20)
+Epoch  58/80 | Loss 0.0094 | Val F1 0.7966 | LR 2.50e-04 | 0.4s (patience 11/20)
+Epoch  59/80 | Loss 0.0126 | Val F1 0.7966 | LR 2.50e-04 | 0.4s (patience 11/20)
+Epoch  60/80 | Loss 0.0086 | Val F1 0.7989 | LR 1.25e-04 | 0.4s (patience 10/20)
+Epoch  61/80 | Loss 0.0094 | Val F1 0.7989 | LR 1.25e-04 | 0.4s (patience 10/20)
+Epoch  62/80 | Loss 0.0084 | Val F1 0.7989 | LR 1.25e-04 | 0.4s (patience 10/20)
+Epoch  63/80 | Loss 0.0106 | Val F1 0.7989 | LR 1.25e-04 | 0.4s (patience 10/20)
+Epoch  64/80 | Loss 0.0101 | Val F1 0.7989 | LR 1.25e-04 | 0.4s (patience 10/20)
+Epoch  65/80 | Loss 0.0065 | Val F1 0.8066 | LR 1.25e-04 | 0.4s (patience 9/20)
+Epoch  66/80 | Loss 0.0058 | Val F1 0.8066 | LR 1.25e-04 | 0.4s (patience 9/20)
+Epoch  67/80 | Loss 0.0055 | Val F1 0.8066 | LR 1.25e-04 | 0.4s (patience 9/20)
+Epoch  68/80 | Loss 0.0090 | Val F1 0.8066 | LR 1.25e-04 | 0.4s (patience 9/20)
+Epoch  69/80 | Loss 0.0080 | Val F1 0.8066 | LR 1.25e-04 | 0.4s (patience 9/20)
+Epoch  70/80 | Loss 0.0074 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 8/20)
+Epoch  71/80 | Loss 0.0044 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 8/20)
+Epoch  72/80 | Loss 0.0048 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 8/20)
+Epoch  73/80 | Loss 0.0051 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 8/20)
+Epoch  74/80 | Loss 0.0072 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 8/20)
+Epoch  75/80 | Loss 0.0070 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 7/20)
+Epoch  76/80 | Loss 0.0053 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 7/20)
+Epoch  77/80 | Loss 0.0047 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 7/20)
+Epoch  78/80 | Loss 0.0059 | Val F1 0.8091 | LR 1.25e-04 | 0.4s (patience 7/20)
+Epoch  79/80 | Loss 0.0032 | Val F1 0.8091 | LR 1.25e-04 | 0.3s (patience 7/20)
+Epoch  80/80 | Loss 0.0056 | Val F1 0.7989 | LR 1.25e-04 | 0.4s (patience 6/20)
+
+✓ Deep training done in 0.50 min | Best val F1=0.8145
+
+============================================================
+EVALUATION - DeepGBM (h+1)
+============================================================
+
+[Search xgb_weight] best_w=0.80 on valid (F1_macro=0.8839)
+
+Train Results (h+1):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.9306, F1_macro=0.9275
+XGB-only:            Acc=1.0000, F1_macro=1.0000
+Deep+XGB (w=0.80): Acc=1.0000, F1_macro=1.0000
+
+Naive baseline:
+  Acc:     0.7947
+  F1Macro: 0.7841
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     1.0000    1.0000    1.0000      2296
+         low     1.0000    1.0000    1.0000      2714
+         mid     1.0000    1.0000    1.0000      1932
+
+    accuracy                         1.0000      6942
+   macro avg     1.0000    1.0000    1.0000      6942
+weighted avg     1.0000    1.0000    1.0000      6942
+
+
+Valid Results (h+1):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.8452, F1_macro=0.8145
+XGB-only:            Acc=0.8988, F1_macro=0.8813
+Deep+XGB (w=0.80): Acc=0.9048, F1_macro=0.8839
+
+Naive baseline:
+  Acc:     0.8869
+  F1Macro: 0.8576
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.7917    0.9500    0.8636        20
+         low     0.9785    0.9192    0.9479        99
+         mid     0.8235    0.8571    0.8400        49
+
+    accuracy                         0.9048       168
+   macro avg     0.8646    0.9088    0.8839       168
+weighted avg     0.9111    0.9048    0.9064       168
+
+
+Test Results (h+1):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.7365, F1_macro=0.7120
+XGB-only:            Acc=0.8020, F1_macro=0.7834
+Deep+XGB (w=0.80): Acc=0.7962, F1_macro=0.7775
+
+Naive baseline:
+  Acc:     0.7704
+  F1Macro: 0.7438
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.7896    0.8464    0.8170       625
+         low     0.9301    0.8283    0.8762      1060
+         mid     0.6035    0.6797    0.6393       562
+
+    accuracy                         0.7962      2247
+   macro avg     0.7744    0.7848    0.7775      2247
+weighted avg     0.8093    0.7962    0.8005      2247
+
+Training history saved to: /app/classification-analysis/deepgbm_unified_v2/h1/training_history_h1.png
+Confusion matrices saved to: /app/classification-analysis/deepgbm_unified_v2/h1/confusion_matrices_h1.png
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:38:33] WARNING: /workspace/src/c_api/c_api.cc:1240: Saving into deprecated binary model format, please consider using `json` or `ubj`. Model format will default to JSON in XGBoost 2.2 if not specified.
+  warnings.warn(smsg, UserWarning)
+Models & results saved to: /app/classification-analysis/deepgbm_unified_v2/h1
+
+================================================================================
+Completed horizon h+1
+================================================================================
+
+
+################################################################################
+# HORIZON: 6 HOUR(S)
+################################################################################
+
+============================================================
+Loading data for horizon h+6
+============================================================
+Features: 823
+
+[Train XGBoost]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:38:34] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+[0]	train-mlogloss:1.07334	valid-mlogloss:1.09049
+[1]	train-mlogloss:1.04896	valid-mlogloss:1.08039
+[2]	train-mlogloss:1.02498	valid-mlogloss:1.06959
+[3]	train-mlogloss:1.00166	valid-mlogloss:1.05650
+[4]	train-mlogloss:0.97901	valid-mlogloss:1.04708
+[5]	train-mlogloss:0.95767	valid-mlogloss:1.03589
+[6]	train-mlogloss:0.93768	valid-mlogloss:1.02908
+[7]	train-mlogloss:0.91712	valid-mlogloss:1.02164
+[8]	train-mlogloss:0.89769	valid-mlogloss:1.01447
+[9]	train-mlogloss:0.87918	valid-mlogloss:1.00310
+[10]	train-mlogloss:0.86128	valid-mlogloss:0.99415
+[11]	train-mlogloss:0.84378	valid-mlogloss:0.98654
+[12]	train-mlogloss:0.82632	valid-mlogloss:0.97679
+[13]	train-mlogloss:0.81011	valid-mlogloss:0.97215
+[14]	train-mlogloss:0.79395	valid-mlogloss:0.95888
+[15]	train-mlogloss:0.77884	valid-mlogloss:0.95365
+[16]	train-mlogloss:0.76342	valid-mlogloss:0.94790
+[17]	train-mlogloss:0.74929	valid-mlogloss:0.93990
+[18]	train-mlogloss:0.73515	valid-mlogloss:0.92780
+[19]	train-mlogloss:0.72127	valid-mlogloss:0.92420
+[20]	train-mlogloss:0.70777	valid-mlogloss:0.91940
+[21]	train-mlogloss:0.69448	valid-mlogloss:0.91395
+[22]	train-mlogloss:0.68165	valid-mlogloss:0.90560
+[23]	train-mlogloss:0.66918	valid-mlogloss:0.90600
+[24]	train-mlogloss:0.65724	valid-mlogloss:0.90190
+[25]	train-mlogloss:0.64595	valid-mlogloss:0.89711
+[26]	train-mlogloss:0.63444	valid-mlogloss:0.89627
+[27]	train-mlogloss:0.62311	valid-mlogloss:0.89418
+[28]	train-mlogloss:0.61230	valid-mlogloss:0.89242
+[29]	train-mlogloss:0.60230	valid-mlogloss:0.88485
+[30]	train-mlogloss:0.59203	valid-mlogloss:0.87521
+[31]	train-mlogloss:0.58230	valid-mlogloss:0.87350
+[32]	train-mlogloss:0.57228	valid-mlogloss:0.87155
+[33]	train-mlogloss:0.56292	valid-mlogloss:0.87108
+[34]	train-mlogloss:0.55363	valid-mlogloss:0.86962
+[35]	train-mlogloss:0.54522	valid-mlogloss:0.86827
+[36]	train-mlogloss:0.53661	valid-mlogloss:0.86405
+[37]	train-mlogloss:0.52844	valid-mlogloss:0.86075
+[38]	train-mlogloss:0.52046	valid-mlogloss:0.85696
+[39]	train-mlogloss:0.51246	valid-mlogloss:0.85686
+[40]	train-mlogloss:0.50493	valid-mlogloss:0.85277
+[41]	train-mlogloss:0.49711	valid-mlogloss:0.84770
+[42]	train-mlogloss:0.48943	valid-mlogloss:0.84483
+[43]	train-mlogloss:0.48177	valid-mlogloss:0.84325
+[44]	train-mlogloss:0.47423	valid-mlogloss:0.84102
+[45]	train-mlogloss:0.46747	valid-mlogloss:0.83721
+[46]	train-mlogloss:0.46092	valid-mlogloss:0.83241
+[47]	train-mlogloss:0.45476	valid-mlogloss:0.83262
+[48]	train-mlogloss:0.44829	valid-mlogloss:0.82993
+[49]	train-mlogloss:0.44137	valid-mlogloss:0.82920
+[50]	train-mlogloss:0.43518	valid-mlogloss:0.82710
+[51]	train-mlogloss:0.42887	valid-mlogloss:0.82254
+[52]	train-mlogloss:0.42273	valid-mlogloss:0.81980
+[53]	train-mlogloss:0.41719	valid-mlogloss:0.82020
+[54]	train-mlogloss:0.41140	valid-mlogloss:0.81853
+[55]	train-mlogloss:0.40626	valid-mlogloss:0.81704
+[56]	train-mlogloss:0.40029	valid-mlogloss:0.81786
+[57]	train-mlogloss:0.39489	valid-mlogloss:0.81497
+[58]	train-mlogloss:0.39014	valid-mlogloss:0.81264
+[59]	train-mlogloss:0.38532	valid-mlogloss:0.81282
+[60]	train-mlogloss:0.38008	valid-mlogloss:0.81082
+[61]	train-mlogloss:0.37504	valid-mlogloss:0.80810
+[62]	train-mlogloss:0.37002	valid-mlogloss:0.80714
+[63]	train-mlogloss:0.36565	valid-mlogloss:0.80448
+[64]	train-mlogloss:0.36131	valid-mlogloss:0.80314
+[65]	train-mlogloss:0.35671	valid-mlogloss:0.80175
+[66]	train-mlogloss:0.35238	valid-mlogloss:0.79895
+[67]	train-mlogloss:0.34792	valid-mlogloss:0.79722
+[68]	train-mlogloss:0.34374	valid-mlogloss:0.79778
+[69]	train-mlogloss:0.33922	valid-mlogloss:0.79574
+[70]	train-mlogloss:0.33492	valid-mlogloss:0.79396
+[71]	train-mlogloss:0.33045	valid-mlogloss:0.79267
+[72]	train-mlogloss:0.32668	valid-mlogloss:0.78975
+[73]	train-mlogloss:0.32285	valid-mlogloss:0.79008
+[74]	train-mlogloss:0.31874	valid-mlogloss:0.78806
+[75]	train-mlogloss:0.31485	valid-mlogloss:0.78519
+[76]	train-mlogloss:0.31133	valid-mlogloss:0.78599
+[77]	train-mlogloss:0.30793	valid-mlogloss:0.78400
+[78]	train-mlogloss:0.30451	valid-mlogloss:0.78078
+[79]	train-mlogloss:0.30068	valid-mlogloss:0.77908
+[80]	train-mlogloss:0.29732	valid-mlogloss:0.77875
+[81]	train-mlogloss:0.29408	valid-mlogloss:0.77539
+[82]	train-mlogloss:0.29111	valid-mlogloss:0.77426
+[83]	train-mlogloss:0.28805	valid-mlogloss:0.77256
+[84]	train-mlogloss:0.28507	valid-mlogloss:0.77313
+[85]	train-mlogloss:0.28144	valid-mlogloss:0.77223
+[86]	train-mlogloss:0.27808	valid-mlogloss:0.77609
+[87]	train-mlogloss:0.27470	valid-mlogloss:0.77738
+[88]	train-mlogloss:0.27156	valid-mlogloss:0.77754
+[89]	train-mlogloss:0.26853	valid-mlogloss:0.77847
+[90]	train-mlogloss:0.26560	valid-mlogloss:0.77953
+[91]	train-mlogloss:0.26236	valid-mlogloss:0.77904
+[92]	train-mlogloss:0.25990	valid-mlogloss:0.77763
+[93]	train-mlogloss:0.25710	valid-mlogloss:0.77482
+[94]	train-mlogloss:0.25466	valid-mlogloss:0.77308
+[95]	train-mlogloss:0.25182	valid-mlogloss:0.77113
+[96]	train-mlogloss:0.24936	valid-mlogloss:0.77151
+[97]	train-mlogloss:0.24662	valid-mlogloss:0.77150
+[98]	train-mlogloss:0.24381	valid-mlogloss:0.76978
+[99]	train-mlogloss:0.24147	valid-mlogloss:0.76921
+[100]	train-mlogloss:0.23904	valid-mlogloss:0.76632
+[101]	train-mlogloss:0.23643	valid-mlogloss:0.76712
+[102]	train-mlogloss:0.23424	valid-mlogloss:0.76875
+[103]	train-mlogloss:0.23187	valid-mlogloss:0.76766
+[104]	train-mlogloss:0.22981	valid-mlogloss:0.76548
+[105]	train-mlogloss:0.22754	valid-mlogloss:0.76509
+[106]	train-mlogloss:0.22489	valid-mlogloss:0.76433
+[107]	train-mlogloss:0.22264	valid-mlogloss:0.76392
+[108]	train-mlogloss:0.22074	valid-mlogloss:0.76327
+[109]	train-mlogloss:0.21846	valid-mlogloss:0.76171
+[110]	train-mlogloss:0.21617	valid-mlogloss:0.75962
+[111]	train-mlogloss:0.21415	valid-mlogloss:0.75995
+[112]	train-mlogloss:0.21230	valid-mlogloss:0.75943
+[113]	train-mlogloss:0.21076	valid-mlogloss:0.75995
+[114]	train-mlogloss:0.20871	valid-mlogloss:0.75900
+[115]	train-mlogloss:0.20647	valid-mlogloss:0.75906
+[116]	train-mlogloss:0.20444	valid-mlogloss:0.75803
+[117]	train-mlogloss:0.20240	valid-mlogloss:0.75898
+[118]	train-mlogloss:0.20034	valid-mlogloss:0.75881
+[119]	train-mlogloss:0.19835	valid-mlogloss:0.75691
+[120]	train-mlogloss:0.19674	valid-mlogloss:0.75774
+[121]	train-mlogloss:0.19487	valid-mlogloss:0.75770
+[122]	train-mlogloss:0.19339	valid-mlogloss:0.75664
+[123]	train-mlogloss:0.19159	valid-mlogloss:0.75568
+[124]	train-mlogloss:0.19008	valid-mlogloss:0.75609
+[125]	train-mlogloss:0.18849	valid-mlogloss:0.75585
+[126]	train-mlogloss:0.18688	valid-mlogloss:0.75502
+[127]	train-mlogloss:0.18500	valid-mlogloss:0.75673
+[128]	train-mlogloss:0.18341	valid-mlogloss:0.75520
+[129]	train-mlogloss:0.18179	valid-mlogloss:0.75351
+[130]	train-mlogloss:0.18027	valid-mlogloss:0.75082
+[131]	train-mlogloss:0.17862	valid-mlogloss:0.75003
+[132]	train-mlogloss:0.17718	valid-mlogloss:0.74797
+[133]	train-mlogloss:0.17558	valid-mlogloss:0.74708
+[134]	train-mlogloss:0.17421	valid-mlogloss:0.74484
+[135]	train-mlogloss:0.17291	valid-mlogloss:0.74479
+[136]	train-mlogloss:0.17161	valid-mlogloss:0.74481
+[137]	train-mlogloss:0.17019	valid-mlogloss:0.74435
+[138]	train-mlogloss:0.16871	valid-mlogloss:0.74398
+[139]	train-mlogloss:0.16732	valid-mlogloss:0.74245
+[140]	train-mlogloss:0.16603	valid-mlogloss:0.74204
+[141]	train-mlogloss:0.16468	valid-mlogloss:0.74070
+[142]	train-mlogloss:0.16328	valid-mlogloss:0.74016
+[143]	train-mlogloss:0.16189	valid-mlogloss:0.73964
+[144]	train-mlogloss:0.16052	valid-mlogloss:0.73772
+[145]	train-mlogloss:0.15914	valid-mlogloss:0.73779
+[146]	train-mlogloss:0.15769	valid-mlogloss:0.73757
+[147]	train-mlogloss:0.15641	valid-mlogloss:0.73453
+[148]	train-mlogloss:0.15532	valid-mlogloss:0.73645
+[149]	train-mlogloss:0.15422	valid-mlogloss:0.73586
+[150]	train-mlogloss:0.15293	valid-mlogloss:0.73510
+[151]	train-mlogloss:0.15159	valid-mlogloss:0.73658
+[152]	train-mlogloss:0.15050	valid-mlogloss:0.73810
+[153]	train-mlogloss:0.14920	valid-mlogloss:0.73713
+[154]	train-mlogloss:0.14799	valid-mlogloss:0.73668
+[155]	train-mlogloss:0.14683	valid-mlogloss:0.73717
+[156]	train-mlogloss:0.14562	valid-mlogloss:0.73719
+[157]	train-mlogloss:0.14451	valid-mlogloss:0.73693
+[158]	train-mlogloss:0.14332	valid-mlogloss:0.73711
+[159]	train-mlogloss:0.14223	valid-mlogloss:0.73451
+[160]	train-mlogloss:0.14100	valid-mlogloss:0.73501
+[161]	train-mlogloss:0.14018	valid-mlogloss:0.73602
+[162]	train-mlogloss:0.13920	valid-mlogloss:0.73548
+[163]	train-mlogloss:0.13813	valid-mlogloss:0.73610
+[164]	train-mlogloss:0.13687	valid-mlogloss:0.73727
+[165]	train-mlogloss:0.13586	valid-mlogloss:0.73714
+[166]	train-mlogloss:0.13472	valid-mlogloss:0.73641
+[167]	train-mlogloss:0.13371	valid-mlogloss:0.73695
+[168]	train-mlogloss:0.13289	valid-mlogloss:0.73780
+[169]	train-mlogloss:0.13179	valid-mlogloss:0.73773
+[170]	train-mlogloss:0.13078	valid-mlogloss:0.73600
+[171]	train-mlogloss:0.12990	valid-mlogloss:0.73692
+[172]	train-mlogloss:0.12885	valid-mlogloss:0.73698
+[173]	train-mlogloss:0.12798	valid-mlogloss:0.73620
+[174]	train-mlogloss:0.12702	valid-mlogloss:0.73557
+[175]	train-mlogloss:0.12612	valid-mlogloss:0.73533
+[176]	train-mlogloss:0.12521	valid-mlogloss:0.73524
+[177]	train-mlogloss:0.12421	valid-mlogloss:0.73391
+[178]	train-mlogloss:0.12334	valid-mlogloss:0.73514
+[179]	train-mlogloss:0.12249	valid-mlogloss:0.73424
+[180]	train-mlogloss:0.12154	valid-mlogloss:0.73379
+[181]	train-mlogloss:0.12056	valid-mlogloss:0.73336
+[182]	train-mlogloss:0.11976	valid-mlogloss:0.73386
+[183]	train-mlogloss:0.11892	valid-mlogloss:0.73111
+[184]	train-mlogloss:0.11822	valid-mlogloss:0.73197
+[185]	train-mlogloss:0.11746	valid-mlogloss:0.73039
+[186]	train-mlogloss:0.11662	valid-mlogloss:0.72971
+[187]	train-mlogloss:0.11589	valid-mlogloss:0.72881
+[188]	train-mlogloss:0.11506	valid-mlogloss:0.72841
+[189]	train-mlogloss:0.11423	valid-mlogloss:0.72848
+[190]	train-mlogloss:0.11355	valid-mlogloss:0.72831
+[191]	train-mlogloss:0.11277	valid-mlogloss:0.72801
+[192]	train-mlogloss:0.11202	valid-mlogloss:0.72810
+[193]	train-mlogloss:0.11104	valid-mlogloss:0.72689
+[194]	train-mlogloss:0.11024	valid-mlogloss:0.72717
+[195]	train-mlogloss:0.10942	valid-mlogloss:0.72664
+[196]	train-mlogloss:0.10888	valid-mlogloss:0.72829
+[197]	train-mlogloss:0.10809	valid-mlogloss:0.72764
+[198]	train-mlogloss:0.10734	valid-mlogloss:0.72667
+[199]	train-mlogloss:0.10661	valid-mlogloss:0.72613
+[200]	train-mlogloss:0.10593	valid-mlogloss:0.72560
+[201]	train-mlogloss:0.10526	valid-mlogloss:0.72411
+[202]	train-mlogloss:0.10451	valid-mlogloss:0.72414
+[203]	train-mlogloss:0.10373	valid-mlogloss:0.72339
+[204]	train-mlogloss:0.10317	valid-mlogloss:0.72451
+[205]	train-mlogloss:0.10255	valid-mlogloss:0.72500
+[206]	train-mlogloss:0.10190	valid-mlogloss:0.72473
+[207]	train-mlogloss:0.10131	valid-mlogloss:0.72406
+[208]	train-mlogloss:0.10058	valid-mlogloss:0.72392
+[209]	train-mlogloss:0.09992	valid-mlogloss:0.72229
+[210]	train-mlogloss:0.09919	valid-mlogloss:0.72279
+[211]	train-mlogloss:0.09859	valid-mlogloss:0.72219
+[212]	train-mlogloss:0.09797	valid-mlogloss:0.72322
+[213]	train-mlogloss:0.09739	valid-mlogloss:0.72400
+[214]	train-mlogloss:0.09678	valid-mlogloss:0.72383
+[215]	train-mlogloss:0.09615	valid-mlogloss:0.72330
+[216]	train-mlogloss:0.09552	valid-mlogloss:0.72358
+[217]	train-mlogloss:0.09497	valid-mlogloss:0.72243
+[218]	train-mlogloss:0.09441	valid-mlogloss:0.72280
+[219]	train-mlogloss:0.09387	valid-mlogloss:0.72238
+[220]	train-mlogloss:0.09326	valid-mlogloss:0.72227
+[221]	train-mlogloss:0.09269	valid-mlogloss:0.72170
+[222]	train-mlogloss:0.09208	valid-mlogloss:0.72074
+[223]	train-mlogloss:0.09151	valid-mlogloss:0.71978
+[224]	train-mlogloss:0.09098	valid-mlogloss:0.71966
+[225]	train-mlogloss:0.09036	valid-mlogloss:0.72013
+[226]	train-mlogloss:0.08979	valid-mlogloss:0.71996
+[227]	train-mlogloss:0.08927	valid-mlogloss:0.71994
+[228]	train-mlogloss:0.08870	valid-mlogloss:0.71989
+[229]	train-mlogloss:0.08817	valid-mlogloss:0.72102
+[230]	train-mlogloss:0.08756	valid-mlogloss:0.72144
+[231]	train-mlogloss:0.08695	valid-mlogloss:0.72041
+[232]	train-mlogloss:0.08645	valid-mlogloss:0.72076
+[233]	train-mlogloss:0.08602	valid-mlogloss:0.72042
+[234]	train-mlogloss:0.08548	valid-mlogloss:0.72032
+[235]	train-mlogloss:0.08494	valid-mlogloss:0.72115
+[236]	train-mlogloss:0.08440	valid-mlogloss:0.71925
+[237]	train-mlogloss:0.08395	valid-mlogloss:0.71886
+[238]	train-mlogloss:0.08346	valid-mlogloss:0.71767
+[239]	train-mlogloss:0.08294	valid-mlogloss:0.71869
+[240]	train-mlogloss:0.08237	valid-mlogloss:0.71794
+[241]	train-mlogloss:0.08192	valid-mlogloss:0.71730
+[242]	train-mlogloss:0.08140	valid-mlogloss:0.71792
+[243]	train-mlogloss:0.08096	valid-mlogloss:0.71706
+[244]	train-mlogloss:0.08048	valid-mlogloss:0.71671
+[245]	train-mlogloss:0.08002	valid-mlogloss:0.71597
+[246]	train-mlogloss:0.07947	valid-mlogloss:0.71507
+[247]	train-mlogloss:0.07903	valid-mlogloss:0.71474
+[248]	train-mlogloss:0.07855	valid-mlogloss:0.71351
+[249]	train-mlogloss:0.07806	valid-mlogloss:0.71362
+[250]	train-mlogloss:0.07761	valid-mlogloss:0.71401
+[251]	train-mlogloss:0.07716	valid-mlogloss:0.71390
+[252]	train-mlogloss:0.07675	valid-mlogloss:0.71410
+[253]	train-mlogloss:0.07633	valid-mlogloss:0.71381
+[254]	train-mlogloss:0.07592	valid-mlogloss:0.71359
+[255]	train-mlogloss:0.07552	valid-mlogloss:0.71377
+[256]	train-mlogloss:0.07512	valid-mlogloss:0.71284
+[257]	train-mlogloss:0.07472	valid-mlogloss:0.71347
+[258]	train-mlogloss:0.07431	valid-mlogloss:0.71349
+[259]	train-mlogloss:0.07387	valid-mlogloss:0.71353
+[260]	train-mlogloss:0.07342	valid-mlogloss:0.71344
+[261]	train-mlogloss:0.07298	valid-mlogloss:0.71282
+[262]	train-mlogloss:0.07254	valid-mlogloss:0.71201
+[263]	train-mlogloss:0.07210	valid-mlogloss:0.71079
+[264]	train-mlogloss:0.07171	valid-mlogloss:0.71038
+[265]	train-mlogloss:0.07131	valid-mlogloss:0.70995
+[266]	train-mlogloss:0.07095	valid-mlogloss:0.71039
+[267]	train-mlogloss:0.07058	valid-mlogloss:0.71098
+[268]	train-mlogloss:0.07019	valid-mlogloss:0.71074
+[269]	train-mlogloss:0.06984	valid-mlogloss:0.71153
+[270]	train-mlogloss:0.06945	valid-mlogloss:0.71273
+[271]	train-mlogloss:0.06903	valid-mlogloss:0.71194
+[272]	train-mlogloss:0.06868	valid-mlogloss:0.71226
+[273]	train-mlogloss:0.06832	valid-mlogloss:0.71239
+[274]	train-mlogloss:0.06798	valid-mlogloss:0.71241
+[275]	train-mlogloss:0.06764	valid-mlogloss:0.71228
+[276]	train-mlogloss:0.06731	valid-mlogloss:0.71261
+[277]	train-mlogloss:0.06701	valid-mlogloss:0.71189
+[278]	train-mlogloss:0.06668	valid-mlogloss:0.71031
+[279]	train-mlogloss:0.06638	valid-mlogloss:0.71018
+[280]	train-mlogloss:0.06605	valid-mlogloss:0.71046
+[281]	train-mlogloss:0.06573	valid-mlogloss:0.71090
+[282]	train-mlogloss:0.06539	valid-mlogloss:0.71214
+[283]	train-mlogloss:0.06509	valid-mlogloss:0.71160
+[284]	train-mlogloss:0.06474	valid-mlogloss:0.71073
+[285]	train-mlogloss:0.06436	valid-mlogloss:0.71087
+[286]	train-mlogloss:0.06408	valid-mlogloss:0.71044
+[287]	train-mlogloss:0.06378	valid-mlogloss:0.71052
+[288]	train-mlogloss:0.06351	valid-mlogloss:0.71031
+[289]	train-mlogloss:0.06319	valid-mlogloss:0.71031
+[290]	train-mlogloss:0.06288	valid-mlogloss:0.71135
+[291]	train-mlogloss:0.06256	valid-mlogloss:0.71142
+[292]	train-mlogloss:0.06227	valid-mlogloss:0.71150
+[293]	train-mlogloss:0.06198	valid-mlogloss:0.71176
+[294]	train-mlogloss:0.06170	valid-mlogloss:0.71197
+[295]	train-mlogloss:0.06138	valid-mlogloss:0.71194
+[296]	train-mlogloss:0.06112	valid-mlogloss:0.71208
+[297]	train-mlogloss:0.06085	valid-mlogloss:0.71166
+[298]	train-mlogloss:0.06059	valid-mlogloss:0.71183
+[299]	train-mlogloss:0.06029	valid-mlogloss:0.71140
+[300]	train-mlogloss:0.06002	valid-mlogloss:0.71184
+[301]	train-mlogloss:0.05972	valid-mlogloss:0.71218
+[302]	train-mlogloss:0.05941	valid-mlogloss:0.71264
+[303]	train-mlogloss:0.05912	valid-mlogloss:0.71160
+[304]	train-mlogloss:0.05884	valid-mlogloss:0.71132
+[305]	train-mlogloss:0.05858	valid-mlogloss:0.71102
+[306]	train-mlogloss:0.05831	valid-mlogloss:0.71004
+[307]	train-mlogloss:0.05803	valid-mlogloss:0.70944
+[308]	train-mlogloss:0.05773	valid-mlogloss:0.70950
+[309]	train-mlogloss:0.05743	valid-mlogloss:0.70951
+[310]	train-mlogloss:0.05719	valid-mlogloss:0.70984
+[311]	train-mlogloss:0.05696	valid-mlogloss:0.71016
+[312]	train-mlogloss:0.05669	valid-mlogloss:0.71070
+[313]	train-mlogloss:0.05640	valid-mlogloss:0.71082
+[314]	train-mlogloss:0.05617	valid-mlogloss:0.71032
+[315]	train-mlogloss:0.05595	valid-mlogloss:0.70992
+[316]	train-mlogloss:0.05571	valid-mlogloss:0.71009
+[317]	train-mlogloss:0.05549	valid-mlogloss:0.70988
+[318]	train-mlogloss:0.05526	valid-mlogloss:0.70956
+[319]	train-mlogloss:0.05499	valid-mlogloss:0.70940
+[320]	train-mlogloss:0.05472	valid-mlogloss:0.70938
+[321]	train-mlogloss:0.05449	valid-mlogloss:0.70971
+[322]	train-mlogloss:0.05422	valid-mlogloss:0.71026
+[323]	train-mlogloss:0.05400	valid-mlogloss:0.71034
+[324]	train-mlogloss:0.05374	valid-mlogloss:0.71035
+[325]	train-mlogloss:0.05349	valid-mlogloss:0.71137
+[326]	train-mlogloss:0.05327	valid-mlogloss:0.71214
+[327]	train-mlogloss:0.05302	valid-mlogloss:0.71184
+[328]	train-mlogloss:0.05276	valid-mlogloss:0.71249
+[329]	train-mlogloss:0.05253	valid-mlogloss:0.71195
+[330]	train-mlogloss:0.05230	valid-mlogloss:0.71073
+[331]	train-mlogloss:0.05205	valid-mlogloss:0.70961
+[332]	train-mlogloss:0.05183	valid-mlogloss:0.70951
+[333]	train-mlogloss:0.05161	valid-mlogloss:0.70952
+[334]	train-mlogloss:0.05138	valid-mlogloss:0.70984
+[335]	train-mlogloss:0.05116	valid-mlogloss:0.70996
+[336]	train-mlogloss:0.05095	valid-mlogloss:0.70976
+[337]	train-mlogloss:0.05072	valid-mlogloss:0.71009
+[338]	train-mlogloss:0.05049	valid-mlogloss:0.70964
+[339]	train-mlogloss:0.05030	valid-mlogloss:0.70978
+[340]	train-mlogloss:0.05010	valid-mlogloss:0.70989
+[341]	train-mlogloss:0.04989	valid-mlogloss:0.70926
+[342]	train-mlogloss:0.04970	valid-mlogloss:0.70956
+[343]	train-mlogloss:0.04949	valid-mlogloss:0.70847
+[344]	train-mlogloss:0.04927	valid-mlogloss:0.70782
+[345]	train-mlogloss:0.04905	valid-mlogloss:0.70777
+[346]	train-mlogloss:0.04887	valid-mlogloss:0.70643
+[347]	train-mlogloss:0.04867	valid-mlogloss:0.70609
+[348]	train-mlogloss:0.04846	valid-mlogloss:0.70602
+[349]	train-mlogloss:0.04827	valid-mlogloss:0.70562
+[350]	train-mlogloss:0.04808	valid-mlogloss:0.70563
+[351]	train-mlogloss:0.04789	valid-mlogloss:0.70603
+[352]	train-mlogloss:0.04770	valid-mlogloss:0.70605
+[353]	train-mlogloss:0.04752	valid-mlogloss:0.70613
+[354]	train-mlogloss:0.04732	valid-mlogloss:0.70571
+[355]	train-mlogloss:0.04714	valid-mlogloss:0.70585
+[356]	train-mlogloss:0.04695	valid-mlogloss:0.70558
+[357]	train-mlogloss:0.04678	valid-mlogloss:0.70509
+[358]	train-mlogloss:0.04658	valid-mlogloss:0.70451
+[359]	train-mlogloss:0.04639	valid-mlogloss:0.70304
+[360]	train-mlogloss:0.04621	valid-mlogloss:0.70243
+[361]	train-mlogloss:0.04605	valid-mlogloss:0.70300
+[362]	train-mlogloss:0.04585	valid-mlogloss:0.70390
+[363]	train-mlogloss:0.04566	valid-mlogloss:0.70382
+[364]	train-mlogloss:0.04549	valid-mlogloss:0.70441
+[365]	train-mlogloss:0.04529	valid-mlogloss:0.70437
+[366]	train-mlogloss:0.04513	valid-mlogloss:0.70421
+[367]	train-mlogloss:0.04495	valid-mlogloss:0.70431
+[368]	train-mlogloss:0.04477	valid-mlogloss:0.70326
+[369]	train-mlogloss:0.04458	valid-mlogloss:0.70286
+[370]	train-mlogloss:0.04440	valid-mlogloss:0.70341
+[371]	train-mlogloss:0.04425	valid-mlogloss:0.70311
+[372]	train-mlogloss:0.04407	valid-mlogloss:0.70310
+[373]	train-mlogloss:0.04389	valid-mlogloss:0.70353
+[374]	train-mlogloss:0.04372	valid-mlogloss:0.70279
+[375]	train-mlogloss:0.04356	valid-mlogloss:0.70344
+[376]	train-mlogloss:0.04341	valid-mlogloss:0.70366
+[377]	train-mlogloss:0.04325	valid-mlogloss:0.70381
+[378]	train-mlogloss:0.04309	valid-mlogloss:0.70397
+[379]	train-mlogloss:0.04291	valid-mlogloss:0.70465
+[380]	train-mlogloss:0.04275	valid-mlogloss:0.70376
+[381]	train-mlogloss:0.04261	valid-mlogloss:0.70374
+[382]	train-mlogloss:0.04243	valid-mlogloss:0.70323
+[383]	train-mlogloss:0.04228	valid-mlogloss:0.70437
+[384]	train-mlogloss:0.04212	valid-mlogloss:0.70360
+[385]	train-mlogloss:0.04196	valid-mlogloss:0.70420
+[386]	train-mlogloss:0.04180	valid-mlogloss:0.70404
+[387]	train-mlogloss:0.04165	valid-mlogloss:0.70451
+[388]	train-mlogloss:0.04150	valid-mlogloss:0.70416
+[389]	train-mlogloss:0.04135	valid-mlogloss:0.70347
+[390]	train-mlogloss:0.04120	valid-mlogloss:0.70346
+[391]	train-mlogloss:0.04106	valid-mlogloss:0.70279
+[392]	train-mlogloss:0.04091	valid-mlogloss:0.70316
+[393]	train-mlogloss:0.04078	valid-mlogloss:0.70273
+[394]	train-mlogloss:0.04063	valid-mlogloss:0.70264
+[395]	train-mlogloss:0.04047	valid-mlogloss:0.70277
+[396]	train-mlogloss:0.04035	valid-mlogloss:0.70332
+[397]	train-mlogloss:0.04020	valid-mlogloss:0.70392
+[398]	train-mlogloss:0.04006	valid-mlogloss:0.70419
+[399]	train-mlogloss:0.03992	valid-mlogloss:0.70376
+[400]	train-mlogloss:0.03979	valid-mlogloss:0.70338
+[401]	train-mlogloss:0.03965	valid-mlogloss:0.70393
+[402]	train-mlogloss:0.03952	valid-mlogloss:0.70362
+[403]	train-mlogloss:0.03939	valid-mlogloss:0.70452
+[404]	train-mlogloss:0.03924	valid-mlogloss:0.70438
+[405]	train-mlogloss:0.03911	valid-mlogloss:0.70475
+[406]	train-mlogloss:0.03899	valid-mlogloss:0.70533
+[407]	train-mlogloss:0.03886	valid-mlogloss:0.70545
+[408]	train-mlogloss:0.03873	valid-mlogloss:0.70566
+[409]	train-mlogloss:0.03859	valid-mlogloss:0.70620
+[Extract leaf indices & hash]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:38:46] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+
+✓ Data loaded. Train=(6942, 823), Valid=(168, 823), Test=(2242, 823)
+Class distribution (train):
+0    0.390810
+1    0.277874
+2    0.331317
+Name: proportion, dtype: float64
+
+============================================================
+Train DeepGBM Deep Component (h+6)
+============================================================
+
+[Building Deep component...]
+Deep params: 3,318,403 | Device: cuda
+Class weights: {'low': 0.852930335422042, 'mid': 1.199585277345775, 'high': 1.0060869565217392}
+Epoch   1/100 | Loss 0.9593 | Val F1 0.4203 | LR 4.00e-04 | 0.4s ✓ warmup improve
+Epoch   2/100 | Loss 0.7777 | Val F1 0.4382 | LR 4.00e-04 | 0.4s ✓ warmup improve
+Epoch   3/100 | Loss 0.6834 | Val F1 0.4118 | LR 4.00e-04 | 0.4s
+Epoch   4/100 | Loss 0.6319 | Val F1 0.3973 | LR 4.00e-04 | 0.4s
+Epoch   5/100 | Loss 0.5805 | Val F1 0.4341 | LR 4.00e-04 | 0.4s
+Epoch   6/100 | Loss 0.5373 | Val F1 0.4222 | LR 4.00e-04 | 0.4s (patience 19/20)
+Epoch   7/100 | Loss 0.4976 | Val F1 0.4256 | LR 2.00e-04 | 0.4s (patience 18/20)
+Epoch   8/100 | Loss 0.4674 | Val F1 0.4017 | LR 2.00e-04 | 0.4s (patience 17/20)
+Epoch   9/100 | Loss 0.4518 | Val F1 0.4182 | LR 2.00e-04 | 0.4s (patience 16/20)
+Epoch  10/100 | Loss 0.4299 | Val F1 0.4190 | LR 2.00e-04 | 0.4s (patience 15/20)
+Epoch  11/100 | Loss 0.4184 | Val F1 0.4190 | LR 2.00e-04 | 0.4s (patience 15/20)
+Epoch  12/100 | Loss 0.3993 | Val F1 0.4190 | LR 2.00e-04 | 0.4s (patience 15/20)
+Epoch  13/100 | Loss 0.3926 | Val F1 0.4190 | LR 2.00e-04 | 0.4s (patience 15/20)
+Epoch  14/100 | Loss 0.3780 | Val F1 0.4190 | LR 2.00e-04 | 0.4s (patience 15/20)
+Epoch  15/100 | Loss 0.3562 | Val F1 0.4549 | LR 2.00e-04 | 0.4s ✓ NEW BEST
+Epoch  16/100 | Loss 0.3540 | Val F1 0.4549 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  17/100 | Loss 0.3394 | Val F1 0.4549 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  18/100 | Loss 0.3280 | Val F1 0.4549 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  19/100 | Loss 0.3188 | Val F1 0.4549 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  20/100 | Loss 0.3066 | Val F1 0.4510 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  21/100 | Loss 0.2858 | Val F1 0.4510 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  22/100 | Loss 0.2915 | Val F1 0.4510 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  23/100 | Loss 0.2788 | Val F1 0.4510 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  24/100 | Loss 0.2681 | Val F1 0.4510 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  25/100 | Loss 0.2515 | Val F1 0.4865 | LR 2.00e-04 | 0.4s ✓ NEW BEST
+Epoch  26/100 | Loss 0.2449 | Val F1 0.4865 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  27/100 | Loss 0.2391 | Val F1 0.4865 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  28/100 | Loss 0.2359 | Val F1 0.4865 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  29/100 | Loss 0.2229 | Val F1 0.4865 | LR 2.00e-04 | 0.4s (patience 20/20)
+Epoch  30/100 | Loss 0.2193 | Val F1 0.4578 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  31/100 | Loss 0.2137 | Val F1 0.4578 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  32/100 | Loss 0.2007 | Val F1 0.4578 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  33/100 | Loss 0.1959 | Val F1 0.4578 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  34/100 | Loss 0.1847 | Val F1 0.4578 | LR 2.00e-04 | 0.4s (patience 19/20)
+Epoch  35/100 | Loss 0.1872 | Val F1 0.4640 | LR 2.00e-04 | 0.4s (patience 18/20)
+Epoch  36/100 | Loss 0.1766 | Val F1 0.4640 | LR 2.00e-04 | 0.4s (patience 18/20)
+Epoch  37/100 | Loss 0.1676 | Val F1 0.4640 | LR 2.00e-04 | 0.4s (patience 18/20)
+Epoch  38/100 | Loss 0.1584 | Val F1 0.4640 | LR 2.00e-04 | 0.4s (patience 18/20)
+Epoch  39/100 | Loss 0.1598 | Val F1 0.4640 | LR 2.00e-04 | 0.4s (patience 18/20)
+Epoch  40/100 | Loss 0.1533 | Val F1 0.4661 | LR 2.00e-04 | 0.4s (patience 17/20)
+Epoch  41/100 | Loss 0.1481 | Val F1 0.4661 | LR 2.00e-04 | 0.4s (patience 17/20)
+Epoch  42/100 | Loss 0.1386 | Val F1 0.4661 | LR 2.00e-04 | 0.4s (patience 17/20)
+Epoch  43/100 | Loss 0.1391 | Val F1 0.4661 | LR 2.00e-04 | 0.4s (patience 17/20)
+Epoch  44/100 | Loss 0.1373 | Val F1 0.4661 | LR 2.00e-04 | 0.4s (patience 17/20)
+Epoch  45/100 | Loss 0.1285 | Val F1 0.4521 | LR 2.00e-04 | 0.4s (patience 16/20)
+Epoch  46/100 | Loss 0.1237 | Val F1 0.4521 | LR 2.00e-04 | 0.4s (patience 16/20)
+Epoch  47/100 | Loss 0.1186 | Val F1 0.4521 | LR 2.00e-04 | 0.4s (patience 16/20)
+Epoch  48/100 | Loss 0.1194 | Val F1 0.4521 | LR 2.00e-04 | 0.4s (patience 16/20)
+Epoch  49/100 | Loss 0.1154 | Val F1 0.4521 | LR 2.00e-04 | 0.4s (patience 16/20)
+Epoch  50/100 | Loss 0.1024 | Val F1 0.4761 | LR 1.00e-04 | 0.4s (patience 15/20)
+Epoch  51/100 | Loss 0.0987 | Val F1 0.4761 | LR 1.00e-04 | 0.4s (patience 15/20)
+Epoch  52/100 | Loss 0.0916 | Val F1 0.4761 | LR 1.00e-04 | 0.4s (patience 15/20)
+Epoch  53/100 | Loss 0.0970 | Val F1 0.4761 | LR 1.00e-04 | 0.4s (patience 15/20)
+Epoch  54/100 | Loss 0.0965 | Val F1 0.4761 | LR 1.00e-04 | 0.4s (patience 15/20)
+Epoch  55/100 | Loss 0.0888 | Val F1 0.4655 | LR 1.00e-04 | 0.4s (patience 14/20)
+Epoch  56/100 | Loss 0.0917 | Val F1 0.4655 | LR 1.00e-04 | 0.4s (patience 14/20)
+Epoch  57/100 | Loss 0.0855 | Val F1 0.4655 | LR 1.00e-04 | 0.4s (patience 14/20)
+Epoch  58/100 | Loss 0.0841 | Val F1 0.4655 | LR 1.00e-04 | 0.4s (patience 14/20)
+Epoch  59/100 | Loss 0.0777 | Val F1 0.4655 | LR 1.00e-04 | 0.4s (patience 14/20)
+Epoch  60/100 | Loss 0.0721 | Val F1 0.5001 | LR 1.00e-04 | 0.4s ✓ NEW BEST
+Epoch  61/100 | Loss 0.0792 | Val F1 0.5001 | LR 1.00e-04 | 0.4s (patience 20/20)
+Epoch  62/100 | Loss 0.0846 | Val F1 0.5001 | LR 1.00e-04 | 0.4s (patience 20/20)
+Epoch  63/100 | Loss 0.0767 | Val F1 0.5001 | LR 1.00e-04 | 0.4s (patience 20/20)
+Epoch  64/100 | Loss 0.0711 | Val F1 0.5001 | LR 1.00e-04 | 0.4s (patience 20/20)
+Epoch  65/100 | Loss 0.0686 | Val F1 0.4867 | LR 1.00e-04 | 0.4s (patience 19/20)
+Epoch  66/100 | Loss 0.0740 | Val F1 0.4867 | LR 1.00e-04 | 0.4s (patience 19/20)
+Epoch  67/100 | Loss 0.0731 | Val F1 0.4867 | LR 1.00e-04 | 0.4s (patience 19/20)
+Epoch  68/100 | Loss 0.0693 | Val F1 0.4867 | LR 1.00e-04 | 0.4s (patience 19/20)
+Epoch  69/100 | Loss 0.0658 | Val F1 0.4867 | LR 1.00e-04 | 0.4s (patience 19/20)
+Epoch  70/100 | Loss 0.0666 | Val F1 0.4943 | LR 1.00e-04 | 0.4s (patience 18/20)
+Epoch  71/100 | Loss 0.0610 | Val F1 0.4943 | LR 1.00e-04 | 0.4s (patience 18/20)
+Epoch  72/100 | Loss 0.0628 | Val F1 0.4943 | LR 1.00e-04 | 0.4s (patience 18/20)
+Epoch  73/100 | Loss 0.0660 | Val F1 0.4943 | LR 1.00e-04 | 0.4s (patience 18/20)
+Epoch  74/100 | Loss 0.0566 | Val F1 0.4943 | LR 1.00e-04 | 0.4s (patience 18/20)
+Epoch  75/100 | Loss 0.0580 | Val F1 0.4639 | LR 1.00e-04 | 0.4s (patience 17/20)
+Epoch  76/100 | Loss 0.0565 | Val F1 0.4639 | LR 1.00e-04 | 0.4s (patience 17/20)
+Epoch  77/100 | Loss 0.0625 | Val F1 0.4639 | LR 1.00e-04 | 0.4s (patience 17/20)
+Epoch  78/100 | Loss 0.0516 | Val F1 0.4639 | LR 1.00e-04 | 0.4s (patience 17/20)
+Epoch  79/100 | Loss 0.0530 | Val F1 0.4639 | LR 1.00e-04 | 0.4s (patience 17/20)
+Epoch  80/100 | Loss 0.0518 | Val F1 0.4940 | LR 1.00e-04 | 0.4s (patience 16/20)
+Epoch  81/100 | Loss 0.0536 | Val F1 0.4940 | LR 1.00e-04 | 0.4s (patience 16/20)
+Epoch  82/100 | Loss 0.0526 | Val F1 0.4940 | LR 1.00e-04 | 0.4s (patience 16/20)
+Epoch  83/100 | Loss 0.0514 | Val F1 0.4940 | LR 1.00e-04 | 0.4s (patience 16/20)
+Epoch  84/100 | Loss 0.0483 | Val F1 0.4940 | LR 1.00e-04 | 0.4s (patience 16/20)
+Epoch  85/100 | Loss 0.0515 | Val F1 0.4759 | LR 5.00e-05 | 0.4s (patience 15/20)
+Epoch  86/100 | Loss 0.0405 | Val F1 0.4759 | LR 5.00e-05 | 0.4s (patience 15/20)
+Epoch  87/100 | Loss 0.0435 | Val F1 0.4759 | LR 5.00e-05 | 0.4s (patience 15/20)
+Epoch  88/100 | Loss 0.0449 | Val F1 0.4759 | LR 5.00e-05 | 0.4s (patience 15/20)
+Epoch  89/100 | Loss 0.0458 | Val F1 0.4759 | LR 5.00e-05 | 0.4s (patience 15/20)
+Epoch  90/100 | Loss 0.0454 | Val F1 0.4787 | LR 5.00e-05 | 0.4s (patience 14/20)
+Epoch  91/100 | Loss 0.0403 | Val F1 0.4787 | LR 5.00e-05 | 0.4s (patience 14/20)
+Epoch  92/100 | Loss 0.0384 | Val F1 0.4787 | LR 5.00e-05 | 0.4s (patience 14/20)
+Epoch  93/100 | Loss 0.0402 | Val F1 0.4787 | LR 5.00e-05 | 0.4s (patience 14/20)
+Epoch  94/100 | Loss 0.0354 | Val F1 0.4787 | LR 5.00e-05 | 0.4s (patience 14/20)
+Epoch  95/100 | Loss 0.0429 | Val F1 0.4882 | LR 5.00e-05 | 0.4s (patience 13/20)
+Epoch  96/100 | Loss 0.0396 | Val F1 0.4882 | LR 5.00e-05 | 0.4s (patience 13/20)
+Epoch  97/100 | Loss 0.0396 | Val F1 0.4882 | LR 5.00e-05 | 0.4s (patience 13/20)
+Epoch  98/100 | Loss 0.0381 | Val F1 0.4882 | LR 5.00e-05 | 0.4s (patience 13/20)
+Epoch  99/100 | Loss 0.0420 | Val F1 0.4882 | LR 5.00e-05 | 0.4s (patience 13/20)
+Epoch 100/100 | Loss 0.0377 | Val F1 0.4930 | LR 5.00e-05 | 0.4s (patience 12/20)
+
+✓ Deep training done in 0.62 min | Best val F1=0.5001
+
+============================================================
+EVALUATION - DeepGBM (h+6)
+============================================================
+
+[Search xgb_weight] best_w=0.80 on valid (F1_macro=0.6517)
+
+Train Results (h+6):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.9951, F1_macro=0.9949
+XGB-only:            Acc=1.0000, F1_macro=1.0000
+Deep+XGB (w=0.80): Acc=1.0000, F1_macro=1.0000
+
+Naive baseline:
+  Acc:     0.4667
+  F1Macro: 0.4575
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     1.0000    1.0000    1.0000      2300
+         low     1.0000    1.0000    1.0000      2713
+         mid     1.0000    1.0000    1.0000      1929
+
+    accuracy                         1.0000      6942
+   macro avg     1.0000    1.0000    1.0000      6942
+weighted avg     1.0000    1.0000    1.0000      6942
+
+
+Valid Results (h+6):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.5476, F1_macro=0.5001
+XGB-only:            Acc=0.6726, F1_macro=0.6420
+Deep+XGB (w=0.80): Acc=0.6726, F1_macro=0.6517
+
+Naive baseline:
+  Acc:     0.7083
+  F1Macro: 0.6245
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.4571    0.9412    0.6154        17
+         low     0.9538    0.6200    0.7515       100
+         mid     0.5147    0.6863    0.5882        51
+
+    accuracy                         0.6726       168
+   macro avg     0.6419    0.7492    0.6517       168
+weighted avg     0.7703    0.6726    0.6882       168
+
+
+Test Results (h+6):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.5602, F1_macro=0.5083
+XGB-only:            Acc=0.6213, F1_macro=0.5654
+Deep+XGB (w=0.80): Acc=0.6173, F1_macro=0.5574
+
+Naive baseline:
+  Acc:     0.4193
+  F1Macro: 0.3799
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.5023    0.8718    0.6374       624
+         low     0.8495    0.6764    0.7532      1060
+         mid     0.3905    0.2204    0.2818       558
+
+    accuracy                         0.6173      2242
+   macro avg     0.5808    0.5895    0.5574      2242
+weighted avg     0.6386    0.6173    0.6036      2242
+
+Training history saved to: /app/classification-analysis/deepgbm_unified_v2/h6/training_history_h6.png
+Confusion matrices saved to: /app/classification-analysis/deepgbm_unified_v2/h6/confusion_matrices_h6.png
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:39:27] WARNING: /workspace/src/c_api/c_api.cc:1240: Saving into deprecated binary model format, please consider using `json` or `ubj`. Model format will default to JSON in XGBoost 2.2 if not specified.
+  warnings.warn(smsg, UserWarning)
+Models & results saved to: /app/classification-analysis/deepgbm_unified_v2/h6
+
+================================================================================
+Completed horizon h+6
+================================================================================
+
+
+################################################################################
+# HORIZON: 12 HOUR(S)
+################################################################################
+
+============================================================
+Loading data for horizon h+12
+============================================================
+Features: 823
+
+[Train XGBoost]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:39:28] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+[0]	train-mlogloss:1.07383	valid-mlogloss:1.10035
+[1]	train-mlogloss:1.05019	valid-mlogloss:1.09948
+[2]	train-mlogloss:1.02794	valid-mlogloss:1.10108
+[3]	train-mlogloss:1.00550	valid-mlogloss:1.10060
+[4]	train-mlogloss:0.98390	valid-mlogloss:1.09830
+[5]	train-mlogloss:0.96367	valid-mlogloss:1.09724
+[6]	train-mlogloss:0.94422	valid-mlogloss:1.09812
+[7]	train-mlogloss:0.92445	valid-mlogloss:1.09939
+[8]	train-mlogloss:0.90564	valid-mlogloss:1.09660
+[9]	train-mlogloss:0.88764	valid-mlogloss:1.09524
+[10]	train-mlogloss:0.86998	valid-mlogloss:1.09030
+[11]	train-mlogloss:0.85219	valid-mlogloss:1.09137
+[12]	train-mlogloss:0.83624	valid-mlogloss:1.09376
+[13]	train-mlogloss:0.82089	valid-mlogloss:1.08659
+[14]	train-mlogloss:0.80517	valid-mlogloss:1.08860
+[15]	train-mlogloss:0.78967	valid-mlogloss:1.08951
+[16]	train-mlogloss:0.77494	valid-mlogloss:1.08692
+[17]	train-mlogloss:0.76049	valid-mlogloss:1.08380
+[18]	train-mlogloss:0.74630	valid-mlogloss:1.08367
+[19]	train-mlogloss:0.73280	valid-mlogloss:1.08208
+[20]	train-mlogloss:0.71959	valid-mlogloss:1.08824
+[21]	train-mlogloss:0.70626	valid-mlogloss:1.08825
+[22]	train-mlogloss:0.69378	valid-mlogloss:1.09014
+[23]	train-mlogloss:0.68182	valid-mlogloss:1.08664
+[24]	train-mlogloss:0.66927	valid-mlogloss:1.08483
+[25]	train-mlogloss:0.65806	valid-mlogloss:1.08822
+[26]	train-mlogloss:0.64719	valid-mlogloss:1.08525
+[27]	train-mlogloss:0.63640	valid-mlogloss:1.08637
+[28]	train-mlogloss:0.62603	valid-mlogloss:1.08428
+[29]	train-mlogloss:0.61589	valid-mlogloss:1.08492
+[30]	train-mlogloss:0.60607	valid-mlogloss:1.08436
+[31]	train-mlogloss:0.59606	valid-mlogloss:1.07996
+[32]	train-mlogloss:0.58618	valid-mlogloss:1.08074
+[33]	train-mlogloss:0.57702	valid-mlogloss:1.08214
+[34]	train-mlogloss:0.56725	valid-mlogloss:1.08365
+[35]	train-mlogloss:0.55846	valid-mlogloss:1.08094
+[36]	train-mlogloss:0.54950	valid-mlogloss:1.08382
+[37]	train-mlogloss:0.54103	valid-mlogloss:1.08573
+[38]	train-mlogloss:0.53239	valid-mlogloss:1.08543
+[39]	train-mlogloss:0.52447	valid-mlogloss:1.08702
+[40]	train-mlogloss:0.51637	valid-mlogloss:1.08831
+[41]	train-mlogloss:0.50848	valid-mlogloss:1.09091
+[42]	train-mlogloss:0.50096	valid-mlogloss:1.09292
+[43]	train-mlogloss:0.49344	valid-mlogloss:1.09029
+[44]	train-mlogloss:0.48577	valid-mlogloss:1.08826
+[45]	train-mlogloss:0.47838	valid-mlogloss:1.09008
+[46]	train-mlogloss:0.47119	valid-mlogloss:1.09361
+[47]	train-mlogloss:0.46463	valid-mlogloss:1.09508
+[48]	train-mlogloss:0.45748	valid-mlogloss:1.09855
+[49]	train-mlogloss:0.45096	valid-mlogloss:1.09888
+[50]	train-mlogloss:0.44439	valid-mlogloss:1.09460
+[51]	train-mlogloss:0.43823	valid-mlogloss:1.09255
+[52]	train-mlogloss:0.43221	valid-mlogloss:1.09454
+[53]	train-mlogloss:0.42620	valid-mlogloss:1.09694
+[54]	train-mlogloss:0.42024	valid-mlogloss:1.09587
+[55]	train-mlogloss:0.41437	valid-mlogloss:1.09679
+[56]	train-mlogloss:0.40856	valid-mlogloss:1.10015
+[57]	train-mlogloss:0.40324	valid-mlogloss:1.10065
+[58]	train-mlogloss:0.39750	valid-mlogloss:1.09622
+[59]	train-mlogloss:0.39209	valid-mlogloss:1.09465
+[60]	train-mlogloss:0.38715	valid-mlogloss:1.09356
+[61]	train-mlogloss:0.38241	valid-mlogloss:1.09134
+[62]	train-mlogloss:0.37778	valid-mlogloss:1.09195
+[63]	train-mlogloss:0.37268	valid-mlogloss:1.09378
+[64]	train-mlogloss:0.36748	valid-mlogloss:1.09354
+[65]	train-mlogloss:0.36233	valid-mlogloss:1.09383
+[66]	train-mlogloss:0.35759	valid-mlogloss:1.09323
+[67]	train-mlogloss:0.35288	valid-mlogloss:1.09385
+[68]	train-mlogloss:0.34857	valid-mlogloss:1.09369
+[69]	train-mlogloss:0.34430	valid-mlogloss:1.09396
+[70]	train-mlogloss:0.33955	valid-mlogloss:1.09159
+[71]	train-mlogloss:0.33500	valid-mlogloss:1.09167
+[72]	train-mlogloss:0.33094	valid-mlogloss:1.09071
+[73]	train-mlogloss:0.32658	valid-mlogloss:1.09396
+[74]	train-mlogloss:0.32254	valid-mlogloss:1.09274
+[75]	train-mlogloss:0.31882	valid-mlogloss:1.09178
+[76]	train-mlogloss:0.31486	valid-mlogloss:1.08948
+[77]	train-mlogloss:0.31135	valid-mlogloss:1.08700
+[78]	train-mlogloss:0.30767	valid-mlogloss:1.08460
+[79]	train-mlogloss:0.30403	valid-mlogloss:1.08192
+[80]	train-mlogloss:0.30031	valid-mlogloss:1.08086
+[81]	train-mlogloss:0.29691	valid-mlogloss:1.07859
+[82]	train-mlogloss:0.29354	valid-mlogloss:1.07568
+[83]	train-mlogloss:0.29025	valid-mlogloss:1.07501
+[84]	train-mlogloss:0.28671	valid-mlogloss:1.07617
+[85]	train-mlogloss:0.28375	valid-mlogloss:1.07651
+[86]	train-mlogloss:0.28063	valid-mlogloss:1.07737
+[87]	train-mlogloss:0.27721	valid-mlogloss:1.07935
+[88]	train-mlogloss:0.27437	valid-mlogloss:1.07854
+[89]	train-mlogloss:0.27096	valid-mlogloss:1.07913
+[90]	train-mlogloss:0.26827	valid-mlogloss:1.08017
+[91]	train-mlogloss:0.26507	valid-mlogloss:1.08166
+[92]	train-mlogloss:0.26218	valid-mlogloss:1.08064
+[93]	train-mlogloss:0.25952	valid-mlogloss:1.08143
+[94]	train-mlogloss:0.25664	valid-mlogloss:1.08383
+[95]	train-mlogloss:0.25404	valid-mlogloss:1.08623
+[96]	train-mlogloss:0.25150	valid-mlogloss:1.09000
+[97]	train-mlogloss:0.24889	valid-mlogloss:1.09037
+[98]	train-mlogloss:0.24621	valid-mlogloss:1.08957
+[99]	train-mlogloss:0.24364	valid-mlogloss:1.09149
+[100]	train-mlogloss:0.24111	valid-mlogloss:1.09253
+[101]	train-mlogloss:0.23893	valid-mlogloss:1.09108
+[102]	train-mlogloss:0.23698	valid-mlogloss:1.09524
+[103]	train-mlogloss:0.23431	valid-mlogloss:1.09606
+[104]	train-mlogloss:0.23163	valid-mlogloss:1.09612
+[105]	train-mlogloss:0.22942	valid-mlogloss:1.10076
+[106]	train-mlogloss:0.22742	valid-mlogloss:1.10320
+[107]	train-mlogloss:0.22526	valid-mlogloss:1.10424
+[108]	train-mlogloss:0.22272	valid-mlogloss:1.10597
+[109]	train-mlogloss:0.22036	valid-mlogloss:1.10600
+[110]	train-mlogloss:0.21820	valid-mlogloss:1.10398
+[111]	train-mlogloss:0.21614	valid-mlogloss:1.10377
+[112]	train-mlogloss:0.21405	valid-mlogloss:1.10445
+[113]	train-mlogloss:0.21176	valid-mlogloss:1.10607
+[114]	train-mlogloss:0.20986	valid-mlogloss:1.10653
+[115]	train-mlogloss:0.20804	valid-mlogloss:1.10560
+[116]	train-mlogloss:0.20614	valid-mlogloss:1.10561
+[117]	train-mlogloss:0.20437	valid-mlogloss:1.10161
+[118]	train-mlogloss:0.20222	valid-mlogloss:1.10167
+[119]	train-mlogloss:0.20044	valid-mlogloss:1.10164
+[120]	train-mlogloss:0.19879	valid-mlogloss:1.10241
+[121]	train-mlogloss:0.19708	valid-mlogloss:1.10269
+[122]	train-mlogloss:0.19510	valid-mlogloss:1.10519
+[123]	train-mlogloss:0.19349	valid-mlogloss:1.10461
+[124]	train-mlogloss:0.19168	valid-mlogloss:1.10526
+[125]	train-mlogloss:0.19017	valid-mlogloss:1.10721
+[126]	train-mlogloss:0.18854	valid-mlogloss:1.10717
+[127]	train-mlogloss:0.18686	valid-mlogloss:1.10475
+[128]	train-mlogloss:0.18511	valid-mlogloss:1.10580
+[129]	train-mlogloss:0.18380	valid-mlogloss:1.10627
+[130]	train-mlogloss:0.18227	valid-mlogloss:1.10667
+[131]	train-mlogloss:0.18062	valid-mlogloss:1.10482
+[132]	train-mlogloss:0.17910	valid-mlogloss:1.10820
+[133]	train-mlogloss:0.17755	valid-mlogloss:1.10849
+[Extract leaf indices & hash]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:39:33] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+
+✓ Data loaded. Train=(6942, 823), Valid=(168, 823), Test=(2236, 823)
+Class distribution (train):
+0    0.389945
+1    0.278450
+2    0.331605
+Name: proportion, dtype: float64
+
+============================================================
+Train DeepGBM Deep Component (h+12)
+============================================================
+
+[Building Deep component...]
+Deep params: 3,318,403 | Device: cuda
+Class weights: {'low': 0.8548208348725527, 'mid': 1.1971029487842733, 'high': 1.0052128583840139}
+Epoch   1/120 | Loss 0.9288 | Val F1 0.4526 | LR 3.00e-04 | 0.4s ✓ warmup improve
+Epoch   2/120 | Loss 0.7584 | Val F1 0.4792 | LR 3.00e-04 | 0.3s ✓ warmup improve
+Epoch   3/120 | Loss 0.6948 | Val F1 0.4355 | LR 3.00e-04 | 0.3s
+Epoch   4/120 | Loss 0.6503 | Val F1 0.4507 | LR 3.00e-04 | 0.3s
+Epoch   5/120 | Loss 0.6131 | Val F1 0.4366 | LR 3.00e-04 | 0.3s
+Epoch   6/120 | Loss 0.5759 | Val F1 0.4540 | LR 3.00e-04 | 0.3s
+Epoch   7/120 | Loss 0.5477 | Val F1 0.4453 | LR 1.50e-04 | 0.3s (patience 21/22)
+Epoch   8/120 | Loss 0.5278 | Val F1 0.4495 | LR 1.50e-04 | 0.3s (patience 20/22)
+Epoch   9/120 | Loss 0.5102 | Val F1 0.4555 | LR 1.50e-04 | 0.3s (patience 19/22)
+Epoch  10/120 | Loss 0.4929 | Val F1 0.4529 | LR 1.50e-04 | 0.3s (patience 18/22)
+Epoch  11/120 | Loss 0.4750 | Val F1 0.4529 | LR 1.50e-04 | 0.3s (patience 18/22)
+Epoch  12/120 | Loss 0.4617 | Val F1 0.4529 | LR 1.50e-04 | 0.3s (patience 18/22)
+Epoch  13/120 | Loss 0.4491 | Val F1 0.4529 | LR 1.50e-04 | 0.3s (patience 18/22)
+Epoch  14/120 | Loss 0.4368 | Val F1 0.4529 | LR 1.50e-04 | 0.3s (patience 18/22)
+Epoch  15/120 | Loss 0.4245 | Val F1 0.4522 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  16/120 | Loss 0.4142 | Val F1 0.4522 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  17/120 | Loss 0.4082 | Val F1 0.4522 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  18/120 | Loss 0.3950 | Val F1 0.4522 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  19/120 | Loss 0.3924 | Val F1 0.4522 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  20/120 | Loss 0.3775 | Val F1 0.4334 | LR 7.50e-05 | 0.3s (patience 16/22)
+Epoch  21/120 | Loss 0.3754 | Val F1 0.4334 | LR 7.50e-05 | 0.3s (patience 16/22)
+Epoch  22/120 | Loss 0.3658 | Val F1 0.4334 | LR 7.50e-05 | 0.3s (patience 16/22)
+Epoch  23/120 | Loss 0.3562 | Val F1 0.4334 | LR 7.50e-05 | 0.3s (patience 16/22)
+Epoch  24/120 | Loss 0.3476 | Val F1 0.4334 | LR 7.50e-05 | 0.3s (patience 16/22)
+Epoch  25/120 | Loss 0.3472 | Val F1 0.4323 | LR 7.50e-05 | 0.3s (patience 15/22)
+Epoch  26/120 | Loss 0.3440 | Val F1 0.4323 | LR 7.50e-05 | 0.3s (patience 15/22)
+Epoch  27/120 | Loss 0.3283 | Val F1 0.4323 | LR 7.50e-05 | 0.3s (patience 15/22)
+Epoch  28/120 | Loss 0.3373 | Val F1 0.4323 | LR 7.50e-05 | 0.3s (patience 15/22)
+Epoch  29/120 | Loss 0.3246 | Val F1 0.4323 | LR 7.50e-05 | 0.3s (patience 15/22)
+Epoch  30/120 | Loss 0.3235 | Val F1 0.4248 | LR 7.50e-05 | 0.3s (patience 14/22)
+Epoch  31/120 | Loss 0.3190 | Val F1 0.4248 | LR 7.50e-05 | 0.3s (patience 14/22)
+Epoch  32/120 | Loss 0.3114 | Val F1 0.4248 | LR 7.50e-05 | 0.3s (patience 14/22)
+Epoch  33/120 | Loss 0.3097 | Val F1 0.4248 | LR 7.50e-05 | 0.3s (patience 14/22)
+Epoch  34/120 | Loss 0.3054 | Val F1 0.4248 | LR 7.50e-05 | 0.3s (patience 14/22)
+Epoch  35/120 | Loss 0.3017 | Val F1 0.4126 | LR 7.50e-05 | 0.3s (patience 13/22)
+Epoch  36/120 | Loss 0.2937 | Val F1 0.4126 | LR 7.50e-05 | 0.3s (patience 13/22)
+Epoch  37/120 | Loss 0.2912 | Val F1 0.4126 | LR 7.50e-05 | 0.3s (patience 13/22)
+Epoch  38/120 | Loss 0.2810 | Val F1 0.4126 | LR 7.50e-05 | 0.3s (patience 13/22)
+Epoch  39/120 | Loss 0.2823 | Val F1 0.4126 | LR 7.50e-05 | 0.3s (patience 13/22)
+Epoch  40/120 | Loss 0.2809 | Val F1 0.4147 | LR 7.50e-05 | 0.3s (patience 12/22)
+Epoch  41/120 | Loss 0.2763 | Val F1 0.4147 | LR 7.50e-05 | 0.3s (patience 12/22)
+Epoch  42/120 | Loss 0.2748 | Val F1 0.4147 | LR 7.50e-05 | 0.3s (patience 12/22)
+Epoch  43/120 | Loss 0.2659 | Val F1 0.4147 | LR 7.50e-05 | 0.3s (patience 12/22)
+Epoch  44/120 | Loss 0.2697 | Val F1 0.4147 | LR 7.50e-05 | 0.3s (patience 12/22)
+Epoch  45/120 | Loss 0.2662 | Val F1 0.4183 | LR 3.75e-05 | 0.3s (patience 11/22)
+Epoch  46/120 | Loss 0.2629 | Val F1 0.4183 | LR 3.75e-05 | 0.3s (patience 11/22)
+Epoch  47/120 | Loss 0.2510 | Val F1 0.4183 | LR 3.75e-05 | 0.3s (patience 11/22)
+Epoch  48/120 | Loss 0.2520 | Val F1 0.4183 | LR 3.75e-05 | 0.3s (patience 11/22)
+Epoch  49/120 | Loss 0.2582 | Val F1 0.4183 | LR 3.75e-05 | 0.3s (patience 11/22)
+Epoch  50/120 | Loss 0.2479 | Val F1 0.4033 | LR 3.75e-05 | 0.3s (patience 10/22)
+Epoch  51/120 | Loss 0.2517 | Val F1 0.4033 | LR 3.75e-05 | 0.3s (patience 10/22)
+Epoch  52/120 | Loss 0.2438 | Val F1 0.4033 | LR 3.75e-05 | 0.3s (patience 10/22)
+Epoch  53/120 | Loss 0.2404 | Val F1 0.4033 | LR 3.75e-05 | 0.3s (patience 10/22)
+Epoch  54/120 | Loss 0.2406 | Val F1 0.4033 | LR 3.75e-05 | 0.3s (patience 10/22)
+Epoch  55/120 | Loss 0.2402 | Val F1 0.4095 | LR 3.75e-05 | 0.4s (patience 9/22)
+Epoch  56/120 | Loss 0.2391 | Val F1 0.4095 | LR 3.75e-05 | 0.3s (patience 9/22)
+Epoch  57/120 | Loss 0.2410 | Val F1 0.4095 | LR 3.75e-05 | 0.4s (patience 9/22)
+Epoch  58/120 | Loss 0.2354 | Val F1 0.4095 | LR 3.75e-05 | 0.3s (patience 9/22)
+Epoch  59/120 | Loss 0.2346 | Val F1 0.4095 | LR 3.75e-05 | 0.3s (patience 9/22)
+Epoch  60/120 | Loss 0.2347 | Val F1 0.4081 | LR 3.75e-05 | 0.4s (patience 8/22)
+Epoch  61/120 | Loss 0.2277 | Val F1 0.4081 | LR 3.75e-05 | 0.3s (patience 8/22)
+Epoch  62/120 | Loss 0.2265 | Val F1 0.4081 | LR 3.75e-05 | 0.3s (patience 8/22)
+Epoch  63/120 | Loss 0.2234 | Val F1 0.4081 | LR 3.75e-05 | 0.3s (patience 8/22)
+Epoch  64/120 | Loss 0.2291 | Val F1 0.4081 | LR 3.75e-05 | 0.3s (patience 8/22)
+Epoch  65/120 | Loss 0.2299 | Val F1 0.4119 | LR 3.75e-05 | 0.4s (patience 7/22)
+Epoch  66/120 | Loss 0.2198 | Val F1 0.4119 | LR 3.75e-05 | 0.4s (patience 7/22)
+Epoch  67/120 | Loss 0.2126 | Val F1 0.4119 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  68/120 | Loss 0.2166 | Val F1 0.4119 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  69/120 | Loss 0.2117 | Val F1 0.4119 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  70/120 | Loss 0.2080 | Val F1 0.4085 | LR 1.87e-05 | 0.3s (patience 6/22)
+Epoch  71/120 | Loss 0.2152 | Val F1 0.4085 | LR 1.87e-05 | 0.3s (patience 6/22)
+Epoch  72/120 | Loss 0.2166 | Val F1 0.4085 | LR 1.87e-05 | 0.3s (patience 6/22)
+Epoch  73/120 | Loss 0.2041 | Val F1 0.4085 | LR 1.87e-05 | 0.3s (patience 6/22)
+Epoch  74/120 | Loss 0.2060 | Val F1 0.4085 | LR 1.87e-05 | 0.4s (patience 6/22)
+Epoch  75/120 | Loss 0.2103 | Val F1 0.4042 | LR 1.87e-05 | 0.3s (patience 5/22)
+Epoch  76/120 | Loss 0.2048 | Val F1 0.4042 | LR 1.87e-05 | 0.3s (patience 5/22)
+Epoch  77/120 | Loss 0.2141 | Val F1 0.4042 | LR 1.87e-05 | 0.3s (patience 5/22)
+Epoch  78/120 | Loss 0.2005 | Val F1 0.4042 | LR 1.87e-05 | 0.4s (patience 5/22)
+Epoch  79/120 | Loss 0.2078 | Val F1 0.4042 | LR 1.87e-05 | 0.3s (patience 5/22)
+Epoch  80/120 | Loss 0.2088 | Val F1 0.4052 | LR 1.87e-05 | 0.4s (patience 4/22)
+Epoch  81/120 | Loss 0.2127 | Val F1 0.4052 | LR 1.87e-05 | 0.3s (patience 4/22)
+Epoch  82/120 | Loss 0.2132 | Val F1 0.4052 | LR 1.87e-05 | 0.4s (patience 4/22)
+Epoch  83/120 | Loss 0.2027 | Val F1 0.4052 | LR 1.87e-05 | 0.3s (patience 4/22)
+Epoch  84/120 | Loss 0.1975 | Val F1 0.4052 | LR 1.87e-05 | 0.3s (patience 4/22)
+Epoch  85/120 | Loss 0.1985 | Val F1 0.4082 | LR 1.87e-05 | 0.3s (patience 3/22)
+Epoch  86/120 | Loss 0.2015 | Val F1 0.4082 | LR 1.87e-05 | 0.3s (patience 3/22)
+Epoch  87/120 | Loss 0.1993 | Val F1 0.4082 | LR 1.87e-05 | 0.3s (patience 3/22)
+Epoch  88/120 | Loss 0.1947 | Val F1 0.4082 | LR 1.87e-05 | 0.4s (patience 3/22)
+Epoch  89/120 | Loss 0.1990 | Val F1 0.4082 | LR 1.87e-05 | 0.3s (patience 3/22)
+Epoch  90/120 | Loss 0.1898 | Val F1 0.3965 | LR 1.87e-05 | 0.4s (patience 2/22)
+Epoch  91/120 | Loss 0.1971 | Val F1 0.3965 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch  92/120 | Loss 0.1933 | Val F1 0.3965 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch  93/120 | Loss 0.2032 | Val F1 0.3965 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch  94/120 | Loss 0.1879 | Val F1 0.3965 | LR 1.87e-05 | 0.4s (patience 2/22)
+Epoch  95/120 | Loss 0.1973 | Val F1 0.3965 | LR 9.37e-06 | 0.4s (patience 1/22)
+Epoch  96/120 | Loss 0.1939 | Val F1 0.3965 | LR 9.37e-06 | 0.4s (patience 1/22)
+Epoch  97/120 | Loss 0.1943 | Val F1 0.3965 | LR 9.37e-06 | 0.4s (patience 1/22)
+Epoch  98/120 | Loss 0.1971 | Val F1 0.3965 | LR 9.37e-06 | 0.4s (patience 1/22)
+Epoch  99/120 | Loss 0.1842 | Val F1 0.3965 | LR 9.37e-06 | 0.3s (patience 1/22)
+Epoch 100/120 | Loss 0.1933 | Val F1 0.3956 | LR 9.37e-06 | 0.4s (patience 0/22)
+
+⚠ Early stopping at epoch 100
+
+✓ Deep training done in 0.57 min | Best val F1=0.4792
+
+============================================================
+EVALUATION - DeepGBM (h+12)
+============================================================
+
+[Search xgb_weight] best_w=0.10 on valid (F1_macro=0.4798)
+
+Train Results (h+12):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.7298, F1_macro=0.7245
+XGB-only:            Acc=0.9960, F1_macro=0.9959
+Deep+XGB (w=0.10): Acc=0.7629, F1_macro=0.7576
+
+Naive baseline:
+  Acc:     0.4368
+  F1Macro: 0.4312
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.8118    0.7737    0.7923      2302
+         low     0.8466    0.7868    0.8156      2707
+         mid     0.6205    0.7165    0.6651      1933
+
+    accuracy                         0.7629      6942
+   macro avg     0.7596    0.7590    0.7576      6942
+weighted avg     0.7721    0.7629    0.7660      6942
+
+
+Valid Results (h+12):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.4821, F1_macro=0.4792
+XGB-only:            Acc=0.3750, F1_macro=0.3862
+Deep+XGB (w=0.10): Acc=0.4821, F1_macro=0.4798
+
+Naive baseline:
+  Acc:     0.6190
+  F1Macro: 0.5275
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.3182    0.9333    0.4746        15
+         low     0.9024    0.3524    0.5068       105
+         mid     0.3614    0.6250    0.4580        48
+
+    accuracy                         0.4821       168
+   macro avg     0.5274    0.6369    0.4798       168
+weighted avg     0.6957    0.4821    0.4900       168
+
+
+Test Results (h+12):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.5054, F1_macro=0.4815
+XGB-only:            Acc=0.5894, F1_macro=0.5448
+Deep+XGB (w=0.10): Acc=0.5134, F1_macro=0.4860
+
+Naive baseline:
+  Acc:     0.4106
+  F1Macro: 0.3802
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.4227    0.7147    0.5313       624
+         low     0.7469    0.5123    0.6078      1054
+         mid     0.3537    0.2903    0.3189       558
+
+    accuracy                         0.5134      2236
+   macro avg     0.5078    0.5058    0.4860      2236
+weighted avg     0.5583    0.5134    0.5143      2236
+
+Training history saved to: /app/classification-analysis/deepgbm_unified_v2/h12/training_history_h12.png
+Confusion matrices saved to: /app/classification-analysis/deepgbm_unified_v2/h12/confusion_matrices_h12.png
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:40:11] WARNING: /workspace/src/c_api/c_api.cc:1240: Saving into deprecated binary model format, please consider using `json` or `ubj`. Model format will default to JSON in XGBoost 2.2 if not specified.
+  warnings.warn(smsg, UserWarning)
+Models & results saved to: /app/classification-analysis/deepgbm_unified_v2/h12
+
+================================================================================
+Completed horizon h+12
+================================================================================
+
+
+################################################################################
+# HORIZON: 24 HOUR(S)
+################################################################################
+
+============================================================
+Loading data for horizon h+24
+============================================================
+Features: 823
+
+[Train XGBoost]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:40:11] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+[0]	train-mlogloss:1.07435	valid-mlogloss:1.08592
+[1]	train-mlogloss:1.05123	valid-mlogloss:1.07336
+[2]	train-mlogloss:1.02905	valid-mlogloss:1.07119
+[3]	train-mlogloss:1.00788	valid-mlogloss:1.07712
+[4]	train-mlogloss:0.98700	valid-mlogloss:1.06856
+[5]	train-mlogloss:0.96650	valid-mlogloss:1.06559
+[6]	train-mlogloss:0.94736	valid-mlogloss:1.05983
+[7]	train-mlogloss:0.92788	valid-mlogloss:1.05102
+[8]	train-mlogloss:0.90888	valid-mlogloss:1.05745
+[9]	train-mlogloss:0.89097	valid-mlogloss:1.05811
+[10]	train-mlogloss:0.87397	valid-mlogloss:1.05395
+[11]	train-mlogloss:0.85733	valid-mlogloss:1.04900
+[12]	train-mlogloss:0.84143	valid-mlogloss:1.05333
+[13]	train-mlogloss:0.82512	valid-mlogloss:1.04780
+[14]	train-mlogloss:0.81044	valid-mlogloss:1.05184
+[15]	train-mlogloss:0.79459	valid-mlogloss:1.05095
+[16]	train-mlogloss:0.77998	valid-mlogloss:1.04667
+[17]	train-mlogloss:0.76590	valid-mlogloss:1.04323
+[18]	train-mlogloss:0.75208	valid-mlogloss:1.04202
+[19]	train-mlogloss:0.73943	valid-mlogloss:1.03874
+[20]	train-mlogloss:0.72672	valid-mlogloss:1.04164
+[21]	train-mlogloss:0.71412	valid-mlogloss:1.03993
+[22]	train-mlogloss:0.70121	valid-mlogloss:1.03969
+[23]	train-mlogloss:0.68887	valid-mlogloss:1.03659
+[24]	train-mlogloss:0.67764	valid-mlogloss:1.03809
+[25]	train-mlogloss:0.66627	valid-mlogloss:1.03449
+[26]	train-mlogloss:0.65482	valid-mlogloss:1.03162
+[27]	train-mlogloss:0.64393	valid-mlogloss:1.03007
+[28]	train-mlogloss:0.63375	valid-mlogloss:1.02759
+[29]	train-mlogloss:0.62390	valid-mlogloss:1.02537
+[30]	train-mlogloss:0.61428	valid-mlogloss:1.02616
+[31]	train-mlogloss:0.60387	valid-mlogloss:1.02546
+[32]	train-mlogloss:0.59420	valid-mlogloss:1.02547
+[33]	train-mlogloss:0.58457	valid-mlogloss:1.02302
+[34]	train-mlogloss:0.57537	valid-mlogloss:1.02378
+[35]	train-mlogloss:0.56654	valid-mlogloss:1.02330
+[36]	train-mlogloss:0.55716	valid-mlogloss:1.02414
+[37]	train-mlogloss:0.54865	valid-mlogloss:1.02223
+[38]	train-mlogloss:0.54008	valid-mlogloss:1.02468
+[39]	train-mlogloss:0.53130	valid-mlogloss:1.02441
+[40]	train-mlogloss:0.52324	valid-mlogloss:1.02853
+[41]	train-mlogloss:0.51526	valid-mlogloss:1.02743
+[42]	train-mlogloss:0.50787	valid-mlogloss:1.02688
+[43]	train-mlogloss:0.50042	valid-mlogloss:1.02617
+[44]	train-mlogloss:0.49275	valid-mlogloss:1.02538
+[45]	train-mlogloss:0.48592	valid-mlogloss:1.02731
+[46]	train-mlogloss:0.47863	valid-mlogloss:1.02766
+[47]	train-mlogloss:0.47173	valid-mlogloss:1.02558
+[48]	train-mlogloss:0.46511	valid-mlogloss:1.02605
+[49]	train-mlogloss:0.45863	valid-mlogloss:1.02558
+[50]	train-mlogloss:0.45198	valid-mlogloss:1.02476
+[51]	train-mlogloss:0.44535	valid-mlogloss:1.02484
+[52]	train-mlogloss:0.43916	valid-mlogloss:1.02712
+[53]	train-mlogloss:0.43248	valid-mlogloss:1.02728
+[54]	train-mlogloss:0.42624	valid-mlogloss:1.02340
+[55]	train-mlogloss:0.42035	valid-mlogloss:1.02370
+[56]	train-mlogloss:0.41451	valid-mlogloss:1.02728
+[57]	train-mlogloss:0.40863	valid-mlogloss:1.02591
+[58]	train-mlogloss:0.40263	valid-mlogloss:1.02476
+[59]	train-mlogloss:0.39709	valid-mlogloss:1.02621
+[60]	train-mlogloss:0.39171	valid-mlogloss:1.02243
+[61]	train-mlogloss:0.38613	valid-mlogloss:1.02321
+[62]	train-mlogloss:0.38097	valid-mlogloss:1.02051
+[63]	train-mlogloss:0.37583	valid-mlogloss:1.02088
+[64]	train-mlogloss:0.37101	valid-mlogloss:1.02111
+[65]	train-mlogloss:0.36653	valid-mlogloss:1.02263
+[66]	train-mlogloss:0.36176	valid-mlogloss:1.02154
+[67]	train-mlogloss:0.35716	valid-mlogloss:1.02235
+[68]	train-mlogloss:0.35260	valid-mlogloss:1.02404
+[69]	train-mlogloss:0.34800	valid-mlogloss:1.02263
+[70]	train-mlogloss:0.34363	valid-mlogloss:1.02146
+[71]	train-mlogloss:0.33929	valid-mlogloss:1.01913
+[72]	train-mlogloss:0.33470	valid-mlogloss:1.02039
+[73]	train-mlogloss:0.33062	valid-mlogloss:1.01918
+[74]	train-mlogloss:0.32673	valid-mlogloss:1.01854
+[75]	train-mlogloss:0.32220	valid-mlogloss:1.01908
+[76]	train-mlogloss:0.31789	valid-mlogloss:1.01919
+[77]	train-mlogloss:0.31375	valid-mlogloss:1.02037
+[78]	train-mlogloss:0.30956	valid-mlogloss:1.01963
+[79]	train-mlogloss:0.30635	valid-mlogloss:1.02095
+[80]	train-mlogloss:0.30259	valid-mlogloss:1.02134
+[81]	train-mlogloss:0.29905	valid-mlogloss:1.02295
+[82]	train-mlogloss:0.29550	valid-mlogloss:1.02205
+[83]	train-mlogloss:0.29156	valid-mlogloss:1.02139
+[84]	train-mlogloss:0.28847	valid-mlogloss:1.02354
+[85]	train-mlogloss:0.28522	valid-mlogloss:1.02226
+[86]	train-mlogloss:0.28180	valid-mlogloss:1.02397
+[87]	train-mlogloss:0.27852	valid-mlogloss:1.02249
+[88]	train-mlogloss:0.27514	valid-mlogloss:1.02363
+[89]	train-mlogloss:0.27174	valid-mlogloss:1.02663
+[90]	train-mlogloss:0.26861	valid-mlogloss:1.02829
+[91]	train-mlogloss:0.26559	valid-mlogloss:1.02592
+[92]	train-mlogloss:0.26245	valid-mlogloss:1.02367
+[93]	train-mlogloss:0.25970	valid-mlogloss:1.02456
+[94]	train-mlogloss:0.25693	valid-mlogloss:1.02509
+[95]	train-mlogloss:0.25433	valid-mlogloss:1.02825
+[96]	train-mlogloss:0.25155	valid-mlogloss:1.02940
+[97]	train-mlogloss:0.24856	valid-mlogloss:1.02954
+[98]	train-mlogloss:0.24601	valid-mlogloss:1.03039
+[99]	train-mlogloss:0.24352	valid-mlogloss:1.03135
+[100]	train-mlogloss:0.24083	valid-mlogloss:1.03290
+[101]	train-mlogloss:0.23868	valid-mlogloss:1.03181
+[102]	train-mlogloss:0.23652	valid-mlogloss:1.03084
+[103]	train-mlogloss:0.23422	valid-mlogloss:1.03052
+[104]	train-mlogloss:0.23182	valid-mlogloss:1.03121
+[105]	train-mlogloss:0.22989	valid-mlogloss:1.03007
+[106]	train-mlogloss:0.22742	valid-mlogloss:1.02948
+[107]	train-mlogloss:0.22516	valid-mlogloss:1.03075
+[108]	train-mlogloss:0.22312	valid-mlogloss:1.03018
+[109]	train-mlogloss:0.22094	valid-mlogloss:1.02847
+[110]	train-mlogloss:0.21837	valid-mlogloss:1.02782
+[111]	train-mlogloss:0.21636	valid-mlogloss:1.02879
+[112]	train-mlogloss:0.21428	valid-mlogloss:1.02896
+[113]	train-mlogloss:0.21241	valid-mlogloss:1.02854
+[114]	train-mlogloss:0.21025	valid-mlogloss:1.02911
+[115]	train-mlogloss:0.20820	valid-mlogloss:1.03068
+[116]	train-mlogloss:0.20597	valid-mlogloss:1.02903
+[117]	train-mlogloss:0.20395	valid-mlogloss:1.02790
+[118]	train-mlogloss:0.20180	valid-mlogloss:1.02963
+[119]	train-mlogloss:0.19980	valid-mlogloss:1.02771
+[120]	train-mlogloss:0.19803	valid-mlogloss:1.02988
+[121]	train-mlogloss:0.19661	valid-mlogloss:1.02953
+[122]	train-mlogloss:0.19474	valid-mlogloss:1.03034
+[123]	train-mlogloss:0.19268	valid-mlogloss:1.02847
+[124]	train-mlogloss:0.19091	valid-mlogloss:1.02865
+[Extract leaf indices & hash]
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:40:16] WARNING: /workspace/src/common/error_msg.cc:27: The tree method `gpu_hist` is deprecated since 2.0.0. To use GPU training, set the `device` parameter to CUDA instead.
+
+    E.g. tree_method = "hist", device = "cuda"
+
+  warnings.warn(smsg, UserWarning)
+
+✓ Data loaded. Train=(6942, 823), Valid=(168, 823), Test=(2224, 823)
+Class distribution (train):
+0    0.389513
+1    0.277586
+2    0.332901
+Name: proportion, dtype: float64
+
+============================================================
+Train DeepGBM Deep Component (h+24)
+============================================================
+
+[Building Deep component...]
+Deep params: 3,318,403 | Device: cuda
+Class weights: {'low': 0.8557692307692307, 'mid': 1.2008303061754022, 'high': 1.0012981393336218}
+Epoch   1/120 | Loss 0.9329 | Val F1 0.2862 | LR 3.00e-04 | 0.4s ✓ warmup improve
+Epoch   2/120 | Loss 0.7739 | Val F1 0.3210 | LR 3.00e-04 | 0.3s ✓ warmup improve
+Epoch   3/120 | Loss 0.7124 | Val F1 0.3344 | LR 3.00e-04 | 0.3s ✓ warmup improve
+Epoch   4/120 | Loss 0.6692 | Val F1 0.3305 | LR 3.00e-04 | 0.3s
+Epoch   5/120 | Loss 0.6276 | Val F1 0.3319 | LR 3.00e-04 | 0.3s
+Epoch   6/120 | Loss 0.5940 | Val F1 0.3371 | LR 3.00e-04 | 0.3s ✓ warmup improve
+Epoch   7/120 | Loss 0.5540 | Val F1 0.3638 | LR 3.00e-04 | 0.3s ✓ NEW BEST
+Epoch   8/120 | Loss 0.5275 | Val F1 0.3512 | LR 3.00e-04 | 0.3s (patience 21/22)
+Epoch   9/120 | Loss 0.5132 | Val F1 0.3589 | LR 3.00e-04 | 0.3s (patience 20/22)
+Epoch  10/120 | Loss 0.4800 | Val F1 0.3279 | LR 3.00e-04 | 0.3s (patience 19/22)
+Epoch  11/120 | Loss 0.4601 | Val F1 0.3279 | LR 3.00e-04 | 0.3s (patience 19/22)
+Epoch  12/120 | Loss 0.4350 | Val F1 0.3279 | LR 3.00e-04 | 0.3s (patience 19/22)
+Epoch  13/120 | Loss 0.4159 | Val F1 0.3279 | LR 3.00e-04 | 0.3s (patience 19/22)
+Epoch  14/120 | Loss 0.3884 | Val F1 0.3279 | LR 3.00e-04 | 0.3s (patience 19/22)
+Epoch  15/120 | Loss 0.3813 | Val F1 0.3406 | LR 3.00e-04 | 0.3s (patience 18/22)
+Epoch  16/120 | Loss 0.3642 | Val F1 0.3406 | LR 3.00e-04 | 0.3s (patience 18/22)
+Epoch  17/120 | Loss 0.3453 | Val F1 0.3406 | LR 3.00e-04 | 0.3s (patience 18/22)
+Epoch  18/120 | Loss 0.3298 | Val F1 0.3406 | LR 3.00e-04 | 0.3s (patience 18/22)
+Epoch  19/120 | Loss 0.3112 | Val F1 0.3406 | LR 3.00e-04 | 0.3s (patience 18/22)
+Epoch  20/120 | Loss 0.3012 | Val F1 0.3173 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  21/120 | Loss 0.2731 | Val F1 0.3173 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  22/120 | Loss 0.2587 | Val F1 0.3173 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  23/120 | Loss 0.2651 | Val F1 0.3173 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  24/120 | Loss 0.2576 | Val F1 0.3173 | LR 1.50e-04 | 0.3s (patience 17/22)
+Epoch  25/120 | Loss 0.2468 | Val F1 0.3332 | LR 1.50e-04 | 0.3s (patience 16/22)
+Epoch  26/120 | Loss 0.2466 | Val F1 0.3332 | LR 1.50e-04 | 0.5s (patience 16/22)
+Epoch  27/120 | Loss 0.2371 | Val F1 0.3332 | LR 1.50e-04 | 0.3s (patience 16/22)
+Epoch  28/120 | Loss 0.2209 | Val F1 0.3332 | LR 1.50e-04 | 0.5s (patience 16/22)
+Epoch  29/120 | Loss 0.2243 | Val F1 0.3332 | LR 1.50e-04 | 0.4s (patience 16/22)
+Epoch  30/120 | Loss 0.2081 | Val F1 0.3280 | LR 1.50e-04 | 0.4s (patience 15/22)
+Epoch  31/120 | Loss 0.2130 | Val F1 0.3280 | LR 1.50e-04 | 0.3s (patience 15/22)
+Epoch  32/120 | Loss 0.2060 | Val F1 0.3280 | LR 1.50e-04 | 0.3s (patience 15/22)
+Epoch  33/120 | Loss 0.1957 | Val F1 0.3280 | LR 1.50e-04 | 0.4s (patience 15/22)
+Epoch  34/120 | Loss 0.1916 | Val F1 0.3280 | LR 1.50e-04 | 0.4s (patience 15/22)
+Epoch  35/120 | Loss 0.1915 | Val F1 0.3451 | LR 1.50e-04 | 0.4s (patience 14/22)
+Epoch  36/120 | Loss 0.1932 | Val F1 0.3451 | LR 1.50e-04 | 0.4s (patience 14/22)
+Epoch  37/120 | Loss 0.1739 | Val F1 0.3451 | LR 1.50e-04 | 0.4s (patience 14/22)
+Epoch  38/120 | Loss 0.1771 | Val F1 0.3451 | LR 1.50e-04 | 0.4s (patience 14/22)
+Epoch  39/120 | Loss 0.1709 | Val F1 0.3451 | LR 1.50e-04 | 0.3s (patience 14/22)
+Epoch  40/120 | Loss 0.1696 | Val F1 0.3359 | LR 1.50e-04 | 0.4s (patience 13/22)
+Epoch  41/120 | Loss 0.1572 | Val F1 0.3359 | LR 1.50e-04 | 0.4s (patience 13/22)
+Epoch  42/120 | Loss 0.1596 | Val F1 0.3359 | LR 1.50e-04 | 0.4s (patience 13/22)
+Epoch  43/120 | Loss 0.1638 | Val F1 0.3359 | LR 1.50e-04 | 0.4s (patience 13/22)
+Epoch  44/120 | Loss 0.1530 | Val F1 0.3359 | LR 1.50e-04 | 0.4s (patience 13/22)
+Epoch  45/120 | Loss 0.1456 | Val F1 0.3259 | LR 7.50e-05 | 0.4s (patience 12/22)
+Epoch  46/120 | Loss 0.1404 | Val F1 0.3259 | LR 7.50e-05 | 0.4s (patience 12/22)
+Epoch  47/120 | Loss 0.1362 | Val F1 0.3259 | LR 7.50e-05 | 0.4s (patience 12/22)
+Epoch  48/120 | Loss 0.1311 | Val F1 0.3259 | LR 7.50e-05 | 0.4s (patience 12/22)
+Epoch  49/120 | Loss 0.1287 | Val F1 0.3259 | LR 7.50e-05 | 0.4s (patience 12/22)
+Epoch  50/120 | Loss 0.1270 | Val F1 0.3175 | LR 7.50e-05 | 0.4s (patience 11/22)
+Epoch  51/120 | Loss 0.1229 | Val F1 0.3175 | LR 7.50e-05 | 0.4s (patience 11/22)
+Epoch  52/120 | Loss 0.1138 | Val F1 0.3175 | LR 7.50e-05 | 0.3s (patience 11/22)
+Epoch  53/120 | Loss 0.1174 | Val F1 0.3175 | LR 7.50e-05 | 0.3s (patience 11/22)
+Epoch  54/120 | Loss 0.1125 | Val F1 0.3175 | LR 7.50e-05 | 0.4s (patience 11/22)
+Epoch  55/120 | Loss 0.1217 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 10/22)
+Epoch  56/120 | Loss 0.1170 | Val F1 0.3323 | LR 7.50e-05 | 0.4s (patience 10/22)
+Epoch  57/120 | Loss 0.1135 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 10/22)
+Epoch  58/120 | Loss 0.1093 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 10/22)
+Epoch  59/120 | Loss 0.1092 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 10/22)
+Epoch  60/120 | Loss 0.1134 | Val F1 0.3323 | LR 7.50e-05 | 0.4s (patience 9/22)
+Epoch  61/120 | Loss 0.1099 | Val F1 0.3323 | LR 7.50e-05 | 0.4s (patience 9/22)
+Epoch  62/120 | Loss 0.1085 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 9/22)
+Epoch  63/120 | Loss 0.1026 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 9/22)
+Epoch  64/120 | Loss 0.1019 | Val F1 0.3323 | LR 7.50e-05 | 0.3s (patience 9/22)
+Epoch  65/120 | Loss 0.1025 | Val F1 0.3232 | LR 7.50e-05 | 0.3s (patience 8/22)
+Epoch  66/120 | Loss 0.0914 | Val F1 0.3232 | LR 7.50e-05 | 0.3s (patience 8/22)
+Epoch  67/120 | Loss 0.0932 | Val F1 0.3232 | LR 7.50e-05 | 0.3s (patience 8/22)
+Epoch  68/120 | Loss 0.0941 | Val F1 0.3232 | LR 7.50e-05 | 0.3s (patience 8/22)
+Epoch  69/120 | Loss 0.0958 | Val F1 0.3232 | LR 7.50e-05 | 0.3s (patience 8/22)
+Epoch  70/120 | Loss 0.0968 | Val F1 0.3181 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  71/120 | Loss 0.0901 | Val F1 0.3181 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  72/120 | Loss 0.0949 | Val F1 0.3181 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  73/120 | Loss 0.0879 | Val F1 0.3181 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  74/120 | Loss 0.0901 | Val F1 0.3181 | LR 3.75e-05 | 0.3s (patience 7/22)
+Epoch  75/120 | Loss 0.0887 | Val F1 0.3235 | LR 3.75e-05 | 0.3s (patience 6/22)
+Epoch  76/120 | Loss 0.0867 | Val F1 0.3235 | LR 3.75e-05 | 0.3s (patience 6/22)
+Epoch  77/120 | Loss 0.0923 | Val F1 0.3235 | LR 3.75e-05 | 0.3s (patience 6/22)
+Epoch  78/120 | Loss 0.0790 | Val F1 0.3235 | LR 3.75e-05 | 0.3s (patience 6/22)
+Epoch  79/120 | Loss 0.0833 | Val F1 0.3235 | LR 3.75e-05 | 0.3s (patience 6/22)
+Epoch  80/120 | Loss 0.0897 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 5/22)
+Epoch  81/120 | Loss 0.0868 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 5/22)
+Epoch  82/120 | Loss 0.0802 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 5/22)
+Epoch  83/120 | Loss 0.0823 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 5/22)
+Epoch  84/120 | Loss 0.0811 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 5/22)
+Epoch  85/120 | Loss 0.0908 | Val F1 0.3188 | LR 3.75e-05 | 0.3s (patience 4/22)
+Epoch  86/120 | Loss 0.0782 | Val F1 0.3188 | LR 3.75e-05 | 0.3s (patience 4/22)
+Epoch  87/120 | Loss 0.0790 | Val F1 0.3188 | LR 3.75e-05 | 0.3s (patience 4/22)
+Epoch  88/120 | Loss 0.0801 | Val F1 0.3188 | LR 3.75e-05 | 0.3s (patience 4/22)
+Epoch  89/120 | Loss 0.0820 | Val F1 0.3188 | LR 3.75e-05 | 0.3s (patience 4/22)
+Epoch  90/120 | Loss 0.0737 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 3/22)
+Epoch  91/120 | Loss 0.0710 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 3/22)
+Epoch  92/120 | Loss 0.0783 | Val F1 0.3279 | LR 3.75e-05 | 0.4s (patience 3/22)
+Epoch  93/120 | Loss 0.0676 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 3/22)
+Epoch  94/120 | Loss 0.0733 | Val F1 0.3279 | LR 3.75e-05 | 0.3s (patience 3/22)
+Epoch  95/120 | Loss 0.0692 | Val F1 0.3236 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch  96/120 | Loss 0.0736 | Val F1 0.3236 | LR 1.87e-05 | 0.4s (patience 2/22)
+Epoch  97/120 | Loss 0.0734 | Val F1 0.3236 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch  98/120 | Loss 0.0779 | Val F1 0.3236 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch  99/120 | Loss 0.0796 | Val F1 0.3236 | LR 1.87e-05 | 0.3s (patience 2/22)
+Epoch 100/120 | Loss 0.0706 | Val F1 0.3319 | LR 1.87e-05 | 0.3s (patience 1/22)
+Epoch 101/120 | Loss 0.0643 | Val F1 0.3319 | LR 1.87e-05 | 0.3s (patience 1/22)
+Epoch 102/120 | Loss 0.0664 | Val F1 0.3319 | LR 1.87e-05 | 0.3s (patience 1/22)
+Epoch 103/120 | Loss 0.0725 | Val F1 0.3319 | LR 1.87e-05 | 0.3s (patience 1/22)
+Epoch 104/120 | Loss 0.0695 | Val F1 0.3319 | LR 1.87e-05 | 0.3s (patience 1/22)
+Epoch 105/120 | Loss 0.0736 | Val F1 0.3275 | LR 1.87e-05 | 0.4s (patience 0/22)
+
+⚠ Early stopping at epoch 105
+
+✓ Deep training done in 0.60 min | Best val F1=0.3638
+
+============================================================
+EVALUATION - DeepGBM (h+24)
+============================================================
+
+[Search xgb_weight] best_w=0.50 on valid (F1_macro=0.3692)
+
+Train Results (h+24):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.8214, F1_macro=0.8173
+XGB-only:            Acc=0.9948, F1_macro=0.9947
+Deep+XGB (w=0.50): Acc=0.9451, F1_macro=0.9430
+
+Naive baseline:
+  Acc:     0.5900
+  F1Macro: 0.5752
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.9549    0.9520    0.9534      2311
+         low     0.9712    0.9467    0.9588      2704
+         mid     0.8996    0.9346    0.9168      1927
+
+    accuracy                         0.9451      6942
+   macro avg     0.9419    0.9444    0.9430      6942
+weighted avg     0.9459    0.9451    0.9453      6942
+
+
+Valid Results (h+24):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.4345, F1_macro=0.3638
+XGB-only:            Acc=0.4345, F1_macro=0.3668
+Deep+XGB (w=0.50): Acc=0.4405, F1_macro=0.3692
+
+Naive baseline:
+  Acc:     0.5179
+  F1Macro: 0.3962
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.0833    0.4286    0.1395         7
+         low     0.8085    0.3619    0.5000       105
+         mid     0.3882    0.5893    0.4681        56
+
+    accuracy                         0.4405       168
+   macro avg     0.4267    0.4599    0.3692       168
+weighted avg     0.6382    0.4405    0.4743       168
+
+
+Test Results (h+24):
+────────────────────────────────────────────────────────────
+Deep-only:           Acc=0.5148, F1_macro=0.4928
+XGB-only:            Acc=0.5544, F1_macro=0.4967
+Deep+XGB (w=0.50): Acc=0.5427, F1_macro=0.5115
+
+Naive baseline:
+  Acc:     0.6237
+  F1Macro: 0.5907
+
+Classification report (Deep+XGB):
+              precision    recall  f1-score   support
+
+        high     0.4604    0.7955    0.5832       621
+         low     0.8049    0.5247    0.6353      1054
+         mid     0.3448    0.2914    0.3159       549
+
+    accuracy                         0.5427      2224
+   macro avg     0.5367    0.5372    0.5115      2224
+weighted avg     0.5952    0.5427    0.5419      2224
+
+Training history saved to: /app/classification-analysis/deepgbm_unified_v2/h24/training_history_h24.png
+Confusion matrices saved to: /app/classification-analysis/deepgbm_unified_v2/h24/confusion_matrices_h24.png
+/usr/local/lib/python3.10/dist-packages/xgboost/core.py:160: UserWarning: [11:40:55] WARNING: /workspace/src/c_api/c_api.cc:1240: Saving into deprecated binary model format, please consider using `json` or `ubj`. Model format will default to JSON in XGBoost 2.2 if not specified.
+  warnings.warn(smsg, UserWarning)
+Models & results saved to: /app/classification-analysis/deepgbm_unified_v2/h24
+
+================================================================================
+Completed horizon h+24
+================================================================================
+

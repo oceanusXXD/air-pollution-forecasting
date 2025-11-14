@@ -1,0 +1,72 @@
+{
+  "horizon": 24,
+  "model_type": "deepgbm",
+  "timestamp": "2025-11-14T11:40:55.797872",
+  "training_time_seconds": 36.09582734107971,
+  "best_xgb_weight": 0.5,
+  "params": {
+    "num_buckets": 100000,
+    "emb_dim": 32,
+    "hidden": [
+      128,
+      64
+    ],
+    "dropout": 0.35,
+    "batch_size": 128,
+    "lr": 0.0003,
+    "weight_decay": 0.001,
+    "max_epochs": 120,
+    "patience": 22,
+    "min_delta": 0.0007,
+    "es_warmup_epochs": 6,
+    "gradient_accumulation_steps": 1,
+    "seed": 42,
+    "xgb_params": {
+      "n_estimators": 800,
+      "max_depth": 10,
+      "learning_rate": 0.03,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "min_child_weight": 3.0,
+      "gamma": 0.1,
+      "reg_lambda": 2.0,
+      "reg_alpha": 0.2,
+      "tree_method": "hist",
+      "eval_metric": "mlogloss",
+      "n_jobs": -1,
+      "random_state": 42
+    }
+  },
+  "results_deep_only": {
+    "train": {
+      "accuracy": 0.8213771247479112,
+      "f1_macro": 0.817319961258555,
+      "f1_weighted": 0.8238050868548743,
+      "per_class_f1": {
+        "low": 0.8580258837164381,
+        "mid": 0.7417410176030866,
+        "high": 0.8521929824561404
+      }
+    },
+    "valid": {
+      "accuracy": 0.43452380952380953,
+      "f1_macro": 0.3637846325962569,
+      "f1_weighted": 0.47261685728214015,
+      "per_class_f1": {
+        "low": 0.5194805194805195,
+        "mid": 0.425531914893617,
+        "high": 0.14634146341463417
+      }
+    },
+    "test": {
+      "accuracy": 0.5148381294964028,
+      "f1_macro": 0.49277148669645854,
+      "f1_weighted": 0.5202082640267286,
+      "per_class_f1": {
+        "low": 0.604810996563574,
+        "mid": 0.31907308377896615,
+        "high": 0.5544303797468354
+      }
+    }
+  }
+}

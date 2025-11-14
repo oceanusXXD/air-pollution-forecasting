@@ -1,0 +1,24 @@
+{
+  "horizon": 24,
+  "model": "XGBoost",
+  "timestamp": "2025-11-14T06:34:40.425434",
+  "training_time_seconds": 6.119109869003296,
+  "parameters": {
+    "n_estimators": 1800,
+    "max_depth": 6,
+    "learning_rate": 0.015,
+    "subsample": 0.65,
+    "colsample_bytree": 0.65,
+    "min_child_weight": 5.0,
+    "gamma": 0.3,
+    "reg_lambda": 4.0,
+    "reg_alpha": 1.5,
+    "early_stopping_rounds": 150,
+    "use_gpu": true
+  },
+  "results_available": [
+    "train",
+    "valid",
+    "test"
+  ]
+}

@@ -1,0 +1,579 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.1.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+
+################################################################################
+# HORIZON: 1 HOUR(S)
+################################################################################
+
+================================================================
+Loading data for horizon h+1
+================================================================
+Features: 823
+✓ Data loaded: Train=(6942, 823), Valid=(168, 823), Test=(2247, 823) | Time: 0.63s
+Device: cuda | num_workers=0 | pin_memory=True
+
+Class distribution (train):
+  low: 0.391
+  mid: 0.278
+  high: 0.331
+
+[Building FT-Transformer (效果优先)...]
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py:282: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  warnings.warn(f"enable_nested_tensor is True, but self.use_nested_tensor is False because {why_not_sparsity_fast_path}")
+✓ Model params: 3,680,259
+  Effective batch size: 512
+  Device: cuda
+
+================================================================
+Training FT-Transformer (效果优先) h+1
+================================================================
+Epoch   1/100 | Loss: 0.583141 | Val F1: 0.5922 | LR: 8.75e-05 | Time: 5.9s ✓ NEW BEST
+Epoch   2/100 | Loss: 0.499647 | Val F1: 0.5419 | LR: 1.75e-04 | Time: 5.3s (patience 19/20)
+Epoch   3/100 | Loss: 0.409408 | Val F1: 0.6347 | LR: 2.62e-04 | Time: 5.3s ✓ NEW BEST
+Epoch   4/100 | Loss: 0.391523 | Val F1: 0.6596 | LR: 3.50e-04 | Time: 5.3s ✓ NEW BEST
+Epoch   5/100 | Loss: 0.340213 | Val F1: 0.6821 | LR: 4.38e-04 | Time: 5.3s ✓ NEW BEST
+Epoch   6/100 | Loss: 0.296679 | Val F1: 0.7599 | LR: 5.25e-04 | Time: 5.3s ✓ NEW BEST
+Epoch   7/100 | Loss: 0.277321 | Val F1: 0.7210 | LR: 6.12e-04 | Time: 5.3s (patience 19/20)
+Epoch   8/100 | Loss: 0.302996 | Val F1: 0.4805 | LR: 7.00e-04 | Time: 5.3s (patience 18/20)
+Epoch   9/100 | Loss: 0.249614 | Val F1: 0.7746 | LR: 7.00e-04 | Time: 5.3s ✓ NEW BEST
+Epoch  10/100 | Loss: 0.243694 | Val F1: 0.6892 | LR: 7.00e-04 | Time: 5.3s (patience 19/20)
+Epoch  11/100 | Loss: 0.299522 | Val F1: 0.6892 | LR: 6.99e-04 | Time: 5.3s (patience 19/20)
+Epoch  12/100 | Loss: 0.276834 | Val F1: 0.6892 | LR: 6.98e-04 | Time: 5.3s (patience 19/20)
+Epoch  13/100 | Loss: 0.353444 | Val F1: 0.6892 | LR: 6.97e-04 | Time: 5.3s (patience 19/20)
+Epoch  14/100 | Loss: 0.302783 | Val F1: 0.6892 | LR: 6.95e-04 | Time: 5.3s (patience 19/20)
+Epoch  15/100 | Loss: 0.235674 | Val F1: 0.7460 | LR: 6.93e-04 | Time: 5.4s (patience 18/20)
+Epoch  16/100 | Loss: 0.274182 | Val F1: 0.7460 | LR: 6.90e-04 | Time: 5.3s (patience 18/20)
+Epoch  17/100 | Loss: 0.279181 | Val F1: 0.7460 | LR: 6.87e-04 | Time: 5.5s (patience 18/20)
+Epoch  18/100 | Loss: 0.250547 | Val F1: 0.7460 | LR: 6.84e-04 | Time: 5.3s (patience 18/20)
+Epoch  19/100 | Loss: 0.259149 | Val F1: 0.7460 | LR: 6.80e-04 | Time: 5.3s (patience 18/20)
+Epoch  20/100 | Loss: 0.208495 | Val F1: 0.7029 | LR: 6.76e-04 | Time: 5.4s (patience 17/20)
+Epoch  21/100 | Loss: 0.224563 | Val F1: 0.7029 | LR: 6.71e-04 | Time: 5.3s (patience 17/20)
+Epoch  22/100 | Loss: 0.259903 | Val F1: 0.7029 | LR: 6.66e-04 | Time: 5.3s (patience 17/20)
+Epoch  23/100 | Loss: 0.300733 | Val F1: 0.7029 | LR: 6.61e-04 | Time: 5.3s (patience 17/20)
+Epoch  24/100 | Loss: 0.287757 | Val F1: 0.7029 | LR: 6.55e-04 | Time: 5.3s (patience 17/20)
+Epoch  25/100 | Loss: 0.281927 | Val F1: 0.7264 | LR: 6.49e-04 | Time: 5.4s (patience 16/20)
+Epoch  26/100 | Loss: 0.240578 | Val F1: 0.7264 | LR: 6.43e-04 | Time: 5.3s (patience 16/20)
+Epoch  27/100 | Loss: 0.204085 | Val F1: 0.7264 | LR: 6.36e-04 | Time: 5.3s (patience 16/20)
+Epoch  28/100 | Loss: 0.199849 | Val F1: 0.7264 | LR: 6.29e-04 | Time: 5.3s (patience 16/20)
+Epoch  29/100 | Loss: 0.241581 | Val F1: 0.7264 | LR: 6.22e-04 | Time: 5.3s (patience 16/20)
+Epoch  30/100 | Loss: 0.233068 | Val F1: 0.6877 | LR: 6.14e-04 | Time: 5.3s (patience 15/20)
+Epoch  31/100 | Loss: 0.221860 | Val F1: 0.6877 | LR: 6.06e-04 | Time: 5.3s (patience 15/20)
+Epoch  32/100 | Loss: 0.242242 | Val F1: 0.6877 | LR: 5.98e-04 | Time: 5.3s (patience 15/20)
+Epoch  33/100 | Loss: 0.162219 | Val F1: 0.6877 | LR: 5.89e-04 | Time: 5.3s (patience 15/20)
+Epoch  34/100 | Loss: 0.230738 | Val F1: 0.6877 | LR: 5.80e-04 | Time: 5.3s (patience 15/20)
+Epoch  35/100 | Loss: 0.204752 | Val F1: 0.6254 | LR: 5.71e-04 | Time: 5.4s (patience 14/20)
+Epoch  36/100 | Loss: 0.133106 | Val F1: 0.6254 | LR: 5.62e-04 | Time: 5.3s (patience 14/20)
+Epoch  37/100 | Loss: 0.198705 | Val F1: 0.6254 | LR: 5.52e-04 | Time: 5.3s (patience 14/20)
+Epoch  38/100 | Loss: 0.250569 | Val F1: 0.6254 | LR: 5.42e-04 | Time: 5.3s (patience 14/20)
+Epoch  39/100 | Loss: 0.138858 | Val F1: 0.6254 | LR: 5.32e-04 | Time: 5.3s (patience 14/20)
+Epoch  40/100 | Loss: 0.246381 | Val F1: 0.7680 | LR: 5.22e-04 | Time: 5.4s (patience 13/20)
+Epoch  41/100 | Loss: 0.156710 | Val F1: 0.7680 | LR: 5.11e-04 | Time: 5.5s (patience 13/20)
+Epoch  42/100 | Loss: 0.182061 | Val F1: 0.7680 | LR: 5.01e-04 | Time: 5.3s (patience 13/20)
+Epoch  43/100 | Loss: 0.320540 | Val F1: 0.7680 | LR: 4.90e-04 | Time: 5.3s (patience 13/20)
+Epoch  44/100 | Loss: 0.185925 | Val F1: 0.7680 | LR: 4.79e-04 | Time: 5.3s (patience 13/20)
+Epoch  45/100 | Loss: 0.176348 | Val F1: 0.7194 | LR: 4.68e-04 | Time: 5.4s (patience 12/20)
+Epoch  46/100 | Loss: 0.110197 | Val F1: 0.7194 | LR: 4.56e-04 | Time: 5.3s (patience 12/20)
+Epoch  47/100 | Loss: 0.173312 | Val F1: 0.7194 | LR: 4.45e-04 | Time: 5.3s (patience 12/20)
+Epoch  48/100 | Loss: 0.152252 | Val F1: 0.7194 | LR: 4.33e-04 | Time: 5.3s (patience 12/20)
+Epoch  49/100 | Loss: 0.116438 | Val F1: 0.7194 | LR: 4.22e-04 | Time: 5.3s (patience 12/20)
+Epoch  50/100 | Loss: 0.081498 | Val F1: 0.5921 | LR: 4.10e-04 | Time: 5.4s (patience 11/20)
+Epoch  51/100 | Loss: 0.136950 | Val F1: 0.5921 | LR: 3.98e-04 | Time: 5.3s (patience 11/20)
+Epoch  52/100 | Loss: 0.277752 | Val F1: 0.5921 | LR: 3.86e-04 | Time: 5.3s (patience 11/20)
+Epoch  53/100 | Loss: 0.168318 | Val F1: 0.5921 | LR: 3.74e-04 | Time: 5.3s (patience 11/20)
+Epoch  54/100 | Loss: 0.105890 | Val F1: 0.5921 | LR: 3.62e-04 | Time: 5.3s (patience 11/20)
+Epoch  55/100 | Loss: 0.143811 | Val F1: 0.7223 | LR: 3.51e-04 | Time: 5.4s (patience 10/20)
+Epoch  56/100 | Loss: 0.133682 | Val F1: 0.7223 | LR: 3.39e-04 | Time: 5.3s (patience 10/20)
+Epoch  57/100 | Loss: 0.261911 | Val F1: 0.7223 | LR: 3.27e-04 | Time: 5.3s (patience 10/20)
+Epoch  58/100 | Loss: 0.124943 | Val F1: 0.7223 | LR: 3.15e-04 | Time: 5.3s (patience 10/20)
+Epoch  59/100 | Loss: 0.169753 | Val F1: 0.7223 | LR: 3.03e-04 | Time: 5.3s (patience 10/20)
+Epoch  60/100 | Loss: 0.203236 | Val F1: 0.7077 | LR: 2.91e-04 | Time: 5.4s (patience 9/20)
+Epoch  61/100 | Loss: 0.172815 | Val F1: 0.7077 | LR: 2.79e-04 | Time: 5.3s (patience 9/20)
+Epoch  62/100 | Loss: 0.105548 | Val F1: 0.7077 | LR: 2.68e-04 | Time: 5.3s (patience 9/20)
+Epoch  63/100 | Loss: 0.117183 | Val F1: 0.7077 | LR: 2.56e-04 | Time: 5.3s (patience 9/20)
+Epoch  64/100 | Loss: 0.182284 | Val F1: 0.7077 | LR: 2.45e-04 | Time: 5.3s (patience 9/20)
+Epoch  65/100 | Loss: 0.212595 | Val F1: 0.6956 | LR: 2.33e-04 | Time: 5.4s (patience 8/20)
+Epoch  66/100 | Loss: 0.265320 | Val F1: 0.6956 | LR: 2.22e-04 | Time: 5.5s (patience 8/20)
+Epoch  67/100 | Loss: 0.233983 | Val F1: 0.6956 | LR: 2.11e-04 | Time: 5.3s (patience 8/20)
+Epoch  68/100 | Loss: 0.088717 | Val F1: 0.6956 | LR: 2.00e-04 | Time: 5.3s (patience 8/20)
+Epoch  69/100 | Loss: 0.125899 | Val F1: 0.6956 | LR: 1.90e-04 | Time: 5.3s (patience 8/20)
+Epoch  70/100 | Loss: 0.170067 | Val F1: 0.6801 | LR: 1.79e-04 | Time: 5.4s (patience 7/20)
+Epoch  71/100 | Loss: 0.077185 | Val F1: 0.6801 | LR: 1.69e-04 | Time: 5.3s (patience 7/20)
+Epoch  72/100 | Loss: 0.154596 | Val F1: 0.6801 | LR: 1.59e-04 | Time: 5.3s (patience 7/20)
+Epoch  73/100 | Loss: 0.153708 | Val F1: 0.6801 | LR: 1.49e-04 | Time: 5.3s (patience 7/20)
+Epoch  74/100 | Loss: 0.174676 | Val F1: 0.6801 | LR: 1.39e-04 | Time: 5.3s (patience 7/20)
+Epoch  75/100 | Loss: 0.216505 | Val F1: 0.7131 | LR: 1.30e-04 | Time: 5.4s (patience 6/20)
+Epoch  76/100 | Loss: 0.109995 | Val F1: 0.7131 | LR: 1.21e-04 | Time: 5.3s (patience 6/20)
+Epoch  77/100 | Loss: 0.041496 | Val F1: 0.7131 | LR: 1.12e-04 | Time: 5.3s (patience 6/20)
+Epoch  78/100 | Loss: 0.157744 | Val F1: 0.7131 | LR: 1.03e-04 | Time: 5.3s (patience 6/20)
+Epoch  79/100 | Loss: 0.256811 | Val F1: 0.7131 | LR: 9.51e-05 | Time: 5.3s (patience 6/20)
+Epoch  80/100 | Loss: 0.204284 | Val F1: 0.6778 | LR: 8.71e-05 | Time: 5.4s (patience 5/20)
+Epoch  81/100 | Loss: 0.162699 | Val F1: 0.6778 | LR: 7.94e-05 | Time: 5.3s (patience 5/20)
+Epoch  82/100 | Loss: 0.148976 | Val F1: 0.6778 | LR: 7.20e-05 | Time: 5.3s (patience 5/20)
+Epoch  83/100 | Loss: 0.169576 | Val F1: 0.6778 | LR: 6.50e-05 | Time: 5.3s (patience 5/20)
+Epoch  84/100 | Loss: 0.138834 | Val F1: 0.6778 | LR: 5.83e-05 | Time: 5.3s (patience 5/20)
+Epoch  85/100 | Loss: 0.124097 | Val F1: 0.6750 | LR: 5.19e-05 | Time: 5.4s (patience 4/20)
+Epoch  86/100 | Loss: 0.082437 | Val F1: 0.6750 | LR: 4.59e-05 | Time: 5.3s (patience 4/20)
+Epoch  87/100 | Loss: 0.102749 | Val F1: 0.6750 | LR: 4.02e-05 | Time: 5.3s (patience 4/20)
+Epoch  88/100 | Loss: 0.105454 | Val F1: 0.6750 | LR: 3.49e-05 | Time: 5.3s (patience 4/20)
+Epoch  89/100 | Loss: 0.085827 | Val F1: 0.6750 | LR: 2.99e-05 | Time: 5.3s (patience 4/20)
+Epoch  90/100 | Loss: 0.152610 | Val F1: 0.6901 | LR: 2.54e-05 | Time: 5.4s (patience 3/20)
+Epoch  91/100 | Loss: 0.076245 | Val F1: 0.6901 | LR: 2.12e-05 | Time: 5.5s (patience 3/20)
+Epoch  92/100 | Loss: 0.135767 | Val F1: 0.6901 | LR: 1.74e-05 | Time: 5.3s (patience 3/20)
+Epoch  93/100 | Loss: 0.264013 | Val F1: 0.6901 | LR: 1.40e-05 | Time: 5.3s (patience 3/20)
+Epoch  94/100 | Loss: 0.029763 | Val F1: 0.6901 | LR: 1.09e-05 | Time: 5.3s (patience 3/20)
+Epoch  95/100 | Loss: 0.182509 | Val F1: 0.6819 | LR: 8.31e-06 | Time: 5.4s (patience 2/20)
+Epoch  96/100 | Loss: 0.045352 | Val F1: 0.6819 | LR: 6.08e-06 | Time: 5.3s (patience 2/20)
+Epoch  97/100 | Loss: 0.244735 | Val F1: 0.6819 | LR: 4.26e-06 | Time: 5.3s (patience 2/20)
+Epoch  98/100 | Loss: 0.109434 | Val F1: 0.6819 | LR: 2.83e-06 | Time: 5.3s (patience 2/20)
+Epoch  99/100 | Loss: 0.045544 | Val F1: 0.6819 | LR: 1.81e-06 | Time: 5.3s (patience 2/20)
+Epoch 100/100 | Loss: 0.049190 | Val F1: 0.6860 | LR: 1.20e-06 | Time: 5.4s (patience 1/20)
+
+✓ Training finished in 8.86 min | Best Val F1: 0.7746
+
+================================================================
+EVALUATION (final)
+================================================================
+
+TRAIN: Acc=0.8202, F1_macro=0.8100, F1_wtd=0.8203
+  Naive Acc 0.7947 (Δ +0.0255), Naive F1 0.7841 (Δ +0.0259)
+  Per-class:
+     low: P=0.846 R=0.912 F1=0.878 (n=2714)
+     mid: P=0.686 R=0.696 F1=0.691 (n=1932)
+    high: P=0.911 R=0.817 F1=0.862 (n=2296)
+
+VALID: Acc=0.7917, F1_macro=0.7746, F1_wtd=0.7986
+  Naive Acc 0.8869 (Δ -0.0952), Naive F1 0.8576 (Δ -0.0830)
+  Per-class:
+     low: P=0.929 R=0.798 F1=0.859 (n=99)
+     mid: P=0.613 R=0.776 F1=0.685 (n=49)
+    high: P=0.762 R=0.800 F1=0.780 (n=20)
+
+TEST: Acc=0.7690, F1_macro=0.7458, F1_wtd=0.7719
+  Naive Acc 0.7704 (Δ -0.0013), Naive F1 0.7438 (Δ +0.0020)
+  Per-class:
+     low: P=0.885 R=0.830 F1=0.857 (n=1060)
+     mid: P=0.562 R=0.603 F1=0.582 (n=562)
+    high: P=0.783 R=0.814 F1=0.798 (n=625)
+Saved results to /app/classification-analysis/ft_transformer_effect_first_unified/h1/results_h1.png
+Training history saved to /app/classification-analysis/ft_transformer_effect_first_unified/h1/training_history_h1.png
+Confusion matrices saved to: /app/classification-analysis/ft_transformer_effect_first_unified/h1/confusion_matrices_h1.png
+Model & results saved to: /app/classification-analysis/ft_transformer_effect_first_unified/h1
+
+================================================================================
+✓ Completed horizon h+1
+================================================================================
+
+
+################################################################################
+# HORIZON: 6 HOUR(S)
+################################################################################
+
+================================================================
+Loading data for horizon h+6
+================================================================
+Features: 823
+✓ Data loaded: Train=(6942, 823), Valid=(168, 823), Test=(2242, 823) | Time: 0.53s
+Device: cuda | num_workers=0 | pin_memory=True
+
+Class distribution (train):
+  low: 0.391
+  mid: 0.278
+  high: 0.331
+
+[Building FT-Transformer (效果优先)...]
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py:282: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  warnings.warn(f"enable_nested_tensor is True, but self.use_nested_tensor is False because {why_not_sparsity_fast_path}")
+✓ Model params: 3,680,259
+  Effective batch size: 256
+  Device: cuda
+
+================================================================
+Training FT-Transformer (效果优先) h+6
+================================================================
+Epoch   1/110 | Loss: 0.590519 | Val F1: 0.4112 | LR: 4.00e-05 | Time: 5.6s ✓ NEW BEST
+Epoch   2/110 | Loss: 0.529185 | Val F1: 0.4378 | LR: 8.00e-05 | Time: 5.4s ✓ NEW BEST
+Epoch   3/110 | Loss: 0.457976 | Val F1: 0.4820 | LR: 1.20e-04 | Time: 5.4s ✓ NEW BEST
+Epoch   4/110 | Loss: 0.431158 | Val F1: 0.3559 | LR: 1.60e-04 | Time: 5.4s (patience 17/18)
+Epoch   5/110 | Loss: 0.414924 | Val F1: 0.3359 | LR: 2.00e-04 | Time: 5.4s (patience 16/18)
+Epoch   6/110 | Loss: 0.449210 | Val F1: 0.3982 | LR: 2.40e-04 | Time: 5.4s (patience 15/18)
+Epoch   7/110 | Loss: 0.414878 | Val F1: 0.2927 | LR: 2.80e-04 | Time: 5.5s (patience 14/18)
+Epoch   8/110 | Loss: 0.409751 | Val F1: 0.3781 | LR: 3.20e-04 | Time: 5.5s (patience 13/18)
+Epoch   9/110 | Loss: 0.435741 | Val F1: 0.3758 | LR: 3.60e-04 | Time: 5.4s (patience 12/18)
+/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1471: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Epoch  10/110 | Loss: 0.434631 | Val F1: 0.3498 | LR: 4.00e-04 | Time: 5.4s (patience 11/18)
+Epoch  11/110 | Loss: 0.445065 | Val F1: 0.3498 | LR: 4.00e-04 | Time: 5.4s (patience 11/18)
+Epoch  12/110 | Loss: 0.389569 | Val F1: 0.3498 | LR: 4.00e-04 | Time: 5.3s (patience 11/18)
+Epoch  13/110 | Loss: 0.399096 | Val F1: 0.3498 | LR: 4.00e-04 | Time: 5.3s (patience 11/18)
+Epoch  14/110 | Loss: 0.382677 | Val F1: 0.3498 | LR: 3.99e-04 | Time: 5.3s (patience 11/18)
+Epoch  15/110 | Loss: 0.347021 | Val F1: 0.5168 | LR: 3.98e-04 | Time: 5.5s ✓ NEW BEST
+Epoch  16/110 | Loss: 0.331514 | Val F1: 0.5168 | LR: 3.98e-04 | Time: 5.3s (patience 18/18)
+Epoch  17/110 | Loss: 0.321893 | Val F1: 0.5168 | LR: 3.96e-04 | Time: 5.3s (patience 18/18)
+Epoch  18/110 | Loss: 0.331257 | Val F1: 0.5168 | LR: 3.95e-04 | Time: 5.3s (patience 18/18)
+Epoch  19/110 | Loss: 0.401376 | Val F1: 0.5168 | LR: 3.94e-04 | Time: 5.3s (patience 18/18)
+Epoch  20/110 | Loss: 0.369558 | Val F1: 0.2932 | LR: 3.92e-04 | Time: 5.4s (patience 17/18)
+Epoch  21/110 | Loss: 0.394921 | Val F1: 0.2932 | LR: 3.90e-04 | Time: 5.3s (patience 17/18)
+Epoch  22/110 | Loss: 0.318328 | Val F1: 0.2932 | LR: 3.88e-04 | Time: 5.6s (patience 17/18)
+Epoch  23/110 | Loss: 0.343527 | Val F1: 0.2932 | LR: 3.86e-04 | Time: 5.3s (patience 17/18)
+Epoch  24/110 | Loss: 0.284899 | Val F1: 0.2932 | LR: 3.84e-04 | Time: 5.3s (patience 17/18)
+Epoch  25/110 | Loss: 0.281614 | Val F1: 0.4738 | LR: 3.81e-04 | Time: 5.4s (patience 16/18)
+Epoch  26/110 | Loss: 0.333548 | Val F1: 0.4738 | LR: 3.78e-04 | Time: 5.4s (patience 16/18)
+Epoch  27/110 | Loss: 0.291975 | Val F1: 0.4738 | LR: 3.75e-04 | Time: 5.3s (patience 16/18)
+Epoch  28/110 | Loss: 0.276744 | Val F1: 0.4738 | LR: 3.72e-04 | Time: 5.4s (patience 16/18)
+Epoch  29/110 | Loss: 0.323855 | Val F1: 0.4738 | LR: 3.69e-04 | Time: 5.4s (patience 16/18)
+Epoch  30/110 | Loss: 0.257980 | Val F1: 0.5185 | LR: 3.66e-04 | Time: 5.4s ✓ NEW BEST
+Epoch  31/110 | Loss: 0.288740 | Val F1: 0.5185 | LR: 3.62e-04 | Time: 5.3s (patience 18/18)
+Epoch  32/110 | Loss: 0.251827 | Val F1: 0.5185 | LR: 3.58e-04 | Time: 5.3s (patience 18/18)
+Epoch  33/110 | Loss: 0.314688 | Val F1: 0.5185 | LR: 3.54e-04 | Time: 5.3s (patience 18/18)
+Epoch  34/110 | Loss: 0.252098 | Val F1: 0.5185 | LR: 3.50e-04 | Time: 5.3s (patience 18/18)
+Epoch  35/110 | Loss: 0.399095 | Val F1: 0.5544 | LR: 3.46e-04 | Time: 5.4s ✓ NEW BEST
+Epoch  36/110 | Loss: 0.255743 | Val F1: 0.5544 | LR: 3.42e-04 | Time: 5.4s (patience 18/18)
+Epoch  37/110 | Loss: 0.240437 | Val F1: 0.5544 | LR: 3.37e-04 | Time: 5.4s (patience 18/18)
+Epoch  38/110 | Loss: 0.251420 | Val F1: 0.5544 | LR: 3.32e-04 | Time: 5.4s (patience 18/18)
+Epoch  39/110 | Loss: 0.245742 | Val F1: 0.5544 | LR: 3.28e-04 | Time: 5.4s (patience 18/18)
+Epoch  40/110 | Loss: 0.249129 | Val F1: 0.6136 | LR: 3.23e-04 | Time: 5.4s ✓ NEW BEST
+Epoch  41/110 | Loss: 0.269758 | Val F1: 0.6136 | LR: 3.18e-04 | Time: 5.3s (patience 18/18)
+Epoch  42/110 | Loss: 0.292514 | Val F1: 0.6136 | LR: 3.13e-04 | Time: 5.4s (patience 18/18)
+Epoch  43/110 | Loss: 0.226188 | Val F1: 0.6136 | LR: 3.07e-04 | Time: 5.4s (patience 18/18)
+Epoch  44/110 | Loss: 0.191284 | Val F1: 0.6136 | LR: 3.02e-04 | Time: 5.3s (patience 18/18)
+Epoch  45/110 | Loss: 0.233249 | Val F1: 0.5579 | LR: 2.97e-04 | Time: 5.4s (patience 17/18)
+Epoch  46/110 | Loss: 0.280712 | Val F1: 0.5579 | LR: 2.91e-04 | Time: 5.4s (patience 17/18)
+Epoch  47/110 | Loss: 0.233374 | Val F1: 0.5579 | LR: 2.85e-04 | Time: 5.3s (patience 17/18)
+Epoch  48/110 | Loss: 0.222824 | Val F1: 0.5579 | LR: 2.80e-04 | Time: 5.3s (patience 17/18)
+Epoch  49/110 | Loss: 0.326833 | Val F1: 0.5579 | LR: 2.74e-04 | Time: 5.3s (patience 17/18)
+Epoch  50/110 | Loss: 0.265937 | Val F1: 0.5233 | LR: 2.68e-04 | Time: 5.4s (patience 16/18)
+Epoch  51/110 | Loss: 0.235570 | Val F1: 0.5233 | LR: 2.62e-04 | Time: 5.4s (patience 16/18)
+Epoch  52/110 | Loss: 0.220804 | Val F1: 0.5233 | LR: 2.56e-04 | Time: 5.3s (patience 16/18)
+Epoch  53/110 | Loss: 0.253918 | Val F1: 0.5233 | LR: 2.50e-04 | Time: 5.3s (patience 16/18)
+Epoch  54/110 | Loss: 0.199716 | Val F1: 0.5233 | LR: 2.44e-04 | Time: 5.3s (patience 16/18)
+Epoch  55/110 | Loss: 0.189096 | Val F1: 0.5699 | LR: 2.38e-04 | Time: 5.4s (patience 15/18)
+Epoch  56/110 | Loss: 0.202891 | Val F1: 0.5699 | LR: 2.32e-04 | Time: 5.4s (patience 15/18)
+Epoch  57/110 | Loss: 0.173238 | Val F1: 0.5699 | LR: 2.26e-04 | Time: 5.4s (patience 15/18)
+Epoch  58/110 | Loss: 0.140713 | Val F1: 0.5699 | LR: 2.19e-04 | Time: 5.3s (patience 15/18)
+Epoch  59/110 | Loss: 0.105915 | Val F1: 0.5699 | LR: 2.13e-04 | Time: 5.3s (patience 15/18)
+Epoch  60/110 | Loss: 0.236254 | Val F1: 0.5839 | LR: 2.07e-04 | Time: 5.4s (patience 14/18)
+Epoch  61/110 | Loss: 0.194125 | Val F1: 0.5839 | LR: 2.00e-04 | Time: 5.3s (patience 14/18)
+Epoch  62/110 | Loss: 0.182727 | Val F1: 0.5839 | LR: 1.94e-04 | Time: 5.4s (patience 14/18)
+Epoch  63/110 | Loss: 0.170212 | Val F1: 0.5839 | LR: 1.88e-04 | Time: 5.3s (patience 14/18)
+Epoch  64/110 | Loss: 0.252577 | Val F1: 0.5839 | LR: 1.82e-04 | Time: 5.3s (patience 14/18)
+Epoch  65/110 | Loss: 0.249762 | Val F1: 0.4710 | LR: 1.75e-04 | Time: 5.4s (patience 13/18)
+Epoch  66/110 | Loss: 0.176209 | Val F1: 0.4710 | LR: 1.69e-04 | Time: 5.3s (patience 13/18)
+Epoch  67/110 | Loss: 0.256022 | Val F1: 0.4710 | LR: 1.63e-04 | Time: 5.6s (patience 13/18)
+Epoch  68/110 | Loss: 0.156973 | Val F1: 0.4710 | LR: 1.57e-04 | Time: 5.3s (patience 13/18)
+Epoch  69/110 | Loss: 0.076768 | Val F1: 0.4710 | LR: 1.51e-04 | Time: 5.4s (patience 13/18)
+Epoch  70/110 | Loss: 0.183910 | Val F1: 0.5917 | LR: 1.45e-04 | Time: 5.4s (patience 12/18)
+Epoch  71/110 | Loss: 0.272868 | Val F1: 0.5917 | LR: 1.39e-04 | Time: 5.3s (patience 12/18)
+Epoch  72/110 | Loss: 0.168944 | Val F1: 0.5917 | LR: 1.33e-04 | Time: 5.4s (patience 12/18)
+Epoch  73/110 | Loss: 0.196745 | Val F1: 0.5917 | LR: 1.27e-04 | Time: 5.4s (patience 12/18)
+Epoch  74/110 | Loss: 0.217586 | Val F1: 0.5917 | LR: 1.21e-04 | Time: 5.3s (patience 12/18)
+Epoch  75/110 | Loss: 0.196710 | Val F1: 0.5442 | LR: 1.16e-04 | Time: 5.4s (patience 11/18)
+Epoch  76/110 | Loss: 0.210476 | Val F1: 0.5442 | LR: 1.10e-04 | Time: 5.3s (patience 11/18)
+Epoch  77/110 | Loss: 0.203831 | Val F1: 0.5442 | LR: 1.04e-04 | Time: 5.4s (patience 11/18)
+Epoch  78/110 | Loss: 0.120329 | Val F1: 0.5442 | LR: 9.89e-05 | Time: 5.4s (patience 11/18)
+Epoch  79/110 | Loss: 0.227190 | Val F1: 0.5442 | LR: 9.36e-05 | Time: 5.4s (patience 11/18)
+Epoch  80/110 | Loss: 0.136615 | Val F1: 0.5841 | LR: 8.84e-05 | Time: 5.4s (patience 10/18)
+Epoch  81/110 | Loss: 0.170184 | Val F1: 0.5841 | LR: 8.32e-05 | Time: 5.3s (patience 10/18)
+Epoch  82/110 | Loss: 0.118231 | Val F1: 0.5841 | LR: 7.82e-05 | Time: 5.3s (patience 10/18)
+Epoch  83/110 | Loss: 0.204664 | Val F1: 0.5841 | LR: 7.33e-05 | Time: 5.4s (patience 10/18)
+Epoch  84/110 | Loss: 0.105500 | Val F1: 0.5841 | LR: 6.86e-05 | Time: 5.4s (patience 10/18)
+Epoch  85/110 | Loss: 0.231895 | Val F1: 0.4715 | LR: 6.39e-05 | Time: 5.4s (patience 9/18)
+Epoch  86/110 | Loss: 0.135460 | Val F1: 0.4715 | LR: 5.94e-05 | Time: 5.3s (patience 9/18)
+Epoch  87/110 | Loss: 0.177580 | Val F1: 0.4715 | LR: 5.51e-05 | Time: 5.3s (patience 9/18)
+Epoch  88/110 | Loss: 0.258680 | Val F1: 0.4715 | LR: 5.09e-05 | Time: 5.3s (patience 9/18)
+Epoch  89/110 | Loss: 0.181480 | Val F1: 0.4715 | LR: 4.68e-05 | Time: 5.3s (patience 9/18)
+Epoch  90/110 | Loss: 0.167985 | Val F1: 0.5276 | LR: 4.29e-05 | Time: 5.4s (patience 8/18)
+Epoch  91/110 | Loss: 0.177255 | Val F1: 0.5276 | LR: 3.91e-05 | Time: 5.3s (patience 8/18)
+Epoch  92/110 | Loss: 0.199967 | Val F1: 0.5276 | LR: 3.55e-05 | Time: 5.3s (patience 8/18)
+Epoch  93/110 | Loss: 0.186108 | Val F1: 0.5276 | LR: 3.21e-05 | Time: 5.3s (patience 8/18)
+Epoch  94/110 | Loss: 0.182646 | Val F1: 0.5276 | LR: 2.88e-05 | Time: 5.3s (patience 8/18)
+Epoch  95/110 | Loss: 0.108242 | Val F1: 0.4719 | LR: 2.57e-05 | Time: 5.4s (patience 7/18)
+Epoch  96/110 | Loss: 0.202338 | Val F1: 0.4719 | LR: 2.27e-05 | Time: 5.3s (patience 7/18)
+Epoch  97/110 | Loss: 0.149750 | Val F1: 0.4719 | LR: 2.00e-05 | Time: 5.3s (patience 7/18)
+Epoch  98/110 | Loss: 0.179264 | Val F1: 0.4719 | LR: 1.74e-05 | Time: 5.4s (patience 7/18)
+Epoch  99/110 | Loss: 0.120237 | Val F1: 0.4719 | LR: 1.50e-05 | Time: 5.4s (patience 7/18)
+Epoch 100/110 | Loss: 0.147680 | Val F1: 0.5053 | LR: 1.28e-05 | Time: 5.4s (patience 6/18)
+Epoch 101/110 | Loss: 0.094954 | Val F1: 0.5053 | LR: 1.08e-05 | Time: 5.3s (patience 6/18)
+Epoch 102/110 | Loss: 0.200629 | Val F1: 0.5053 | LR: 8.92e-06 | Time: 5.3s (patience 6/18)
+Epoch 103/110 | Loss: 0.150914 | Val F1: 0.5053 | LR: 7.27e-06 | Time: 5.3s (patience 6/18)
+Epoch 104/110 | Loss: 0.207665 | Val F1: 0.5053 | LR: 5.80e-06 | Time: 5.3s (patience 6/18)
+Epoch 105/110 | Loss: 0.157791 | Val F1: 0.4998 | LR: 4.53e-06 | Time: 5.4s (patience 5/18)
+Epoch 106/110 | Loss: 0.196103 | Val F1: 0.4998 | LR: 3.46e-06 | Time: 5.3s (patience 5/18)
+Epoch 107/110 | Loss: 0.105487 | Val F1: 0.4998 | LR: 2.57e-06 | Time: 5.3s (patience 5/18)
+Epoch 108/110 | Loss: 0.154011 | Val F1: 0.4998 | LR: 1.89e-06 | Time: 5.3s (patience 5/18)
+Epoch 109/110 | Loss: 0.119750 | Val F1: 0.4998 | LR: 1.39e-06 | Time: 5.3s (patience 5/18)
+Epoch 110/110 | Loss: 0.155772 | Val F1: 0.5114 | LR: 1.10e-06 | Time: 5.4s (patience 4/18)
+
+✓ Training finished in 9.85 min | Best Val F1: 0.6136
+
+================================================================
+EVALUATION (final)
+================================================================
+
+TRAIN: Acc=0.8642, F1_macro=0.8563, F1_wtd=0.8647
+  Naive Acc 0.4667 (Δ +0.3974), Naive F1 0.4575 (Δ +0.3988)
+  Per-class:
+     low: P=0.884 R=0.955 F1=0.918 (n=2713)
+     mid: P=0.744 R=0.796 F1=0.769 (n=1929)
+    high: P=0.961 R=0.814 F1=0.881 (n=2300)
+
+VALID: Acc=0.7381, F1_macro=0.6136, F1_wtd=0.7309
+  Naive Acc 0.7083 (Δ +0.0298), Naive F1 0.6245 (Δ -0.0110)
+  Per-class:
+     low: P=0.810 R=0.850 F1=0.829 (n=100)
+     mid: P=0.667 R=0.667 F1=0.667 (n=51)
+    high: P=0.417 R=0.294 F1=0.345 (n=17)
+
+TEST: Acc=0.5709, F1_macro=0.5403, F1_wtd=0.5792
+  Naive Acc 0.4193 (Δ +0.1517), Naive F1 0.3799 (Δ +0.1603)
+  Per-class:
+     low: P=0.779 R=0.658 F1=0.713 (n=1060)
+     mid: P=0.344 R=0.376 F1=0.360 (n=558)
+    high: P=0.506 R=0.598 F1=0.548 (n=624)
+Saved results to /app/classification-analysis/ft_transformer_effect_first_unified/h6/results_h6.png
+Training history saved to /app/classification-analysis/ft_transformer_effect_first_unified/h6/training_history_h6.png
+Confusion matrices saved to: /app/classification-analysis/ft_transformer_effect_first_unified/h6/confusion_matrices_h6.png
+Model & results saved to: /app/classification-analysis/ft_transformer_effect_first_unified/h6
+
+================================================================================
+✓ Completed horizon h+6
+================================================================================
+
+
+################################################################################
+# HORIZON: 12 HOUR(S)
+################################################################################
+
+================================================================
+Loading data for horizon h+12
+================================================================
+Features: 823
+✓ Data loaded: Train=(6942, 823), Valid=(168, 823), Test=(2236, 823) | Time: 0.48s
+Device: cuda | num_workers=0 | pin_memory=True
+
+Class distribution (train):
+  low: 0.390
+  mid: 0.278
+  high: 0.332
+
+[Building FT-Transformer (效果优先)...]
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py:282: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  warnings.warn(f"enable_nested_tensor is True, but self.use_nested_tensor is False because {why_not_sparsity_fast_path}")
+✓ Model params: 9,064,579
+  Effective batch size: 512
+  Device: cuda
+
+================================================================
+Training FT-Transformer (效果优先) h+12
+================================================================
+Epoch   1/160 | Loss: 0.638323 | Val F1: 0.3305 | LR: 3.33e-05 | Time: 11.7s ✓ NEW BEST
+Epoch   2/160 | Loss: 0.587857 | Val F1: 0.4934 | LR: 6.67e-05 | Time: 11.7s ✓ NEW BEST
+Epoch   3/160 | Loss: 0.535184 | Val F1: 0.3928 | LR: 1.00e-04 | Time: 11.7s (patience 24/25)
+Epoch   4/160 | Loss: 0.494118 | Val F1: 0.4569 | LR: 1.33e-04 | Time: 11.7s (patience 23/25)
+Epoch   5/160 | Loss: 0.471331 | Val F1: 0.4484 | LR: 1.67e-04 | Time: 11.7s (patience 22/25)
+Epoch   6/160 | Loss: 0.466178 | Val F1: 0.2480 | LR: 2.00e-04 | Time: 11.7s (patience 21/25)
+Epoch   7/160 | Loss: 0.486080 | Val F1: 0.3004 | LR: 2.33e-04 | Time: 11.7s (patience 20/25)
+Epoch   8/160 | Loss: 0.442234 | Val F1: 0.3348 | LR: 2.67e-04 | Time: 11.7s (patience 19/25)
+Epoch   9/160 | Loss: 0.417091 | Val F1: 0.3166 | LR: 3.00e-04 | Time: 11.7s (patience 18/25)
+Epoch  10/160 | Loss: 0.415098 | Val F1: 0.2294 | LR: 3.33e-04 | Time: 11.7s (patience 17/25)
+Epoch  11/160 | Loss: 0.412127 | Val F1: 0.2294 | LR: 3.67e-04 | Time: 11.9s (patience 17/25)
+Epoch  12/160 | Loss: 0.414905 | Val F1: 0.2294 | LR: 4.00e-04 | Time: 11.5s (patience 17/25)
+Epoch  13/160 | Loss: 0.413602 | Val F1: 0.2294 | LR: 4.00e-04 | Time: 11.5s (patience 17/25)
+Epoch  14/160 | Loss: 0.431935 | Val F1: 0.2294 | LR: 4.00e-04 | Time: 11.5s (patience 17/25)
+/usr/local/lib/python3.10/dist-packages/sklearn/metrics/_classification.py:1471: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Epoch  15/160 | Loss: 0.401976 | Val F1: 0.2347 | LR: 4.00e-04 | Time: 11.7s (patience 16/25)
+Epoch  16/160 | Loss: 0.368645 | Val F1: 0.2347 | LR: 4.00e-04 | Time: 11.5s (patience 16/25)
+Epoch  17/160 | Loss: 0.376724 | Val F1: 0.2347 | LR: 3.99e-04 | Time: 11.6s (patience 16/25)
+Epoch  18/160 | Loss: 0.441544 | Val F1: 0.2347 | LR: 3.99e-04 | Time: 11.5s (patience 16/25)
+Epoch  19/160 | Loss: 0.382169 | Val F1: 0.2347 | LR: 3.98e-04 | Time: 11.5s (patience 16/25)
+Epoch  20/160 | Loss: 0.331674 | Val F1: 0.3515 | LR: 3.98e-04 | Time: 11.7s (patience 15/25)
+Epoch  21/160 | Loss: 0.323110 | Val F1: 0.3515 | LR: 3.97e-04 | Time: 11.5s (patience 15/25)
+Epoch  22/160 | Loss: 0.335971 | Val F1: 0.3515 | LR: 3.96e-04 | Time: 11.5s (patience 15/25)
+Epoch  23/160 | Loss: 0.301839 | Val F1: 0.3515 | LR: 3.96e-04 | Time: 11.5s (patience 15/25)
+Epoch  24/160 | Loss: 0.364470 | Val F1: 0.3515 | LR: 3.95e-04 | Time: 11.6s (patience 15/25)
+Epoch  25/160 | Loss: 0.334123 | Val F1: 0.3842 | LR: 3.94e-04 | Time: 11.7s (patience 14/25)
+Epoch  26/160 | Loss: 0.296014 | Val F1: 0.3842 | LR: 3.92e-04 | Time: 11.5s (patience 14/25)
+Epoch  27/160 | Loss: 0.288605 | Val F1: 0.3842 | LR: 3.91e-04 | Time: 11.5s (patience 14/25)
+Epoch  28/160 | Loss: 0.275161 | Val F1: 0.3842 | LR: 3.90e-04 | Time: 11.5s (patience 14/25)
+Epoch  29/160 | Loss: 0.330161 | Val F1: 0.3842 | LR: 3.89e-04 | Time: 11.5s (patience 14/25)
+Epoch  30/160 | Loss: 0.288288 | Val F1: 0.3662 | LR: 3.87e-04 | Time: 11.7s (patience 13/25)
+Epoch  31/160 | Loss: 0.286416 | Val F1: 0.3662 | LR: 3.86e-04 | Time: 11.5s (patience 13/25)
+Epoch  32/160 | Loss: 0.265197 | Val F1: 0.3662 | LR: 3.84e-04 | Time: 11.5s (patience 13/25)
+Epoch  33/160 | Loss: 0.216865 | Val F1: 0.3662 | LR: 3.82e-04 | Time: 11.6s (patience 13/25)
+Epoch  34/160 | Loss: 0.280179 | Val F1: 0.3662 | LR: 3.81e-04 | Time: 11.5s (patience 13/25)
+Epoch  35/160 | Loss: 0.245161 | Val F1: 0.4490 | LR: 3.79e-04 | Time: 11.7s (patience 12/25)
+Epoch  36/160 | Loss: 0.212672 | Val F1: 0.4490 | LR: 3.77e-04 | Time: 11.5s (patience 12/25)
+Epoch  37/160 | Loss: 0.225435 | Val F1: 0.4490 | LR: 3.75e-04 | Time: 11.6s (patience 12/25)
+Epoch  38/160 | Loss: 0.269243 | Val F1: 0.4490 | LR: 3.73e-04 | Time: 11.5s (patience 12/25)
+Epoch  39/160 | Loss: 0.185395 | Val F1: 0.4490 | LR: 3.70e-04 | Time: 11.5s (patience 12/25)
+Epoch  40/160 | Loss: 0.249239 | Val F1: 0.4666 | LR: 3.68e-04 | Time: 11.7s (patience 11/25)
+Epoch  41/160 | Loss: 0.233698 | Val F1: 0.4666 | LR: 3.66e-04 | Time: 11.5s (patience 11/25)
+Epoch  42/160 | Loss: 0.216113 | Val F1: 0.4666 | LR: 3.63e-04 | Time: 11.5s (patience 11/25)
+Epoch  43/160 | Loss: 0.205358 | Val F1: 0.4666 | LR: 3.61e-04 | Time: 11.5s (patience 11/25)
+Epoch  44/160 | Loss: 0.201075 | Val F1: 0.4666 | LR: 3.58e-04 | Time: 11.6s (patience 11/25)
+Epoch  45/160 | Loss: 0.275232 | Val F1: 0.4581 | LR: 3.56e-04 | Time: 11.7s (patience 10/25)
+Epoch  46/160 | Loss: 0.231671 | Val F1: 0.4581 | LR: 3.53e-04 | Time: 11.5s (patience 10/25)
+Epoch  47/160 | Loss: 0.171102 | Val F1: 0.4581 | LR: 3.50e-04 | Time: 11.5s (patience 10/25)
+Epoch  48/160 | Loss: 0.219559 | Val F1: 0.4581 | LR: 3.47e-04 | Time: 11.6s (patience 10/25)
+Epoch  49/160 | Loss: 0.199259 | Val F1: 0.4581 | LR: 3.45e-04 | Time: 11.6s (patience 10/25)
+Epoch  50/160 | Loss: 0.168388 | Val F1: 0.3771 | LR: 3.42e-04 | Time: 11.7s (patience 9/25)
+Epoch  51/160 | Loss: 0.194175 | Val F1: 0.3771 | LR: 3.39e-04 | Time: 11.6s (patience 9/25)
+Epoch  52/160 | Loss: 0.144632 | Val F1: 0.3771 | LR: 3.35e-04 | Time: 11.6s (patience 9/25)
+Epoch  53/160 | Loss: 0.131420 | Val F1: 0.3771 | LR: 3.32e-04 | Time: 11.5s (patience 9/25)
+Epoch  54/160 | Loss: 0.150590 | Val F1: 0.3771 | LR: 3.29e-04 | Time: 11.5s (patience 9/25)
+Epoch  55/160 | Loss: 0.159674 | Val F1: 0.4017 | LR: 3.26e-04 | Time: 11.7s (patience 8/25)
+Epoch  56/160 | Loss: 0.245689 | Val F1: 0.4017 | LR: 3.23e-04 | Time: 11.6s (patience 8/25)
+Epoch  57/160 | Loss: 0.131054 | Val F1: 0.4017 | LR: 3.19e-04 | Time: 11.5s (patience 8/25)
+Epoch  58/160 | Loss: 0.208054 | Val F1: 0.4017 | LR: 3.16e-04 | Time: 11.5s (patience 8/25)
+Epoch  59/160 | Loss: 0.115252 | Val F1: 0.4017 | LR: 3.12e-04 | Time: 11.6s (patience 8/25)
+Epoch  60/160 | Loss: 0.235816 | Val F1: 0.3930 | LR: 3.09e-04 | Time: 11.7s (patience 7/25)
+Epoch  61/160 | Loss: 0.174051 | Val F1: 0.3930 | LR: 3.05e-04 | Time: 11.5s (patience 7/25)
+Epoch  62/160 | Loss: 0.125078 | Val F1: 0.3930 | LR: 3.01e-04 | Time: 11.5s (patience 7/25)
+Epoch  63/160 | Loss: 0.133005 | Val F1: 0.3930 | LR: 2.98e-04 | Time: 11.8s (patience 7/25)
+Epoch  64/160 | Loss: 0.222155 | Val F1: 0.3930 | LR: 2.94e-04 | Time: 11.5s (patience 7/25)
+Epoch  65/160 | Loss: 0.167653 | Val F1: 0.4347 | LR: 2.90e-04 | Time: 11.7s (patience 6/25)
+Epoch  66/160 | Loss: 0.207518 | Val F1: 0.4347 | LR: 2.87e-04 | Time: 11.5s (patience 6/25)
+Epoch  67/160 | Loss: 0.162463 | Val F1: 0.4347 | LR: 2.83e-04 | Time: 11.5s (patience 6/25)
+Epoch  68/160 | Loss: 0.265287 | Val F1: 0.4347 | LR: 2.79e-04 | Time: 11.5s (patience 6/25)
+Epoch  69/160 | Loss: 0.198974 | Val F1: 0.4347 | LR: 2.75e-04 | Time: 11.5s (patience 6/25)
+Epoch  70/160 | Loss: 0.171687 | Val F1: 0.4645 | LR: 2.71e-04 | Time: 11.7s (patience 5/25)
+Epoch  71/160 | Loss: 0.117247 | Val F1: 0.4645 | LR: 2.67e-04 | Time: 11.5s (patience 5/25)
+Epoch  72/160 | Loss: 0.193355 | Val F1: 0.4645 | LR: 2.63e-04 | Time: 11.5s (patience 5/25)
+Epoch  73/160 | Loss: 0.130552 | Val F1: 0.4645 | LR: 2.59e-04 | Time: 11.5s (patience 5/25)
+Epoch  74/160 | Loss: 0.049955 | Val F1: 0.4645 | LR: 2.55e-04 | Time: 11.5s (patience 5/25)
+Epoch  75/160 | Loss: 0.160219 | Val F1: 0.4233 | LR: 2.51e-04 | Time: 11.8s (patience 4/25)
+Epoch  76/160 | Loss: 0.085940 | Val F1: 0.4233 | LR: 2.47e-04 | Time: 11.6s (patience 4/25)
+Epoch  77/160 | Loss: 0.155484 | Val F1: 0.4233 | LR: 2.43e-04 | Time: 11.6s (patience 4/25)
+Epoch  78/160 | Loss: 0.128835 | Val F1: 0.4233 | LR: 2.38e-04 | Time: 11.6s (patience 4/25)
+Epoch  79/160 | Loss: 0.145127 | Val F1: 0.4233 | LR: 2.34e-04 | Time: 11.6s (patience 4/25)
+Epoch  80/160 | Loss: 0.090861 | Val F1: 0.3739 | LR: 2.30e-04 | Time: 11.7s (patience 3/25)
+Epoch  81/160 | Loss: 0.137724 | Val F1: 0.3739 | LR: 2.26e-04 | Time: 11.5s (patience 3/25)
+Epoch  82/160 | Loss: 0.144291 | Val F1: 0.3739 | LR: 2.22e-04 | Time: 11.6s (patience 3/25)
+Epoch  83/160 | Loss: 0.110483 | Val F1: 0.3739 | LR: 2.17e-04 | Time: 11.5s (patience 3/25)
+Epoch  84/160 | Loss: 0.144561 | Val F1: 0.3739 | LR: 2.13e-04 | Time: 11.5s (patience 3/25)
+Epoch  85/160 | Loss: 0.061277 | Val F1: 0.3649 | LR: 2.09e-04 | Time: 11.7s (patience 2/25)
+Epoch  86/160 | Loss: 0.109413 | Val F1: 0.3649 | LR: 2.05e-04 | Time: 11.5s (patience 2/25)
+Epoch  87/160 | Loss: 0.130588 | Val F1: 0.3649 | LR: 2.00e-04 | Time: 11.5s (patience 2/25)
+Epoch  88/160 | Loss: 0.117128 | Val F1: 0.3649 | LR: 1.96e-04 | Time: 11.5s (patience 2/25)
+Epoch  89/160 | Loss: 0.097609 | Val F1: 0.3649 | LR: 1.92e-04 | Time: 11.5s (patience 2/25)
+Epoch  90/160 | Loss: 0.091943 | Val F1: 0.3730 | LR: 1.88e-04 | Time: 11.7s (patience 1/25)
+Epoch  91/160 | Loss: 0.030007 | Val F1: 0.3730 | LR: 1.84e-04 | Time: 11.5s (patience 1/25)
+Epoch  92/160 | Loss: 0.162533 | Val F1: 0.3730 | LR: 1.79e-04 | Time: 11.5s (patience 1/25)
+Epoch  93/160 | Loss: 0.129427 | Val F1: 0.3730 | LR: 1.75e-04 | Time: 11.5s (patience 1/25)
+Epoch  94/160 | Loss: 0.085507 | Val F1: 0.3730 | LR: 1.71e-04 | Time: 11.5s (patience 1/25)
+Epoch  95/160 | Loss: 0.169954 | Val F1: 0.3928 | LR: 1.67e-04 | Time: 11.7s (patience 0/25)
+
+⚠ Early stopping at epoch 95
+
+✓ Training finished in 18.37 min | Best Val F1: 0.4934
+
+================================================================
+EVALUATION (final)
+================================================================
+
+TRAIN: Acc=0.6317, F1_macro=0.6006, F1_wtd=0.6188
+  Naive Acc 0.4368 (Δ +0.1949), Naive F1 0.4312 (Δ +0.1694)
+  Per-class:
+     low: P=0.653 R=0.789 F1=0.715 (n=2707)
+     mid: P=0.459 R=0.331 F1=0.384 (n=1933)
+    high: P=0.706 R=0.699 F1=0.702 (n=2302)
+
+VALID: Acc=0.5536, F1_macro=0.4934, F1_wtd=0.5811
+  Naive Acc 0.6190 (Δ -0.0655), Naive F1 0.5275 (Δ -0.0341)
+  Per-class:
+     low: P=0.819 R=0.562 F1=0.667 (n=105)
+     mid: P=0.424 R=0.521 F1=0.467 (n=48)
+    high: P=0.243 R=0.600 F1=0.346 (n=15)
+
+TEST: Acc=0.5161, F1_macro=0.4742, F1_wtd=0.5078
+  Naive Acc 0.4106 (Δ +0.1055), Naive F1 0.3802 (Δ +0.0940)
+  Per-class:
+     low: P=0.684 R=0.560 F1=0.616 (n=1054)
+     mid: P=0.317 R=0.219 F1=0.259 (n=558)
+    high: P=0.447 R=0.708 F1=0.548 (n=624)
+Saved results to /app/classification-analysis/ft_transformer_effect_first_unified/h12/results_h12.png
+Training history saved to /app/classification-analysis/ft_transformer_effect_first_unified/h12/training_history_h12.png
+Confusion matrices saved to: /app/classification-analysis/ft_transformer_effect_first_unified/h12/confusion_matrices_h12.png
+Model & results saved to: /app/classification-analysis/ft_transformer_effect_first_unified/h12
+
+================================================================================
+✓ Completed horizon h+12
+================================================================================
+
+
+################################################################################
+# HORIZON: 24 HOUR(S)
+################################################################################
+
+================================================================
+Loading data for horizon h+24
+================================================================
+Features: 823
+✓ Data loaded: Train=(6942, 823), Valid=(168, 823), Test=(2224, 823) | Time: 0.46s
+Device: cuda | num_workers=0 | pin_memory=True
+
+Class distribution (train):
+  low: 0.390
+  mid: 0.278
+  high: 0.333
+
+[Building FT-Transformer (效果优先)...]
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py:282: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  warnings.warn(f"enable_nested_tensor is True, but self.use_nested_tensor is False because {why_not_sparsity_fast_path}")
+✓ Model params: 6,334,115
+  Effective batch size: 512
+  Device: cuda
+
+================================================================
+Training FT-Transformer (效果优先) h+24
+================================================================
+Traceback (most recent call last):
+  File "/app/classification-models/ft_transformer_classifier.py", line 823, in <module>
+    main()
+  File "/app/classification-models/ft_transformer_classifier.py", line 807, in main
+    clf.train()
+  File "/app/classification-models/ft_transformer_classifier.py", line 393, in train
+    logits = self.model(xb_input)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/app/classification-models/ft_transformer_classifier.py", line 158, in forward
+    enc = self.encoder(seq)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py", line 387, in forward
+    output = mod(output, src_mask=mask, is_causal=is_causal, src_key_padding_mask=src_key_padding_mask_for_layers)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py", line 704, in forward
+    x = x + self._sa_block(self.norm1(x), src_mask, src_key_padding_mask, is_causal=is_causal)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/transformer.py", line 715, in _sa_block
+    x = self.self_attn(x, x, x,
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/activation.py", line 1241, in forward
+    attn_output, attn_output_weights = F.multi_head_attention_forward(
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/functional.py", line 5440, in multi_head_attention_forward
+    attn_output = scaled_dot_product_attention(q, k, v, attn_mask, dropout_p, is_causal)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.59 GiB. GPU 0 has a total capacty of 23.52 GiB of which 2.41 GiB is free. Process 34846 has 21.10 GiB memory in use. Of the allocated memory 20.07 GiB is allocated by PyTorch, and 579.80 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+

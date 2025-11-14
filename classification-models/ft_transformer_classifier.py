@@ -1,9 +1,7 @@
 """
-效果优先 FT-Transformer Classifier for CO Pollution Level Prediction (GPU 优化版)
 
-说明:
- - 目标：优先效果（在 GPU 上训练），默认模型较大，请根据显存调整 batch_size/accumulation_steps/emb 等。
- - 依赖: torch, numpy, pandas, scikit-learn, matplotlib, seaborn, joblib, pyarrow (parquet)
+依赖:
+ - torch, numpy, pandas, scikit-learn, matplotlib, seaborn, joblib, pyarrow
 """
 
 from pathlib import Path
@@ -31,7 +29,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
-    classification_report,
     confusion_matrix,
     precision_recall_fscore_support,
 )
@@ -47,42 +44,29 @@ def set_seed(seed: int):
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 
-class FocalLoss(nn.Module):
-    """Focal Loss (分类不平衡)"""
-    def __init__(self, alpha=None, gamma: float = 2.0, reduction: str = "mean"):
+class FocalLossLS(nn.Module):
+    """
+    Focal Loss + Label Smoothing
+    """
+    def __init__(self, alpha=None, gamma: float = 2.0, label_smoothing: float = 0.0):
         super().__init__()
         self.alpha = alpha
         self.gamma = gamma
-        self.reduction = reduction
+        self.label_smoothing = label_smoothing
 
     def forward(self, inputs: torch.Tensor, targets: torch.Tensor):
-        ce = F.cross_entropy(inputs, targets, reduction="none", weight=self.alpha)
+        ce = F.cross_entropy(
+            inputs,
+            targets,
+            reduction="none",
+            weight=self.alpha,
+            label_smoothing=self.label_smoothing if self.label_smoothing is not None else 0.0,
+        )
         p_t = torch.exp(-ce)
         loss = ((1 - p_t) ** self.gamma) * ce
-        if self.reduction == "mean":
-            return loss.mean()
-        elif self.reduction == "sum":
-            return loss.sum()
-        return loss
-
-def mixup_data(x, y, alpha=0.4, device=None):
-    """MixUp，返回混合样本与标签对"""
-    if alpha > 0:
-        lam = np.random.beta(alpha, alpha)
-    else:
-        lam = 1.0
-    batch_size = x.size(0)
-    index = torch.randperm(batch_size, device=device)
-    x2 = x[index]
-    y2 = y[index]
-    mixed_x = lam * x + (1 - lam) * x2
-    return mixed_x, y, y2, lam
-
-def mixup_criterion(criterion, preds, y_a, y_b, lam):
-    return lam * criterion(preds, y_a) + (1 - lam) * criterion(preds, y_b)
+        return loss.mean()
 
 class WarmupCosineScheduler:
-    """Epoch-level Warmup + CosineAnnealingLR schedule"""
     def __init__(self, optimizer, base_lr, warmup_epochs, total_epochs, min_lr=1e-6):
         self.optimizer = optimizer
         self.base_lr = base_lr
@@ -116,7 +100,6 @@ class TabularDataset(Dataset):
 
 # ----------------------------- Model core -----------------------------
 class FeatureTokenizer(nn.Module):
-    """Feature -> token 映射，保持特征信息（按 feature 的标量乘以 learnable 向量）"""
     def __init__(self, n_features: int, d_model: int):
         super().__init__()
         self.weight = nn.Parameter(torch.empty(n_features, d_model))
@@ -128,7 +111,6 @@ class FeatureTokenizer(nn.Module):
         return x.unsqueeze(-1) * self.weight + self.bias
 
 class FTTransformer(nn.Module):
-    """Pre-LN FT-Transformer with classification head"""
     def __init__(self, n_features: int, n_classes: int = 3,
                  d_model: int = 512, nhead: int = 8, num_layers: int = 6,
                  dim_feedforward: int = 2048, dropout: float = 0.1):
@@ -143,11 +125,10 @@ class FTTransformer(nn.Module):
             dropout=dropout,
             batch_first=True,
             activation="gelu",
-            norm_first=True  # Pre-LN
+            norm_first=True
         )
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
         self.norm = nn.LayerNorm(d_model)
-        # 强化分类头
         self.head = nn.Sequential(
             nn.Linear(d_model, d_model),
             nn.GELU(),
@@ -172,14 +153,14 @@ class FTTransformer(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         tokens = self.tokenizer(x)  # (B, F, D)
         B = tokens.shape[0]
-        cls = self.cls_token.expand(B, -1, -1)  # (B,1,D)
-        seq = torch.cat([cls, tokens], dim=1)  # (B, 1+F, D)
-        enc = self.encoder(seq)  # (B, 1+F, D)
-        cls_out = self.norm(enc[:, 0, :])  # (B, D)
+        cls = self.cls_token.expand(B, -1, -1)
+        seq = torch.cat([cls, tokens], dim=1)
+        enc = self.encoder(seq)
+        cls_out = self.norm(enc[:, 0, :])
         logits = self.head(cls_out)
         return logits
 
-# ----------------------------- Trainer (效果优先) -----------------------------
+# ----------------------------- Trainer -----------------------------
 class FTTransformerCOClassifier:
     def __init__(self,
                  horizon: int = 24,
@@ -189,7 +170,7 @@ class FTTransformerCOClassifier:
                  dim_feedforward: int = 2048,
                  dropout: float = 0.1,
                  batch_size: int = 512,
-                 accumulation_steps: int = 4,   # effective batch = batch_size * accumulation_steps
+                 accumulation_steps: int = 4,
                  lr: float = 5e-4,
                  weight_decay: float = 5e-3,
                  max_epochs: int = 120,
@@ -201,7 +182,7 @@ class FTTransformerCOClassifier:
                  label_smoothing: float | None = None,
                  seed: int = 42,
                  device: str | None = None,
-                 num_workers: int = 4,
+                 num_workers: int = 0,
                  checkpoint_dir: str | Path | None = None,
                  ):
         self.horizon = int(horizon)
@@ -222,7 +203,6 @@ class FTTransformerCOClassifier:
         self.focal_gamma = float(focal_gamma)
         self.label_smoothing = label_smoothing
         self.seed = int(seed)
-        # 设备选择（优先 CUDA）
         self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
         self.num_workers = int(num_workers)
         self.checkpoint_dir = Path(checkpoint_dir) if checkpoint_dir is not None else Path("./checkpoints")
@@ -263,13 +243,11 @@ class FTTransformerCOClassifier:
         self.feature_names = X_train.columns.tolist()
         print(f"Features: {len(self.feature_names)}")
 
-        # scaling
         self.scaler = StandardScaler()
         X_train_np = self.scaler.fit_transform(X_train.values.astype(np.float32))
         X_valid_np = self.scaler.transform(X_valid.values.astype(np.float32))
         X_test_np = self.scaler.transform(X_test.values.astype(np.float32))
 
-        # labels
         y_train_enc = y_train.map(self.label_mapping).values.astype(np.int64)
         y_valid_enc = y_valid.map(self.label_mapping).values.astype(np.int64)
         y_test_enc = y_test.map(self.label_mapping).values.astype(np.int64)
@@ -278,26 +256,40 @@ class FTTransformerCOClassifier:
         self.valid_ds = TabularDataset(X_valid_np, y_valid_enc)
         self.test_ds = TabularDataset(X_test_np, y_test_enc)
 
-        # DataLoader 配置：如果没有 GPU 则禁用 pin_memory 且强制 num_workers=0
         if self.device.type == "cuda":
-            max_workers = max(0, (os.cpu_count() or 1) - 1)
-            workers = min(self.num_workers, max_workers) if self.num_workers > 0 else max_workers
             pin_memory = True
             torch.backends.cudnn.benchmark = True
         else:
-            workers = 0
             pin_memory = False
             try:
                 torch.set_num_threads(1)
             except Exception:
                 pass
 
-        self.train_loader = DataLoader(self.train_ds, batch_size=self.batch_size, shuffle=True,
-                                       num_workers=workers, pin_memory=pin_memory)
-        self.valid_loader = DataLoader(self.valid_ds, batch_size=self.batch_size, shuffle=False,
-                                       num_workers=workers, pin_memory=pin_memory)
-        self.test_loader = DataLoader(self.test_ds, batch_size=self.batch_size, shuffle=False,
-                                      num_workers=workers, pin_memory=pin_memory)
+        self.train_loader = DataLoader(
+            self.train_ds,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=0,
+            pin_memory=pin_memory,
+            drop_last=False,
+        )
+        self.valid_loader = DataLoader(
+            self.valid_ds,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=0,
+            pin_memory=pin_memory,
+            drop_last=False,
+        )
+        self.test_loader = DataLoader(
+            self.test_ds,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=0,
+            pin_memory=pin_memory,
+            drop_last=False,
+        )
 
         naive_col = f"naive_yhat_t+{self.horizon}"
         if naive_col in train.columns:
@@ -310,16 +302,13 @@ class FTTransformerCOClassifier:
             self.naive_test = None
 
         print(f"✓ Data loaded: Train={X_train_np.shape}, Valid={X_valid_np.shape}, Test={X_test_np.shape} | Time: {time.time() - t0:.2f}s")
-        print(f"Device: {self.device} | num_workers={workers} | pin_memory={pin_memory}")
-        if self.device.type != "cuda":
-            print("提示: 未检测到 GPU（CUDA）。建议将 batch_size 调小（例如 4 或 8），num_workers=0。")
+        print(f"Device: {self.device} | num_workers=0 | pin_memory={pin_memory}")
 
         print("\nClass distribution (train):")
         cls_dist = pd.Series(y_train_enc).value_counts(normalize=True).sort_index()
         for cls, prop in cls_dist.items():
             print(f"  {self.rev_mapping[int(cls)]}: {prop:.3f}")
 
-        # build model
         print("\n[Building FT-Transformer (效果优先)...]")
         self.model = FTTransformer(
             n_features=X_train_np.shape[1],
@@ -335,7 +324,6 @@ class FTTransformerCOClassifier:
         print(f"  Effective batch size: {self.batch_size * self.accumulation_steps}")
         print(f"  Device: {self.device}")
 
-        # class weights for focal loss
         cls_counts = pd.Series(y_train_enc).value_counts().sort_index()
         weights = cls_counts.sum() / (len(cls_counts) * cls_counts)
         self.class_weights = torch.tensor(weights.values, dtype=torch.float32, device=self.device)
@@ -344,9 +332,24 @@ class FTTransformerCOClassifier:
 
     def train(self):
         print(f"\n{'='*64}\nTraining FT-Transformer (效果优先) h+{self.horizon}\n{'='*64}")
-        optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay, betas=(0.9, 0.999))
-        scheduler = WarmupCosineScheduler(optimizer, base_lr=self.lr, warmup_epochs=self.warmup_epochs, total_epochs=self.max_epochs, min_lr=1e-6)
-        criterion = FocalLoss(alpha=self.class_weights, gamma=self.focal_gamma)
+        optimizer = torch.optim.AdamW(
+            self.model.parameters(),
+            lr=self.lr,
+            weight_decay=self.weight_decay,
+            betas=(0.9, 0.999),
+        )
+        scheduler = WarmupCosineScheduler(
+            optimizer,
+            base_lr=self.lr,
+            warmup_epochs=self.warmup_epochs,
+            total_epochs=self.max_epochs,
+            min_lr=1e-6,
+        )
+        criterion = FocalLossLS(
+            alpha=self.class_weights,
+            gamma=self.focal_gamma,
+            label_smoothing=self.label_smoothing if self.label_smoothing is not None else 0.0,
+        )
 
         scaler = GradScaler() if self.device.type == "cuda" else None
 
@@ -354,6 +357,7 @@ class FTTransformerCOClassifier:
         best_state = None
         patience_left = self.patience
         history = {"train_loss": [], "val_f1": [], "lr": []}
+        last_val_f1 = 0.0
 
         start_time = time.time()
         for epoch in range(1, self.max_epochs + 1):
@@ -361,22 +365,25 @@ class FTTransformerCOClassifier:
             lr_now = scheduler.step(epoch - 1)
             history['lr'].append(lr_now)
 
-            # training epoch
             self.model.train()
             running_loss = 0.0
             optimizer.zero_grad()
             n_samples = 0
 
-            inner = self.train_loader
-            if tqdm is not None:
-                inner = tqdm(self.train_loader, desc=f"Epoch {epoch}/{self.max_epochs}", leave=False, unit="batch")
-            for step, (xb, yb) in enumerate(inner):
-                xb = xb.to(self.device, non_blocking=(self.device.type == "cuda"))
-                yb = yb.to(self.device, non_blocking=(self.device.type == "cuda"))
+            for step, (xb, yb) in enumerate(self.train_loader):
+                xb = xb.to(self.device, non_blocking=True)
+                yb = yb.to(self.device, non_blocking=True)
 
                 use_mix = (self.mixup_alpha > 0 and np.random.rand() < self.mixup_prob)
                 if use_mix:
-                    xb_m, y_a, y_b, lam = mixup_data(xb, yb, alpha=self.mixup_alpha, device=self.device)
+                    if self.mixup_alpha > 0:
+                        lam = np.random.beta(self.mixup_alpha, self.mixup_alpha)
+                    else:
+                        lam = 1.0
+                    batch_size = xb.size(0)
+                    index = torch.randperm(batch_size, device=xb.device)
+                    xb_m = lam * xb + (1 - lam) * xb[index]
+                    y_a, y_b = yb, yb[index]
                     xb_input = xb_m
                 else:
                     xb_input = xb
@@ -385,7 +392,7 @@ class FTTransformerCOClassifier:
                     with autocast():
                         logits = self.model(xb_input)
                         if use_mix:
-                            loss = mixup_criterion(criterion, logits, y_a, y_b, lam)
+                            loss = lam * criterion(logits, y_a) + (1 - lam) * criterion(logits, y_b)
                         else:
                             loss = criterion(logits, yb)
                         loss = loss / self.accumulation_steps
@@ -393,7 +400,7 @@ class FTTransformerCOClassifier:
                 else:
                     logits = self.model(xb_input)
                     if use_mix:
-                        loss = mixup_criterion(criterion, logits, y_a, y_b, lam)
+                        loss = lam * criterion(logits, y_a) + (1 - lam) * criterion(logits, y_b)
                     else:
                         loss = criterion(logits, yb)
                     loss = loss / self.accumulation_steps
@@ -416,16 +423,21 @@ class FTTransformerCOClassifier:
             avg_loss = running_loss / max(1, n_samples)
             history['train_loss'].append(avg_loss)
 
-            # validation
-            val_metrics = self._eval_loader(self.valid_loader)
-            val_f1 = val_metrics['f1_macro']
+            should_validate = (epoch <= 10) or (epoch % 5 == 0) or (epoch == self.max_epochs)
+
+            if should_validate:
+                val_metrics = self._eval_loader(self.valid_loader)
+                val_f1 = val_metrics['f1_macro']
+                last_val_f1 = val_f1
+            else:
+                val_f1 = last_val_f1
+
             history['val_f1'].append(val_f1)
 
             epoch_time = time.time() - epoch_start
             print(f"Epoch {epoch:3d}/{self.max_epochs} | Loss: {avg_loss:.6f} | Val F1: {val_f1:.4f} | LR: {lr_now:.2e} | Time: {epoch_time:.1f}s", end="")
 
-            # early stopping & best save
-            if val_f1 > best_f1 + 1e-6:
+            if should_validate and val_f1 > best_f1 + 1e-6:
                 best_f1 = val_f1
                 best_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                 patience_left = self.patience
@@ -436,7 +448,8 @@ class FTTransformerCOClassifier:
                     pass
                 print(" ✓ NEW BEST")
             else:
-                patience_left -= 1
+                if should_validate:
+                    patience_left -= 1
                 print(f" (patience {patience_left}/{self.patience})")
                 if patience_left <= 0:
                     print(f"\n⚠ Early stopping at epoch {epoch}")
@@ -508,7 +521,7 @@ class FTTransformerCOClassifier:
         return self
 
     def plot_results(self, save_path=None):
-        # 仍保留原有的综合图（loss / val_f1 / lr + 混淆矩阵）
+        """综合图：loss / val_f1 / lr + 混淆矩阵"""
         if getattr(self, "history", None) is None:
             print("[WARN] no history to plot in plot_results.")
         fig = plt.figure(figsize=(20, 10))
@@ -531,7 +544,6 @@ class FTTransformerCOClassifier:
         ax_lr.set_title('LR schedule')
         ax_lr.set_yscale('log')
 
-        # confusion matrices
         names = ['train','valid','test']
         positions = [(1,0),(1,1),(1,2)]
         for (name, pos) in zip(names, positions):
@@ -551,7 +563,7 @@ class FTTransformerCOClassifier:
         plt.show()
 
     def plot_training_history(self, save_path=None):
-        """单独绘制并保存训练曲线：train loss / val f1 / lr"""
+        """单独绘制训练曲线：train loss / val f1 / lr"""
         if getattr(self, "history", None) is None:
             print("[WARN] No training history available to plot.")
             return
@@ -583,10 +595,43 @@ class FTTransformerCOClassifier:
             print(f"Training history saved to {save_path}")
         plt.show()
 
+    def plot_confusion_matrices(self, save_path=None):
+        """单独画 train/valid/test 混淆矩阵，方便和 DeepGBM 对齐"""
+        if not self.results:
+            print("[WARN] No results to plot confusion matrices.")
+            return
+        fig, axes = plt.subplots(1, 3, figsize=(21, 6))
+        names = ["train", "valid", "test"]
+        ds_map = {"train": self.train_ds, "valid": self.valid_ds, "test": self.test_ds}
+        for idx, name in enumerate(names):
+            y_true = ds_map[name].y.numpy()
+            y_pred = self.results[name]["pred"]
+            cm = confusion_matrix(y_true, y_pred)
+            sns.heatmap(
+                cm,
+                annot=True,
+                fmt="d",
+                cmap="Blues",
+                xticklabels=["low", "mid", "high"],
+                yticklabels=["low", "mid", "high"],
+                ax=axes[idx],
+            )
+            axes[idx].set_title(
+                f"{name.capitalize()} Set\nAcc: {self.results[name]['accuracy']:.3f}, F1: {self.results[name]['f1_macro']:.3f}"
+            )
+            axes[idx].set_ylabel("True Label")
+            axes[idx].set_xlabel("Predicted Label")
+        plt.suptitle(f"FT-Transformer - Confusion Matrices (h+{self.horizon})", fontsize=16)
+        plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches="tight")
+            print(f"Confusion matrices saved to: {save_path}")
+        plt.show()
+
     def save_model(self, output_dir: str | Path):
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        model_path = output_dir / f"ftt_effect_h{self.horizon}.pt"
+
         torch.save({
             "state_dict": self.model.state_dict(),
             "params": {
@@ -596,37 +641,53 @@ class FTTransformerCOClassifier:
                 "num_layers": self.num_layers,
                 "dim_feedforward": self.dim_feedforward,
                 "dropout": self.dropout,
+                "horizon": self.horizon,
             },
             "history": getattr(self, "history", None)
-        }, model_path)
+        }, output_dir / f"ftt_effect_h{self.horizon}.pt")
+
         joblib.dump(self.scaler, output_dir / f"ftt_scaler_h{self.horizon}.joblib")
+
+        def _pack_results(res_dict):
+            out = {}
+            for ds, res in res_dict.items():
+                out[ds] = {
+                    "accuracy": float(res["accuracy"]),
+                    "f1_macro": float(res["f1_macro"]),
+                    "f1_weighted": float(res["f1_weighted"]),
+                    "per_class_f1": {
+                        lab: float(f1) for lab, f1 in zip(["low", "mid", "high"], res["f1_per_class"])
+                    }
+                }
+            return out
 
         summary = {
             "horizon": self.horizon,
-            "model": "FT-Transformer-EffectFirst",
+            "model_type": "ft_transformer",
             "timestamp": datetime.now().isoformat(),
-            "training_time_seconds": getattr(self, "training_time_seconds", None),
+            "training_time_seconds": float(getattr(self, "training_time_seconds", 0.0)),
             "params": {
                 "d_model": self.d_model,
                 "nhead": self.nhead,
                 "num_layers": self.num_layers,
                 "dim_feedforward": self.dim_feedforward,
+                "dropout": self.dropout,
                 "batch_size": self.batch_size,
-                "accumulation": self.accumulation_steps,
+                "accumulation_steps": self.accumulation_steps,
                 "lr": self.lr,
                 "weight_decay": self.weight_decay,
+                "max_epochs": self.max_epochs,
+                "warmup_epochs": self.warmup_epochs,
+                "patience": self.patience,
+                "mixup_alpha": self.mixup_alpha,
+                "mixup_prob": self.mixup_prob,
+                "focal_gamma": self.focal_gamma,
+                "label_smoothing": self.label_smoothing,
+                "seed": self.seed,
             },
-            "results": {
-                ds: {
-                    "accuracy": float(res["accuracy"]),
-                    "f1_macro": float(res["f1_macro"]),
-                    "f1_weighted": float(res["f1_weighted"])
-                } for ds, res in self.results.items()
-            }
+            "results": _pack_results(self.results),
+            "history": self.history if getattr(self, "history", None) is not None else None,
         }
-        # 如果有 history，也写入 summary
-        if getattr(self, "history", None) is not None:
-            summary["history"] = self.history
 
         with open(output_dir / f"ftt_effect_results_h{self.horizon}.json", "w") as f:
             json.dump(summary, f, indent=2)
@@ -635,9 +696,8 @@ class FTTransformerCOClassifier:
 
 # ----------------------------- main -----------------------------
 def main():
-    # 请根据你的环境修改 DATA_PATH / OUTPUT_DIR
     DATA_PATH = Path("/app/data_artifacts/splits")
-    OUTPUT_DIR = Path("/app/classification-analysis/ft_transformer_effect_first")
+    OUTPUT_DIR = Path("/app/classification-analysis/ft_transformer_effect_first_unified")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     horizons = [1, 6, 12, 24]
 
@@ -646,29 +706,103 @@ def main():
         print(f"# HORIZON: {h} HOUR(S)")
         print("#" * 80)
 
-        clf = FTTransformerCOClassifier(
-    horizon=h,
-    d_model=1024,
-    nhead=16,
-    num_layers=8,
-    dim_feedforward=4096,
-    dropout=0.15,
-    batch_size=64,          # 激进
-    accumulation_steps=1,
-    lr=1e-4,                   # batch_size=256时的学习率
-    weight_decay=1e-3,
-    max_epochs=120,
-    warmup_epochs=10,
-    patience=20,
-    mixup_alpha=0.4,
-    mixup_prob=0.5,
-    focal_gamma=2.0,
-    label_smoothing=None,
-    seed=42,
-    device=None,
-    num_workers=8,
-    checkpoint_dir=OUTPUT_DIR / "checkpoints",
-)
+        # 统一思路：batch 不要太大 + 正则偏保守，先让模型更容易 fit
+        if h == 1:
+            clf = FTTransformerCOClassifier(
+                horizon=h,
+                d_model=256,
+                nhead=8,
+                num_layers=4,
+                dim_feedforward=1024,
+                dropout=0.15,            # ↓ 正则略弱
+                batch_size=128,          # ↓ 减小 batch，避免爆显存，也更“噪声丰富”
+                accumulation_steps=1,
+                lr=7e-4,
+                weight_decay=5e-4,       # ↓ 正则弱一点
+                max_epochs=120,
+                warmup_epochs=8,
+                patience=25,
+                mixup_alpha=0.15,        # ↓ mixup 稍弱
+                mixup_prob=0.3,
+                focal_gamma=1.2,         # ↓ 不要太强的 focal
+                label_smoothing=0.03,    # ↓ 平滑弱一点
+                seed=42,
+                device=None,
+                num_workers=0,
+                checkpoint_dir=OUTPUT_DIR / "checkpoints",
+            )
+        elif h == 6:
+            clf = FTTransformerCOClassifier(
+                horizon=h,
+                d_model=256,
+                nhead=8,
+                num_layers=4,
+                dim_feedforward=1024,
+                dropout=0.18,
+                batch_size=128,
+                accumulation_steps=1,
+                lr=4e-4,
+                weight_decay=6e-4,
+                max_epochs=140,
+                warmup_epochs=10,
+                patience=22,
+                mixup_alpha=0.15,
+                mixup_prob=0.3,
+                focal_gamma=1.2,
+                label_smoothing=0.03,
+                seed=42,
+                device=None,
+                num_workers=0,
+                checkpoint_dir=OUTPUT_DIR / "checkpoints",
+            )
+        elif h == 12:
+            clf = FTTransformerCOClassifier(
+                horizon=h,
+                d_model=320,
+                nhead=8,
+                num_layers=6,
+                dim_feedforward=1536,
+                dropout=0.18,
+                batch_size=96,           # 12/24h 任务可能更难，稍微再小一点 batch
+                accumulation_steps=1,
+                lr=4e-4,
+                weight_decay=6e-4,
+                max_epochs=160,
+                warmup_epochs=12,
+                patience=25,
+                mixup_alpha=0.12,
+                mixup_prob=0.25,
+                focal_gamma=1.1,
+                label_smoothing=0.025,
+                seed=42,
+                device=None,
+                num_workers=0,
+                checkpoint_dir=OUTPUT_DIR / "checkpoints",
+            )
+        else:  # h == 24
+            clf = FTTransformerCOClassifier(
+                horizon=h,
+                d_model=288,
+                nhead=8,
+                num_layers=5,
+                dim_feedforward=1408,
+                dropout=0.2,
+                batch_size=96,
+                accumulation_steps=1,
+                lr=4e-4,
+                weight_decay=7e-4,
+                max_epochs=160,
+                warmup_epochs=10,
+                patience=25,
+                mixup_alpha=0.12,
+                mixup_prob=0.3,
+                focal_gamma=1.2,
+                label_smoothing=0.03,
+                seed=42,
+                device=None,
+                num_workers=0,
+                checkpoint_dir=OUTPUT_DIR / "checkpoints",
+            )
 
         clf.load_data(DATA_PATH)
         clf.train()
@@ -676,11 +810,9 @@ def main():
 
         out_dir = OUTPUT_DIR / f"h{h}"
         out_dir.mkdir(parents=True, exist_ok=True)
-        # 保存综合结果图（包含混淆矩阵等）
         clf.plot_results(save_path=out_dir / f"results_h{h}.png")
-        # **单独保存训练曲线**
         clf.plot_training_history(save_path=out_dir / f"training_history_h{h}.png")
-        # 保存模型与历史记录
+        clf.plot_confusion_matrices(save_path=out_dir / f"confusion_matrices_h{h}.png")
         clf.save_model(out_dir)
 
         print("\n" + "=" * 80)
