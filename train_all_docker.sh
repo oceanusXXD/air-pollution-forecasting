@@ -1,5 +1,5 @@
 #!/bin/bash
-# Quick start script for training all models in Docker
+# Quick start script for training all models in Docker (with nohup)
 
 echo "=========================================="
 echo "Air Pollution Forecasting - Model Training"
@@ -26,7 +26,8 @@ mkdir -p classification-analysis
 
 echo ""
 echo "[2/4] Training XGBoost classifier..."
-echo "[2/4] Training XGBoost successfully..."
+nohup docker compose run --rm air-pollution-classifier \
+    python classification-models/xgboost_classifier.py > classification-analysis/xgboost_training.log 2>&1 &
 
 if [ $? -ne 0 ]; then
     echo "❌ XGBoost training failed!"
@@ -35,8 +36,8 @@ fi
 
 echo ""
 echo "[3/4] Training FT-Transformer classifier..."
-docker compose run --rm air-pollution-classifier \
-    python classification-models/ft_transformer_classifier.py 2>&1 | tee classification-analysis/ft_transformer_training.log
+nohup docker compose run --rm air-pollution-classifier \
+    python classification-models/ft_transformer_classifier.py > classification-analysis/ft_transformer_training.log 2>&1 &
 
 if [ $? -ne 0 ]; then
     echo "❌ FT-Transformer training failed!"
@@ -45,8 +46,8 @@ fi
 
 echo ""
 echo "[4/4] Training DeepGBM classifier..."
-docker compose run --rm air-pollution-classifier \
-    python classification-models/deepgbm_classifier.py 2>&1 | tee classification-analysis/deepgbm_training.log
+nohup docker compose run --rm air-pollution-classifier \
+    python classification-models/deepgbm_classifier.py > classification-analysis/deepgbm_training.log 2>&1 &
 
 if [ $? -ne 0 ]; then
     echo "❌ DeepGBM training failed!"
@@ -55,6 +56,6 @@ fi
 
 echo ""
 echo "=========================================="
-echo "✅ All models trained successfully!"
-echo "Logs saved under: ./classification-analysis/"
+echo "✅ All models training started in background!"
+echo "Logs will be saved under: ./classification-analysis/"
 echo "=========================================="
