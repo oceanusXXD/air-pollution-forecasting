@@ -647,29 +647,28 @@ def main():
         print("#" * 80)
 
         clf = FTTransformerCOClassifier(
-            horizon=h,
-            d_model=512,             # 512 够用
-            nhead=8,
-            num_layers=6,            # 6 层 Transformer
-            dim_feedforward=2048,    # Feedforward 大小
-            dropout=0.15,            # 稍大一点，防过拟合
-            batch_size=2,            # 显存受限
-            accumulation_steps=16,   # effective batch = 2*16 = 32
-            lr=3e-4,                 # 稍低一点，训练稳定
-            weight_decay=1e-3,       # 轻微正则
-            max_epochs=120,
-            warmup_epochs=8,
-            patience=20,
-            mixup_alpha=0.4,
-            mixup_prob=0.5,
-            focal_gamma=2.0,
-            label_smoothing=None,
-            seed=42,
-            device=None,             # 自动选择 GPU
-            num_workers=0,
-            checkpoint_dir=OUTPUT_DIR / "checkpoints",
-        )
-
+    horizon=h,
+    d_model=1024,
+    nhead=16,
+    num_layers=8,
+    dim_feedforward=4096,
+    dropout=0.15,
+    batch_size=64,          # 激进
+    accumulation_steps=1,
+    lr=1e-4,                   # batch_size=256时的学习率
+    weight_decay=1e-3,
+    max_epochs=120,
+    warmup_epochs=10,
+    patience=20,
+    mixup_alpha=0.4,
+    mixup_prob=0.5,
+    focal_gamma=2.0,
+    label_smoothing=None,
+    seed=42,
+    device=None,
+    num_workers=8,
+    checkpoint_dir=OUTPUT_DIR / "checkpoints",
+)
 
         clf.load_data(DATA_PATH)
         clf.train()

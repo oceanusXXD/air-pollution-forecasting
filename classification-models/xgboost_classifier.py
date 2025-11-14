@@ -1,11 +1,19 @@
 """
-XGBoost Classifier for CO Pollution Level Prediction (GPU-optimized)
-- Uses xgb.train + DMatrix for robust compatibility across xgboost versions
-- Tries to use GPU (gpu_hist) and falls back to CPU (hist) if not available
+XGBoost Classifier for CO Pollution Level Prediction (GPU-enabled)
+- Tries GPU (gpu_hist) first, falls back to CPU (hist) if unavailable or fails
+- Ensures data dtype compatibility and prints GPU status
 """
 
-import pandas as pd
+import os
+import sys
+import json
+import time
+import traceback
+from datetime import datetime
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
 import xgboost as xgb
 from sklearn.metrics import (
     accuracy_score,
@@ -16,20 +24,34 @@ from sklearn.metrics import (
 )
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pathlib import Path
-import joblib
-import json
-from datetime import datetime
-import time
-import os
+
 try:
     from tqdm import tqdm
 except Exception:
     tqdm = None
 
+# optional: use torch to detect CUDA
+try:
+    import torch
+except Exception:
+    torch = None
+
+import subprocess
+
+
+def run_nvidia_smi():
+    try:
+        r = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total,memory.used,utilization.gpu", "--format=csv,noheader,nounits"],
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=5)
+        if r.returncode == 0:
+            return r.stdout.strip()
+    except Exception:
+        return None
+    return None
+
 
 class XGBoostCOClassifier:
-    """XGBoost classifier for CO level prediction across multiple horizons (GPU-optimized)"""
+    """XGBoost classifier for CO level prediction with GPU support"""
 
     def __init__(
         self,
@@ -46,6 +68,8 @@ class XGBoostCOClassifier:
         early_stopping_rounds=100,
         random_state=42,
         use_gpu: bool | None = None,
+        gpu_id: int = 0,
+        verbose_eval: int | bool = 50,
     ):
         self.horizon = horizon
         self.n_estimators = int(n_estimators)
@@ -59,15 +83,35 @@ class XGBoostCOClassifier:
         self.reg_alpha = float(reg_alpha)
         self.early_stopping_rounds = int(early_stopping_rounds)
         self.random_state = int(random_state)
-        # If None: try GPU if xgboost supports it and CUDA visible
-        self.use_gpu = use_gpu
-        if self.use_gpu is None:
-            # heuristic: if CUDA_VISIBLE_DEVICES set or NVIDIA_VISIBLE_DEVICES set, assume GPU
-            self.use_gpu = bool(os.environ.get("CUDA_VISIBLE_DEVICES") or os.environ.get("NVIDIA_VISIBLE_DEVICES"))
+        self.gpu_id = int(gpu_id)
+        self.verbose_eval = verbose_eval
+
+        # detect GPU if not specified
+        if use_gpu is None:
+            self.use_gpu = self._detect_gpu()
+        else:
+            self.use_gpu = bool(use_gpu)
+
         self.bst = None
         self.evals_result = None
         self.feature_importance = None
         self.results = {}
+
+    def _detect_gpu(self) -> bool:
+        # prefer torch if available
+        try:
+            if torch is not None and torch.cuda.is_available():
+                return True
+        except Exception:
+            pass
+        # fallback to nvidia-smi
+        try:
+            out = run_nvidia_smi()
+            if out:
+                return True
+        except Exception:
+            pass
+        return False
 
     def load_data(self, data_path):
         base_path = Path(data_path) / f"h{self.horizon}"
@@ -121,7 +165,7 @@ class XGBoostCOClassifier:
 
         return self
 
-    def _build_params(self, use_gpu_flag: bool):
+    def _build_params(self, use_gpu_flag: bool) -> dict:
         params = {
             "objective": "multi:softprob",
             "num_class": 3,
@@ -139,17 +183,52 @@ class XGBoostCOClassifier:
         }
         if use_gpu_flag:
             params["tree_method"] = "gpu_hist"
-            # predictor will be auto chosen for gpu_hist; but set gpu_predictor for older versions
             params["predictor"] = "gpu_predictor"
+            params["gpu_id"] = int(self.gpu_id)
         else:
             params["tree_method"] = "hist"
             params["predictor"] = "auto"
         return params
 
+    def _prepare_dmatrix(self, X, y=None, weight=None):
+        # ensure float32
+        X_np = np.asarray(X, dtype=np.float32)
+        if y is None:
+            return xgb.DMatrix(X_np, feature_names=list(X.columns) if hasattr(X, "columns") else None)
+        else:
+            # weights may be None
+            return xgb.DMatrix(X_np, label=np.asarray(y, dtype=np.int32), weight=np.asarray(weight, dtype=np.float32) if weight is not None else None,
+                              feature_names=list(X.columns) if hasattr(X, "columns") else None)
+
+    def _test_gpu_small_run(self) -> bool:
+        """Try a tiny xgboost run on GPU to confirm GPU support"""
+        try:
+            X = np.random.rand(200, 8).astype(np.float32)
+            y = np.random.randint(0, 3, size=(200,)).astype(np.int32)
+            dtrain = xgb.DMatrix(X, label=y)
+            params = {"objective": "multi:softprob", "num_class": 3, "tree_method": "gpu_hist", "predictor": "gpu_predictor", "gpu_id": int(self.gpu_id)}
+            xgb.train(params, dtrain, num_boost_round=5, verbose_eval=False)
+            return True
+        except Exception as e:
+            print("[GPU TEST] small gpu run failed:", e)
+            return False
+
     def train(self):
         print(f"\n{'='*60}")
         print(f"Training XGBoost Classifier (h+{self.horizon}) - GPU attempt: {self.use_gpu}")
         print(f"{'='*60}")
+
+        # print GPU status
+        if self.use_gpu:
+            print("[INFO] Detected GPU environment. nvidia-smi output (if available):")
+            smi = run_nvidia_smi()
+            if smi:
+                print(smi)
+            else:
+                print("[INFO] nvidia-smi not available or failed to run.")
+        else:
+            print("[INFO] GPU not detected; will use CPU.")
+
         print(f"Parameters: n_estimators={self.n_estimators}, max_depth={self.max_depth}, lr={self.learning_rate}, "
               f"min_child_weight={self.min_child_weight}, gamma={self.gamma}, subsample={self.subsample}, "
               f"colsample_bytree={self.colsample_bytree}, reg_lambda={self.reg_lambda}, reg_alpha={self.reg_alpha}")
@@ -160,23 +239,29 @@ class XGBoostCOClassifier:
         weight_train = pd.Series(self.y_train.map(self.label_mapping)).map(class_weights).values if hasattr(self, "y_train") else None
         weight_valid = pd.Series(self.y_valid.map(self.label_mapping)).map(class_weights).values if hasattr(self, "y_valid") else None
 
-        # create DMatrix with feature names for correct importance mapping
-        dtrain = xgb.DMatrix(self.X_train.values, label=self.y_train_encoded, weight=weight_train, feature_names=list(self.X_train.columns))
-        dvalid = xgb.DMatrix(self.X_valid.values, label=self.y_valid_encoded, weight=weight_valid, feature_names=list(self.X_valid.columns))
-        dtest = xgb.DMatrix(self.X_test.values, label=self.y_test_encoded, feature_names=list(self.X_test.columns))
+        # prepare DMatrix (force float32)
+        dtrain = self._prepare_dmatrix(self.X_train, self.y_train_encoded, weight_train)
+        dvalid = self._prepare_dmatrix(self.X_valid, self.y_valid_encoded, weight_valid)
+        dtest = self._prepare_dmatrix(self.X_test, self.y_test_encoded)
 
         watchlist = [(dtrain, "train"), (dvalid, "valid")]
 
-        # try GPU first (if flagged), fallback to CPU on exception
-        tried_gpu = False
+        # try GPU first if flagged
         use_gpu_flag = bool(self.use_gpu)
         params = self._build_params(use_gpu_flag)
         evals_result = {}
         start_time = time.time()
+
+        tried_gpu = False
         try:
             if use_gpu_flag:
+                # additional safety: quick test run to detect driver/lib issues
                 tried_gpu = True
-                print("Attempting GPU training with params:", {k: params[k] for k in ["tree_method", "predictor"] if k in params})
+                print("[INFO] Attempting small GPU smoke-test...")
+                ok = self._test_gpu_small_run()
+                if not ok:
+                    raise RuntimeError("GPU smoke-test failed; will fallback to CPU.")
+                print("[INFO] GPU smoke-test passed. Starting full GPU training...")
             self.bst = xgb.train(
                 params,
                 dtrain,
@@ -184,14 +269,15 @@ class XGBoostCOClassifier:
                 evals=watchlist,
                 early_stopping_rounds=self.early_stopping_rounds,
                 evals_result=evals_result,
-                verbose_eval=True,
+                verbose_eval=self.verbose_eval,
             )
         except Exception as e:
-            print("GPU training failed or not supported. Falling back to CPU hist. Exception:")
-            print(e)
+            print("\n[WARN] GPU training failed or not supported. Falling back to CPU hist. Exception:")
+            traceback.print_exc()
             # fallback CPU
             params = self._build_params(False)
             evals_result = {}
+            start_time = time.time()
             self.bst = xgb.train(
                 params,
                 dtrain,
@@ -199,7 +285,7 @@ class XGBoostCOClassifier:
                 evals=watchlist,
                 early_stopping_rounds=self.early_stopping_rounds,
                 evals_result=evals_result,
-                verbose_eval=True,
+                verbose_eval=self.verbose_eval,
             )
 
         self.evals_result = evals_result
@@ -222,11 +308,10 @@ class XGBoostCOClassifier:
         return self
 
     def evaluate(self, X_df, y_encoded, y_original, dataset_name="Dataset", naive_baseline=None):
-        dmat = xgb.DMatrix(X_df.values, feature_names=list(X_df.columns))
+        dmat = xgb.DMatrix(np.asarray(X_df, dtype=np.float32), feature_names=list(X_df.columns))
         proba = self.bst.predict(dmat, iteration_range=(0, getattr(self.bst, "best_iteration", self.n_estimators)))
         # proba shape (N, num_class)
         if proba.ndim == 1:
-            # binary? unlikely; fallback
             preds_encoded = (proba > 0.5).astype(int)
             proba_full = np.vstack([1-proba, proba]).T
         else:
@@ -392,7 +477,7 @@ def main():
     OUTPUT_DIR = Path("/app/classification-analysis/xgboost_gpu")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # GPU-friendly stronger configs (for H100)
+    # GPU-friendly stronger configs (for GPU like 4090)
     horizon_configs = {
         1: {
             "n_estimators": 1200,

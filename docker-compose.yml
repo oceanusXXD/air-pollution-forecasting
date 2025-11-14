@@ -1,46 +1,24 @@
 services:
-  # Air Pollution Forecasting Classification Models
   air-pollution-classifier:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: air-pollution-classifier
-    
-    # Resource limits (adjusted for 2 CPU server)
     deploy:
       resources:
-        limits:
-          cpus: '1.8'      # Use up to 1.8 CPU cores (留 0.2 给系统)
-          memory: 4G       # 4GB memory limit
         reservations:
-          cpus: '1.0'      # Reserve at least 1 core
-          memory: 2G       # Reserve at least 2GB
-    
-    # Environment variables
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     environment:
+      - NVIDIA_VISIBLE_DEVICES=all
       - PYTHONUNBUFFERED=1
-      - OMP_NUM_THREADS=2           # OpenMP threads for numpy/sklearn
-      - MKL_NUM_THREADS=2           # Intel MKL threads
-      - NUMEXPR_NUM_THREADS=2       # NumExpr threads
-      - OPENBLAS_NUM_THREADS=2      # OpenBLAS threads
-    
-    # Volume mounts
     volumes:
-      # Mount data directory (read-only for safety)
       - ./data_artifacts:/app/data_artifacts:ro
-      
-      # Mount output directory (read-write for results)
       - ./classification-analysis:/app/classification-analysis:rw
-      
-      # Mount models directory (for code changes without rebuild)
       - ./classification-models:/app/classification-models:ro
-    
-    # Keep container running for interactive use
     stdin_open: true
     tty: true
-    
-    # Network mode
     network_mode: bridge
-    
-    # Restart policy
     restart: unless-stopped

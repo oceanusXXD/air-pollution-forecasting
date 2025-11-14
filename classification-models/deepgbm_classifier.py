@@ -753,31 +753,32 @@ def main():
 
         # 针对不同 horizon 的微调（可按需修改）
         if h == 1:
-            cfg = dict(lr=1e-3, patience=16, min_delta=0.001, es_warmup_epochs=3, max_epochs=80)
+            cfg = dict(lr=2.5e-4, patience=16, min_delta=0.001, es_warmup_epochs=4, max_epochs=80)
         elif h == 6:
-            cfg = dict(lr=5e-4, patience=18, min_delta=0.0015, es_warmup_epochs=4, max_epochs=100)
-        else:  # h == 12 or 24
-            cfg = dict(lr=3e-4, patience=20, min_delta=0.002, es_warmup_epochs=5, max_epochs=120)
+            cfg = dict(lr=1.25e-4, patience=18, min_delta=0.0015, es_warmup_epochs=5, max_epochs=100)
+        else:
+            cfg = dict(lr=8e-5, patience=20, min_delta=0.002, es_warmup_epochs=6, max_epochs=120)
 
         clf = DeepGBMCOClassifier(
-            horizon=h,
-            num_buckets=500_000,
-            emb_dim=512,
-            hidden=(1024, 512, 256),
-            dropout=0.25,
-            batch_size=8,  # For CPU low-memory run, keep small; on GPU increase
-            lr=cfg['lr'],
-            weight_decay=1e-3,
-            max_epochs=cfg['max_epochs'],
-            patience=cfg['patience'],
-            min_delta=cfg['min_delta'],
-            es_warmup_epochs=cfg['es_warmup_epochs'],
-            gradient_accumulation_steps=1,
-            xgb_weight=0.35,
-            seed=42,
-            device=None,  # 自动选择 CUDA（若可用）
-            checkpoint_dir=OUTPUT_DIR / "checkpoints",
-        )
+    horizon=h,
+    num_buckets=500_000,
+    emb_dim=1024,
+    hidden=(2048, 1024, 512),
+    dropout=0.25,
+    batch_size=64,              # 保守: 32→256 (8倍)
+    lr=cfg['lr'],
+    weight_decay=1e-4,
+    max_epochs=cfg['max_epochs'],
+    patience=cfg['patience'],
+    min_delta=cfg['min_delta'],
+    es_warmup_epochs=cfg['es_warmup_epochs'],
+    gradient_accumulation_steps=1,
+    xgb_weight=0.35,
+    seed=42,
+    device=None,
+    checkpoint_dir=OUTPUT_DIR / "checkpoints",
+)
+
 
         # 加载数据并训练
         clf.load_data(DATA_PATH)
