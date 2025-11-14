@@ -48,12 +48,12 @@ tail -f classification-analysis/ft_transformer_training.log
 - **长期预测 (h+12/24)**: 较浅的树 (max_depth=4-5)、更强正则化、更多训练轮数，防止过拟合
 
 **性能表现**:
-| Horizon | 测试集 Accuracy | 测试集 F1-Macro | 训练时间 |
-|---------|----------------|----------------|----------|
-| h+1     | 79.93%         | 0.7803         | 12秒     |
-| h+6     | 62.36%         | 0.5652         | 19秒     |
-| h+12    | 57.29%         | 0.5292         | 27秒     |
-| h+24    | 56.61%         | 0.5219         | 33秒     |
+| Horizon | 测试集 Accuracy | 测试集 F1-Macro | 训练时间 | 混淆矩阵 |
+|:---:|:---:|:---:|:---:|:---:|
+| h+1 | 79.93% | 0.7803 | 12秒 | [查看](./classification-analysis/xgboost_gpu/h1/confusion_matrices_h1.png) |
+| h+6 | 62.36% | 0.5652 | 17秒 | [查看](./classification-analysis/xgboost_gpu/h6/confusion_matrices_h6.png) |
+| h+12 | 57.29% | 0.5292 | 3秒 | [查看](./classification-analysis/xgboost_gpu/h12/confusion_matrices_h12.png) |
+| h+24 | 56.61% | 0.5219 | 6秒 | [查看](./classification-analysis/xgboost_gpu/h24/confusion_matrices_h24.png) |
 
 *(GPU加速训练，NVIDIA RTX 4090)*
 
@@ -80,10 +80,13 @@ DeepGBM 是 XGBoost 与深度神经网络的混合模型，采用两阶段训练
 - 最大 Epochs: 25
 - 早停策略: patience=8
 
-**性能表现** (h+24 示例):
-- Deep-only: Acc=51.48%, F1=0.4928
-- XGB-only: Acc=55.44%, F1=0.4967  
-- **Deep+XGB (ensemble)**: Acc=54.27%, F1=0.5115
+**性能表现**:
+| Horizon | 测试集 Accuracy | 测试集 F1-Macro | 训练时间 | 混淆矩阵 |
+|:---:|:---:|:---:|:---:|:---:|
+| h+1 | 79.62% | 0.7775 | 33秒 | [查看](./classification-analysis/deepgbm_unified_v2/h1/confusion_matrices_h1.png) |
+| h+6 | 61.42% | 0.5603 | 44秒 | [查看](./classification-analysis/deepgbm_unified_v2/h6/confusion_matrices_h6.png) |
+| h+12 | 56.13% | 0.5198 | 45秒 | [查看](./classification-analysis/deepgbm_unified_v2/h12/confusion_matrices_h12.png) |
+| h+24 | 54.81% | 0.5102 | 45秒 | [查看](./classification-analysis/deepgbm_unified_v2/h24/confusion_matrices_h24.png) |
 
 **优势**:
 - 结合树模型的特征交互能力和神经网络的表达能力
@@ -121,9 +124,13 @@ DeepGBM 是 XGBoost 与深度神经网络的混合模型，采用两阶段训练
 - 移除 tqdm 进度条，改为直接 print 输出
 
 **建议**:
-- 🎯 **推荐硬件**: NVIDIA RTX 4090 或更高算力的 GPU
-- 🎯 **训练策略**: 在 GPU 上训练，或仅将 FT-Transformer 用于性能对比实验
-- 🎯 **生产部署**: 使用 XGBoost 或 DeepGBM，FT-Transformer 仅作学术研究
+**性能表现**:
+| Horizon | 测试集 Accuracy | 测试集 F1-Macro | 训练时间 | 混淆矩阵 |
+|:---:|:---:|:---:|:---:|:---:|
+| h+1 | 76.90% | 0.7458 | 532秒 | [查看](./classification-analysis/ft_transformer_effect_first_unified/h1/confusion_matrices_h1.png) |
+| h+6 | 57.09% | 0.5403 | 591秒 | [查看](./classification-analysis/ft_transformer_effect_first_unified/h6/confusion_matrices_h6.png) |
+| h+12 | 51.61% | 0.4742 | 1102秒 | [查看](./classification-analysis/ft_transformer_effect_first_unified/h12/confusion_matrices_h12.png) |
+| h+24 | - | - | - | - |
 
 ---
 
