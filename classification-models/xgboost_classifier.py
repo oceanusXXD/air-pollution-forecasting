@@ -477,7 +477,7 @@ def main():
     OUTPUT_DIR = Path("/app/classification-analysis/xgboost_gpu")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # GPU-friendly stronger configs (for GPU like 4090)
+    # GPU-friendly stronger configs (for 4090)
     horizon_configs = {
         1: {
             "n_estimators": 1200,
@@ -537,7 +537,7 @@ def main():
         cfg = horizon_configs[h]
         clf = XGBoostCOClassifier(
             horizon=h,
-            use_gpu=True,  # 尝试用 GPU（如果容器/驱动/库支持则使用）
+            use_gpu=True,  # use gpu 
             random_state=42,
             **cfg,
         )
