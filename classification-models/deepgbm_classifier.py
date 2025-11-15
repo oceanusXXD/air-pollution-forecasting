@@ -1,5 +1,4 @@
 """
-依赖:
     - xgboost
     - torch
     - numpy
@@ -66,7 +65,7 @@ class LeafHasher:
 
 class DeepComponent(nn.Module):
     """
-    小容量 Deep 模块：数值特征 + 叶子 embedding -> MLP -> 3 类 logits
+    Deep
     """
     def __init__(
         self,
@@ -145,7 +144,7 @@ class DeepGBMCOClassifier:
         min_delta: float = 0.001,
         es_warmup_epochs: int = 5,
         gradient_accumulation_steps: int = 1,
-        # xgb_weight 不再固定，用验证集搜索最优
+        # xgb_weight
         seed: int = 42,
         device: str | None = None,
         checkpoint_dir: str | Path | None = None,
@@ -199,7 +198,7 @@ class DeepGBMCOClassifier:
         self.label_mapping = {"low": 0, "mid": 1, "high": 2}
         self.rev_mapping = {v: k for k, v in self.label_mapping.items()}
 
-        self.best_xgb_weight: float = 0.8  # 会在验证集上自动调整
+        self.best_xgb_weight: float = 0.8
 
         np.random.seed(self.seed)
         torch.manual_seed(self.seed)
@@ -229,7 +228,7 @@ class DeepGBMCOClassifier:
         params["verbosity"] = 1
         return params
 
-    # ---------- 加载 & 训练 XGB + 叶子 ----------
+    # ---------- XGB ----------
 
     def load_data(self, data_path: str | Path):
         base_path = Path(data_path) / f"h{self.horizon}"
@@ -320,7 +319,7 @@ class DeepGBMCOClassifier:
         print(pd.Series(self.train_y).value_counts(normalize=True).sort_index())
         return self
 
-    # ---------- Deep 部分 ----------
+    # ---------- Deep ----------
 
     def _build_deep(self):
         print("\n[Building Deep component...]")
@@ -474,7 +473,7 @@ class DeepGBMCOClassifier:
         print(f"\n✓ Deep training done in {self.training_time_seconds/60:.2f} min | Best val F1={best_f1:.4f}")
         return self
 
-    # ---------- 预测与评估 ----------
+    # ---------- validate ----------
 
     def _xgb_predict_proba(self, X_np: np.ndarray) -> np.ndarray | None:
         try:
@@ -538,7 +537,7 @@ class DeepGBMCOClassifier:
 
     def _search_best_xgb_weight(self) -> float:
         """
-        在验证集上用网格搜索找到 best xgb_weight，使 Deep+XGB 的 F1_macro 最大。
+        best xgb_weight
         """
         xgb_proba_valid = self._xgb_predict_proba(self.valid_X)
         deep_proba_valid = self.results["valid"]["prob"]
@@ -564,19 +563,19 @@ class DeepGBMCOClassifier:
 
     def evaluate_all(self):
         print(f"\n{'='*60}\nEVALUATION - DeepGBM (h+{self.horizon})\n{'='*60}")
-        # Deep-only 结果
+        # Deep-only
         self.results = {
             "train": self._eval_split(self.train_X, self.train_leaf, self.train_y),
             "valid": self._eval_split(self.valid_X, self.valid_leaf, self.valid_y),
             "test":  self._eval_split(self.test_X,  self.test_leaf,  self.test_y),
         }
 
-        # XGB-only 结果
+        # XGB-only 
         xgb_metrics_train = self._xgb_only_metrics(self.train_X, self.train_y)
         xgb_metrics_valid = self._xgb_only_metrics(self.valid_X, self.valid_y)
         xgb_metrics_test = self._xgb_only_metrics(self.test_X,  self.test_y)
 
-        # 搜索最优 xgb_weight
+        # best xgb_weight
         self._search_best_xgb_weight()
 
         def decode(arr):
@@ -715,7 +714,7 @@ class DeepGBMCOClassifier:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # 保存 XGB
+        # save XGB
         try:
             if isinstance(self.xgb_model, xgb.core.Booster):
                 self.xgb_model.save_model(str(output_dir / f"deepgbm_xgb_h{self.horizon}.model"))
@@ -779,7 +778,7 @@ class DeepGBMCOClassifier:
                 "xgb_params": self.xgb_params,
             },
             "results_deep_only": _pack_results(self.results),
-            # 提示：XGB-only 与融合指标需要在 evaluate_all 时另行记录，如有需要可扩展
+            
         }
 
         with open(output_dir / f"deepgbm_results_h{self.horizon}.json", "w") as f:
@@ -801,7 +800,7 @@ def main():
         print(f"# HORIZON: {h} HOUR(S)")
         print("#" * 80)
 
-        # 相对保守的 Deep 配置：小容量 + 强一点正则
+        
         if h == 1:
             cfg = dict(lr=5e-4, patience=20, min_delta=0.0005, es_warmup_epochs=4, max_epochs=80)
         elif h == 6:
