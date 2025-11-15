@@ -1,6 +1,5 @@
 """
 
-依赖:
  - torch, numpy, pandas, scikit-learn, matplotlib, seaborn, joblib, pyarrow
 """
 
@@ -36,7 +35,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
 
-# ----------------------------- 工具 / Loss / Aug -----------------------------
+# ----------------------------- Loss / Aug -----------------------------
 def set_seed(seed: int):
     random.seed(seed)
     np.random.seed(seed)
@@ -309,7 +308,7 @@ class FTTransformerCOClassifier:
         for cls, prop in cls_dist.items():
             print(f"  {self.rev_mapping[int(cls)]}: {prop:.3f}")
 
-        print("\n[Building FT-Transformer (效果优先)...]")
+        print("\n[Building FT-Transformer ...]")
         self.model = FTTransformer(
             n_features=X_train_np.shape[1],
             n_classes=3,
@@ -331,7 +330,7 @@ class FTTransformerCOClassifier:
         return self
 
     def train(self):
-        print(f"\n{'='*64}\nTraining FT-Transformer (效果优先) h+{self.horizon}\n{'='*64}")
+        print(f"\n{'='*64}\nTraining FT-Transformer h+{self.horizon}\n{'='*64}")
         optimizer = torch.optim.AdamW(
             self.model.parameters(),
             lr=self.lr,
