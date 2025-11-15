@@ -705,7 +705,7 @@ def main():
         print(f"# HORIZON: {h} HOUR(S)")
         print("#" * 80)
 
-        # 统一思路：batch 不要太大 + 正则偏保守，先让模型更容易 fit
+        
         if h == 1:
             clf = FTTransformerCOClassifier(
                 horizon=h,
@@ -713,18 +713,18 @@ def main():
                 nhead=8,
                 num_layers=4,
                 dim_feedforward=1024,
-                dropout=0.15,            # ↓ 正则略弱
-                batch_size=128,          # ↓ 减小 batch，避免爆显存，也更“噪声丰富”
+                dropout=0.15,            
+                batch_size=128,          
                 accumulation_steps=1,
                 lr=7e-4,
-                weight_decay=5e-4,       # ↓ 正则弱一点
+                weight_decay=5e-4,       
                 max_epochs=120,
                 warmup_epochs=8,
                 patience=25,
-                mixup_alpha=0.15,        # ↓ mixup 稍弱
+                mixup_alpha=0.15,       
                 mixup_prob=0.3,
-                focal_gamma=1.2,         # ↓ 不要太强的 focal
-                label_smoothing=0.03,    # ↓ 平滑弱一点
+                focal_gamma=1.2,         
+                label_smoothing=0.03,    
                 seed=42,
                 device=None,
                 num_workers=0,
@@ -762,7 +762,7 @@ def main():
                 num_layers=6,
                 dim_feedforward=1536,
                 dropout=0.18,
-                batch_size=96,           # 12/24h 任务可能更难，稍微再小一点 batch
+                batch_size=96,           
                 accumulation_steps=1,
                 lr=4e-4,
                 weight_decay=6e-4,
